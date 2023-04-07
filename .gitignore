@@ -1,0 +1,11 @@
+# intermediate files
+.vs/
+debug/
+release/
+sample/
+*.sdf
+*.suo
+*.opensdf
+*.user
+*.depend
+*.layout
