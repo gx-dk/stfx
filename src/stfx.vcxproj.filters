@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="github">
+      <UniqueIdentifier>{48D0CFFF-3472-FAD5-1D2D-0E2A096E8126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="github\fmt">
+      <UniqueIdentifier>{7E3A6A08-6AF2-AB55-D3F9-84B1BFD04646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="github\fmt\include">
+      <UniqueIdentifier>{F1FFD053-DDE3-91A9-4644-8CFC32477C2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="github\fmt\include\fmt">
+      <UniqueIdentifier>{A7165DD3-9310-8625-7C7D-1C366816EC91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="github\fmt\src">
+      <UniqueIdentifier>{9507FB4F-81D5-EE55-6A69-5F7C56D6CABA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lex_parse">
+      <UniqueIdentifier>{689F9D47-D409-52BE-1D48-036489F12F13}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\github\fmt\include\fmt\format.h">
+      <Filter>github\fmt\include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="items.h" />
+    <ClInclude Include="lex_parse\Location.hpp">
+      <Filter>lex_parse</Filter>
+    </ClInclude>
+    <ClInclude Include="lex_parse\Parser.hpp">
+      <Filter>lex_parse</Filter>
+    </ClInclude>
+    <ClInclude Include="process_items.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\github\fmt\src\format.cc">
+      <Filter>github\fmt\src</Filter>
+    </ClCompile>
+    <ClCompile Include="items.cpp" />
+    <ClCompile Include="lex_parse\Parser.cpp">
+      <Filter>lex_parse</Filter>
+    </ClCompile>
+    <ClCompile Include="lex_parse\tokenize.cpp">
+      <Filter>lex_parse</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="process_items.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lex_parse\struct_lex.l">
+      <Filter>lex_parse</Filter>
+    </None>
+    <None Include="lex_parse\struct_yacc.y">
+      <Filter>lex_parse</Filter>
+    </None>
+  </ItemGroup>
+</Project>
