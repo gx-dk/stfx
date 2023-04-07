@@ -1,0 +1,9 @@
+[submodule "src/submodules/fmt"]
+	path = src/submodules/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "src/submodules/tinyxml2"]
+	path = src/submodules/tinyxml2
+	url = https://github.com/leethomason/tinyxml2.git
+[submodule "src/submodules/tinyxml2-ex"]
+	path = src/submodules/tinyxml2-ex
+	url = https://github.com/stanthomas/tinyxml2-ex.git
