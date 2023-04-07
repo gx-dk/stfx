@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="github">
-      <UniqueIdentifier>{48D0CFFF-3472-FAD5-1D2D-0E2A096E8126}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="github\fmt">
-      <UniqueIdentifier>{7E3A6A08-6AF2-AB55-D3F9-84B1BFD04646}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="github\fmt\include">
-      <UniqueIdentifier>{F1FFD053-DDE3-91A9-4644-8CFC32477C2B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="github\fmt\include\fmt">
-      <UniqueIdentifier>{A7165DD3-9310-8625-7C7D-1C366816EC91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="github\fmt\src">
-      <UniqueIdentifier>{9507FB4F-81D5-EE55-6A69-5F7C56D6CABA}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lex_parse">
       <UniqueIdentifier>{689F9D47-D409-52BE-1D48-036489F12F13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="submodules">
+      <UniqueIdentifier>{48444C85-34FC-8DD2-9D03-672E89DA28C3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt">
+      <UniqueIdentifier>{7EAE001F-6A7C-F424-5310-654B3F7DD089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\include">
+      <UniqueIdentifier>{F1739B03-DD6D-C455-C6DA-5A66B2732AC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\include\fmt">
+      <UniqueIdentifier>{A78A418B-939A-ED5B-FC53-527AE882DCF4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\src">
+      <UniqueIdentifier>{957BABF4-815F-6C4A-EABF-669DD6C256CC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\tinyxml2">
+      <UniqueIdentifier>{FE6A0A39-6ACC-E746-F339-2EF95F9A1E06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\tinyxml2-ex">
+      <UniqueIdentifier>{283F764F-1439-9FA1-FDA5-35B2E93E050E}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\github\fmt\include\fmt\format.h">
-      <Filter>github\fmt\include\fmt</Filter>
-    </ClInclude>
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp">
       <Filter>lex_parse</Filter>
@@ -32,11 +35,20 @@
       <Filter>lex_parse</Filter>
     </ClInclude>
     <ClInclude Include="process_items.h" />
+    <ClInclude Include="submodules\fmt\include\fmt\format.h">
+      <Filter>submodules\fmt\include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2-ex\tixml2cx.h">
+      <Filter>submodules\tinyxml2-ex</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2-ex\tixml2ex.h">
+      <Filter>submodules\tinyxml2-ex</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2\tinyxml2.h">
+      <Filter>submodules\tinyxml2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\github\fmt\src\format.cc">
-      <Filter>github\fmt\src</Filter>
-    </ClCompile>
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp">
       <Filter>lex_parse</Filter>
@@ -46,6 +58,12 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="process_items.cpp" />
+    <ClCompile Include="submodules\fmt\src\format.cc">
+      <Filter>submodules\fmt\src</Filter>
+    </ClCompile>
+    <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp">
+      <Filter>submodules\tinyxml2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lex_parse\struct_lex.l">
