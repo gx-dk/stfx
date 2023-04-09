@@ -4,11 +4,14 @@
 
 #include <chrono>
 #include <cstdio>
+#include <filesystem>
+#include <string>
 #include <fmt/format.h>
 #include <fmt/chrono.h>
 #include "items.h"
+#include "config_data.h"
 
-bool process_items_C::process_items(info_items_C &items, std::string in_filename)
+bool process_items_C::process_items(info_items_C &items, in_out_spec const & files_specification)
 	{
 	bool rv{ false };
 
@@ -16,8 +19,8 @@ bool process_items_C::process_items(info_items_C &items, std::string in_filename
 	m_timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
 
 	rv = fixup_types_of_names(items);
-	rv &= process_all_enums(items, in_filename, "test_out/enums");
-	rv &= process_all_structs(items, in_filename, "test_out/structs");
+	rv &= process_all_enums(items, files_specification);
+	rv &= process_all_structs(items, files_specification);
 	return rv;
 	}
 
@@ -45,19 +48,33 @@ bool process_items_C::fixup_types_of_names(info_items_C &items)
 
 
 
-bool process_items_C::process_all_enums(info_items_C & items, std::string in_filename, std::string out_filename_root)
+bool process_items_C::process_all_enums(info_items_C & items, in_out_spec const & files_specification)
 	{
 	bool rv {true};
-	std::string out_filename_cpp = out_filename_root + ".cpp";
-	std::string out_filename_h = out_filename_root + ".h";
+	std::filesystem::path inpath{ files_specification.in_file };
+	std::string in_filename{ inpath.filename().string() };
+	std::filesystem::path outpath{ inpath };
+	outpath = outpath.parent_path();		// remove filename.ext
+	if (files_specification.out.relative_directory.empty() == false)
+		{
+		outpath = outpath /= files_specification.out.relative_directory;
+		outpath = std::filesystem::canonical(outpath);
+		}
+	std::filesystem::path out_filepath_cpp = outpath /= files_specification.out.enum_file + ".cpp";
+	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
+	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
+	std::string out_pathfilename_h{ out_filepath_h.string() };
+	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
+	std::string out_filename_h{ out_filepath_h.filename().string() };
+
 	auto &enums = items.get_enums();
 
 	std::FILE *f_cpp;
-	f_cpp = std::fopen(out_filename_cpp.c_str(), "w");
+	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
 		std::FILE* f_h;
-		f_h = std::fopen(out_filename_h.c_str(), "w");
+		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
 			rv = true;		// files are open
@@ -77,7 +94,7 @@ bool process_items_C::process_all_enums(info_items_C & items, std::string in_fil
 			for (auto& pair : enums)
 				{
 				const enum_S& e = pair.second;
-				process_enum(e, in_filename, f_cpp, f_h);
+				process_enum(e, files_specification.in_file, f_cpp, f_h);
 				}
 
 			fmt::print(f_h, "\t}};\n");		// finish namespace
@@ -186,20 +203,34 @@ bool process_items_C::create_fmt_templates_for_enum(const enum_S& the_enum, std:
 			return true;
 	}
 
-bool process_items_C::process_all_structs(info_items_C &items, std::string in_filename, std::string out_filename_root)
+bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const & files_specification)
 	{
 	bool rv {false};
-	std::string const out_filename_cpp = out_filename_root + ".cpp";
-	std::string const out_filename_h = out_filename_root + ".h";
+	std::filesystem::path inpath{ files_specification.in_file };
+	std::string in_filename{ inpath.filename().string() };
+	std::filesystem::path outpath{ inpath };
+	outpath = outpath.parent_path();
+	if (files_specification.out.relative_directory.empty() == false)
+		{
+		outpath = outpath /= files_specification.out.relative_directory;
+		outpath = std::filesystem::canonical(outpath);
+		}
+	std::filesystem::path out_filepath_cpp = outpath /= files_specification.out.structs_file + ".cpp";
+	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
+	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
+	std::string out_pathfilename_h{ out_filepath_h.string() };
+	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
+	std::string out_filename_h{ out_filepath_h.filename().string() };
+	std::string enums_filename_h{ files_specification.out.enum_file + ".h"};
 	std::string class_name = "xml_reader";
 	auto &structs = items.get_structs();
 
 	std::FILE* f_cpp;
-	f_cpp = std::fopen(out_filename_cpp.c_str(), "w");
+	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
 		std::FILE* f_h;
-		f_h = std::fopen(out_filename_h.c_str(), "w");
+		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
 			rv = true;
@@ -212,8 +243,8 @@ bool process_items_C::process_all_structs(info_items_C &items, std::string in_fi
 				"\n");
 			fmt::print(f_cpp, "#include <tinyxml2.h>\n"
 				"#include <tixml2ex.h>\n\n");
-			fmt::print(f_cpp, "#include \"enums.h\"\n"
-				"#include \"{}\"\n\n", in_filename);
+			fmt::print(f_cpp, "#include \"{}\"\n"
+				"#include \"{}\"\n\n", enums_filename_h, in_filename);
 
 			fmt::print(f_h, "// {0}\n// created {1}\n\n", out_filename_h, m_timestamp);
 			fmt::print(f_h,
