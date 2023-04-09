@@ -32,13 +32,19 @@ solution "_stfx"
 		includedirs {"."}
 		files {"lex_parse/*.cpp", "lex_parse/*.hpp"}
 		includedirs {"lex_parse"}
+		files {"configuration/*.cpp", "configuration/*.h"}
+		includedirs {"configuration"}
 		includedirs {"C:/ProgramData/chocolatey/lib/winflexbison3/tools"}	-- for <FlexLexer.h> 
 		files {"lex_parse/*.y", "lex_parse/*.l"}
 
-		defines { "win32"  }
 --		defines { "YY_NO_UNISTD_H"}
 		defines {"__STDC_VERSION__=199901L"}	-- inform win_flex that we don't want multiple definitions of limits (from stdint.h)
+		
+		
+	filter "system:Windows"
+		defines { "WIN32"  }
 		defines {" _CRT_SECURE_NO_DEPRECATE", "_CRT_NONSTDC_NO_DEPRECATE"}
+	filter {}
 
 		using_fmt(true)
 		using_tinyxml2(true)

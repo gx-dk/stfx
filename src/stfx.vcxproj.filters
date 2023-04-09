@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="configuration">
+      <UniqueIdentifier>{3DC23A57-A982-B68D-72BD-FF0ADE3CFB69}</UniqueIdentifier>
+    </Filter>
     <Filter Include="lex_parse">
       <UniqueIdentifier>{689F9D47-D409-52BE-1D48-036489F12F13}</UniqueIdentifier>
     </Filter>
@@ -27,6 +30,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="configuration\config_data.h">
+      <Filter>configuration</Filter>
+    </ClInclude>
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp">
       <Filter>lex_parse</Filter>
