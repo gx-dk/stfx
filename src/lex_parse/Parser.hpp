@@ -45,7 +45,7 @@
 #ifndef YY_YY_PARSER_HPP_INCLUDED
 # define YY_YY_PARSER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 60 "struct_yacc.y"
+#line 62 "struct_yacc.y"
 
         namespace yy {
                 class Lexer;
@@ -377,7 +377,9 @@ namespace yy {
       // NAME
       // ENUM_VALUE
       // VALUE
+      // HEXVALUE
       // FVALUE
+      // STRING_CONSTANT
       // name
       // simple_default_value
       // value
@@ -455,7 +457,9 @@ namespace yy {
     NAME = 24,                     // NAME
     ENUM_VALUE = 25,               // ENUM_VALUE
     VALUE = 26,                    // VALUE
-    FVALUE = 27                    // FVALUE
+    HEXVALUE = 27,                 // HEXVALUE
+    FVALUE = 28,                   // FVALUE
+    STRING_CONSTANT = 29           // STRING_CONSTANT
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -472,7 +476,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 28, ///< Number of tokens.
+        YYNTOKENS = 30, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -501,46 +505,48 @@ namespace yy {
         S_NAME = 24,                             // NAME
         S_ENUM_VALUE = 25,                       // ENUM_VALUE
         S_VALUE = 26,                            // VALUE
-        S_FVALUE = 27,                           // FVALUE
-        S_YYACCEPT = 28,                         // $accept
-        S_file_content = 29,                     // file_content
-        S_parts = 30,                            // parts
-        S_part = 31,                             // part
-        S_block_start = 32,                      // block_start
-        S_block_end = 33,                        // block_end
-        S_comma = 34,                            // comma
-        S_semicolon = 35,                        // semicolon
-        S_equals = 36,                           // equals
-        S_lessthan = 37,                         // lessthan
-        S_greaterthan = 38,                      // greaterthan
-        S_true = 39,                             // true
-        S_false = 40,                            // false
-        S_unsigned = 41,                         // unsigned
-        S_int = 42,                              // int
-        S_short = 43,                            // short
-        S_long = 44,                             // long
-        S_std_string = 45,                       // std_string
-        S_std_vector = 46,                       // std_vector
-        S_enum = 47,                             // enum
-        S_class = 48,                            // class
-        S_struct = 49,                           // struct
-        S_float = 50,                            // float
-        S_double = 51,                           // double
-        S_bool = 52,                             // bool
-        S_name = 53,                             // name
-        S_enum_part = 54,                        // enum_part
-        S_enum_start = 55,                       // enum_start
-        S_enum_block = 56,                       // enum_block
-        S_enum_block_ents = 57,                  // enum_block_ents
-        S_enum_ent = 58,                         // enum_ent
-        S_struct_part = 59,                      // struct_part
-        S_struct_start = 60,                     // struct_start
-        S_struct_block_ents = 61,                // struct_block_ents
-        S_struct_block_ent = 62,                 // struct_block_ent
-        S_simple_type = 63,                      // simple_type
-        S_simple_default_value = 64,             // simple_default_value
-        S_value = 65,                            // value
-        S_struct_block_vector = 66               // struct_block_vector
+        S_HEXVALUE = 27,                         // HEXVALUE
+        S_FVALUE = 28,                           // FVALUE
+        S_STRING_CONSTANT = 29,                  // STRING_CONSTANT
+        S_YYACCEPT = 30,                         // $accept
+        S_file_content = 31,                     // file_content
+        S_parts = 32,                            // parts
+        S_part = 33,                             // part
+        S_block_start = 34,                      // block_start
+        S_block_end = 35,                        // block_end
+        S_comma = 36,                            // comma
+        S_semicolon = 37,                        // semicolon
+        S_equals = 38,                           // equals
+        S_lessthan = 39,                         // lessthan
+        S_greaterthan = 40,                      // greaterthan
+        S_true = 41,                             // true
+        S_false = 42,                            // false
+        S_unsigned = 43,                         // unsigned
+        S_int = 44,                              // int
+        S_short = 45,                            // short
+        S_long = 46,                             // long
+        S_std_string = 47,                       // std_string
+        S_std_vector = 48,                       // std_vector
+        S_enum = 49,                             // enum
+        S_class = 50,                            // class
+        S_struct = 51,                           // struct
+        S_float = 52,                            // float
+        S_double = 53,                           // double
+        S_bool = 54,                             // bool
+        S_name = 55,                             // name
+        S_enum_part = 56,                        // enum_part
+        S_enum_start = 57,                       // enum_start
+        S_enum_block = 58,                       // enum_block
+        S_enum_block_ents = 59,                  // enum_block_ents
+        S_enum_ent = 60,                         // enum_ent
+        S_struct_part = 61,                      // struct_part
+        S_struct_start = 62,                     // struct_start
+        S_struct_block_ents = 63,                // struct_block_ents
+        S_struct_block_ent = 64,                 // struct_block_ent
+        S_simple_type = 65,                      // simple_type
+        S_simple_default_value = 66,             // simple_default_value
+        S_value = 67,                            // value
+        S_struct_block_vector = 68               // struct_block_vector
       };
     };
 
@@ -584,7 +590,9 @@ namespace yy {
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
+      case symbol_kind::S_HEXVALUE: // HEXVALUE
       case symbol_kind::S_FVALUE: // FVALUE
+      case symbol_kind::S_STRING_CONSTANT: // STRING_CONSTANT
       case symbol_kind::S_name: // name
       case symbol_kind::S_simple_default_value: // simple_default_value
       case symbol_kind::S_value: // value
@@ -672,7 +680,9 @@ switch (yykind)
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
+      case symbol_kind::S_HEXVALUE: // HEXVALUE
       case symbol_kind::S_FVALUE: // FVALUE
+      case symbol_kind::S_STRING_CONSTANT: // STRING_CONSTANT
       case symbol_kind::S_name: // name
       case symbol_kind::S_simple_default_value: // simple_default_value
       case symbol_kind::S_value: // value
@@ -1238,6 +1248,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_HEXVALUE (std::string v, location_type l)
+      {
+        return symbol_type (token::HEXVALUE, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_HEXVALUE (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::HEXVALUE, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_FVALUE (std::string v, location_type l)
       {
         return symbol_type (token::FVALUE, std::move (v), std::move (l));
@@ -1248,6 +1273,21 @@ switch (yykind)
       make_FVALUE (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FVALUE, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_STRING_CONSTANT (std::string v, location_type l)
+      {
+        return symbol_type (token::STRING_CONSTANT, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_STRING_CONSTANT (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::STRING_CONSTANT, v, l);
       }
 #endif
 
@@ -1590,7 +1630,7 @@ switch (yykind)
 
 
 } // yy
-#line 1594 "Parser.hpp"
+#line 1634 "Parser.hpp"
 
 
 
