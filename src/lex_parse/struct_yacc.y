@@ -49,7 +49,9 @@
 %token <std::string> NAME
 %token <std::string> ENUM_VALUE
 %token <std::string> VALUE
+%token <std::string> HEXVALUE
 %token <std::string> FVALUE
+%token <std::string> STRING_CONSTANT
 
 %nterm <std::string> name
 %nterm <enum class simple_item_type_E> simple_type
@@ -149,7 +151,8 @@ enum_block_ents : 	enum_ent
 
  
 enum_ent : name 							                    { info_items->process_enum_line($1, false, "-");}
-			|  name equals VALUE			                    { info_items->process_enum_line($1, true, $3);}
+			|  name equals VALUE                                { info_items->process_enum_line($1, true, $3);}
+			|  name equals HEXVALUE                             { info_items->process_enum_line($1, true, $3);}
 
 struct_part : struct_start block_start struct_block_ents block_end semicolon
 
@@ -182,7 +185,8 @@ value : VALUE                                                   { $$ = $1; }
 	| FVALUE                                                    { $$ = $1; }
 	| true                                                      { $$ = "true"; }
 	| false                                                     { $$ = "false"; }
-    | ENUM_VALUE                                                { $$ = $1; }
+	| ENUM_VALUE                                                { $$ = $1; }
+	| STRING_CONSTANT                                           { $$ = $1; }
 
 struct_block_vector : std_vector lessthan name greaterthan      { $$ = $3; }
 

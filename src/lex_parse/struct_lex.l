@@ -17,11 +17,13 @@ using namespace yy;
                 /* header="tokenize.hpp" */
 
 DIGIT    [0-9]
+HEXDIGIT   [0-9A-Fa-f]
 ID	    [a-zA-Z_][a-zA_Z0-9_]*
 SEP_CHAR  [ \t]
 C_COMMENT_START [/][*]
 C_COMMENT_END   [*][/]
 CPP_COMMENT_START [/][/]
+QUOTE   ["]
 
 %%
 
@@ -195,12 +197,23 @@ CPP_COMMENT_START [/][/]
 				return yy::Parser::token::VALUE;
 				}
 
+"0x"{HEXDIGIT}+	{
+                value->emplace<std::string>(std::string{ YYText(), YYText() + YYLeng() }); 
+                loc->begin = loc->end; loc->columns(YYLeng());
+				return yy::Parser::token::HEXVALUE;
+				}
+
 {DIGIT}+.{DIGIT}+f? {
                 value->emplace<std::string>(std::string{ YYText(), YYText() + YYLeng() }); 
                 loc->begin = loc->end; loc->columns(YYLeng());
 				return yy::Parser::token::FVALUE;
 				}
 
+{QUOTE}.*{QUOTE}    {
+                value->emplace<std::string>(std::string{ YYText(), YYText() + YYLeng() }); 
+                loc->begin = loc->end; loc->columns(YYLeng());
+                return yy::Parser::token::STRING_CONSTANT;
+                }
 
 %%
 
