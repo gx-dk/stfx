@@ -27,15 +27,15 @@
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 	{
-	int rv {};
+	int rv{};
 	if (argc <= 1)
 		{
 		fmt::print("{} <filename> :\n"
-					"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
-					"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
-					"<filename> parameter must be given\n", argv[0]);
+			"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
+			"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
+			"<filename> parameter must be given\n", argv[0]);
 		exit(1);
 		}
 	std::filesystem::path in_path(argv[1]);
@@ -59,20 +59,20 @@ int main(int argc, char* argv[])
 		rv = process_single_header(in_path);
 		}
 	return rv;
- 	}
+	}
 
 int process_single_header(std::filesystem::path in_path)
 	{
 	int rv{};
 
-	std::istream* infile{ nullptr };
+	std::istream *infile{ nullptr };
 	infile = new std::ifstream{ in_path };
 	if (infile == nullptr || infile->fail() == true)
 		{
 		fmt::print("Error: could not open file for reading: {}\n", in_path.string());
 		return 1;
 		}
-	fmt::print("File {} opened for input\n", in_path.string());
+	fmt::print("File '{}' opened for input\n", in_path.string());
 	std::cin.rdbuf(infile->rdbuf());
 
 	info_items_C info_items;
@@ -84,10 +84,9 @@ int process_single_header(std::filesystem::path in_path)
 	if (rv == 0)
 		{
 		bool ok;
-		fmt::print("Sucessfully parsed file {}\n", in_path.string());
+		fmt::print("Sucessfully parsed file: {}\n", in_path.string());
 		in_out_spec file_specs;
 		file_specs.in_file = in_path.string();
-		file_specs.out.relative_directory = "../../test_data";
 		file_specs.out.enum_file = "enums";
 		file_specs.out.structs_file = "structs";
 		process_items_C process_items;
@@ -96,7 +95,7 @@ int process_single_header(std::filesystem::path in_path)
 		}
 	else
 		{
-		fmt::print("Failed to correctly parse {} code {}", in_path.string(), rv);
+		fmt::print("Failed to correctly parse '{}' code {}", in_path.string(), rv);
 		}
 	return rv;
 	}

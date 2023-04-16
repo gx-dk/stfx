@@ -53,7 +53,7 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum)
 bool info_items_C::process_enum_line(std::string name, bool initialize_value, std::string value)
 	{
 	// fmt::print("process_enum_line( {}, {}, {} )\n", name, initialize_value, value);
-	bool rv { false };
+	bool rv{ false };
 	if (m_current_enum != nullptr)
 		{
 		enum_line_S el;

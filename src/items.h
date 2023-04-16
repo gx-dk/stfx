@@ -86,8 +86,8 @@ class info_items_C
 	private:
 		std::map< std::string, struct_S > m_structs;
 		std::map< std::string, enum_S > m_enums;
-		struct_S* m_current_struct { nullptr };
-		enum_S *m_current_enum { nullptr };
+		struct_S *m_current_struct{ nullptr };
+		enum_S *m_current_enum{ nullptr };
 
 	public:
 		info_items_C();
@@ -95,7 +95,7 @@ class info_items_C
 		bool process_enum(std::string name, bool is_class_enum);
 		bool process_enum_line(std::string name, bool initialize_value, std::string value);
 		bool process_struct(std::string name);
-		bool process_struct_line_simple(simple_item_type_E line_type, std::string name,	std::string default_value);
+		bool process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value);
 		bool process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name);
 
 		complex_item_type_E get_item_type(const std::string name);
