@@ -63,6 +63,7 @@ struct struct_S
 	std::string name;
 	std::vector<struct_line_simple_S> simple;
 	std::vector<struct_line_complex_S> complex;
+	int incoming_count{ 0 };
 	};
 
 struct name_table_enum_items_S

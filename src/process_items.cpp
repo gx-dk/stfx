@@ -19,6 +19,7 @@ bool process_items_C::process_items(info_items_C &items, in_out_spec const & fil
 	m_timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
 
 	rv = fixup_types_of_names(items);
+	rv &= find_top_struct(items);
 	rv &= process_all_enums(items, files_specification);
 	rv &= process_all_structs(items, files_specification);
 	return rv;
@@ -40,6 +41,32 @@ bool process_items_C::fixup_types_of_names(info_items_C &items)
 				co.line_type = items.get_item_type(co.type_name);
 				if (co.line_type == complex_item_type_E::unknown_E)
 					rv = false;
+				}
+			}
+		}
+	return rv;
+	}
+
+bool process_items_C::find_top_struct(info_items_C& items)
+	{
+	bool rv{ true };
+	auto& structs = items.get_structs();
+	for (auto& pair : structs)
+		{
+		struct_S& s = pair.second;
+		for (struct_line_complex_S& co : s.complex)
+			{
+			switch (co.line_type)
+				{
+				case complex_item_type_E::vector_E:
+				case complex_item_type_E::struct_E:
+					if (auto& child = structs.find(co.type_name); child != structs.end())
+						{
+						child->second.incoming_count++;
+						}
+				break;
+				default:
+					break;
 				}
 			}
 		}

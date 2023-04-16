@@ -15,6 +15,7 @@ class process_items_C
 
 	private:
 		bool fixup_types_of_names(info_items_C &items);
+		bool find_top_struct(info_items_C &items);
 
 		bool process_all_enums(info_items_C & items, in_out_spec const &files_specification);
 		bool process_enum(const enum_S &e, std::string in_filename, std::FILE * out_file_cpp, std::FILE* out_file_h);
