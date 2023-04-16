@@ -248,9 +248,10 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 	std::string out_pathfilename_h{ out_filepath_h.string() };
 	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
 	std::string out_filename_h{ out_filepath_h.filename().string() };
-	std::string enums_filename_h{ files_specification.out.enum_file + ".h"};
-	std::string class_name = "xml_reader";
-	auto &structs = items.get_structs();
+	std::string enums_filename_h{ files_specification.out.enum_file + ".h" };
+	std::string reader_class_name = "xml_reader";
+	std::string writer_class_name = "xml_writer";
+	auto& structs = items.get_structs();
 
 	std::FILE* f_cpp;
 	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
@@ -286,23 +287,49 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 			fmt::print(f_h,
 				"class {0}\n"
 				"\t{{\n"
-				"\tprivate:\n"
-				"\t\tstd::string m_xml_file {{}};\n"
 				"\tpublic:\n"
-				"\t\t{0}(std::string xml_file);\n", class_name);
+				"\t\t{0}();\n", reader_class_name);
 
 			fmt::print(f_cpp,
 				"\n"
-				"{0}::{0}(std::string xml_file)\n"
-				"{{\n"
-				"\tm_xml_file = xml_file;\n"
-				"}}\n"
-				"\n", class_name);
+				"{0}::{0}()\n"
+				"\t{{\n"
+				"\t}}\n"
+				"\n", reader_class_name);
 
 			for (auto& pair : structs)
 				{
 				const struct_S& s = pair.second;
-				rv &= process_struct_reader(s, class_name, f_cpp, f_h);
+				if (s.incoming_count == 0)
+					{
+					fmt::print(f_h, "\t\tbool read_from_file(std::string const &filename, {} &struct_to_fill);\n", s.name);
+
+					fmt::print(f_cpp,
+						"\n"
+						"bool {0}::read_from_file(std::string const &filename, {1} &struct_to_fill)\n"
+						"\t{{\n"
+						"\tbool rv{{}};\n"
+						"\ttinyxml2::XMLError er;\n"
+						"\ttinyxml2::XMLDocument doc;\n"
+						"\n"
+						"\ter = doc.LoadFile(filename.c_str());\n"
+						"\tif (er == tinyxml2::XML_SUCCESS)\n"
+						"\t\t{{\n"
+						"\t\ttinyxml2::XMLElement* el = doc.RootElement();\n"
+						"\t\tdo_{1}(el, &struct_to_fill);\n"
+						"\t\t}}\n"
+						"\treturn rv;\n"
+						"\t}}\n"
+						"\n", reader_class_name, s.name);
+					}
+				}
+
+			fmt::print(f_h, "\tprotected:\n");
+
+			for (auto& pair : structs)
+				{
+				const struct_S& s = pair.second;
+				rv &= process_struct_reader(s, reader_class_name, f_cpp, f_h);
 				}
 
 			fmt::print(f_h,
@@ -312,29 +339,52 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 				"\n\n");
 
 			// writer class ===============================================================
-			class_name = "xml_writer";
 			fmt::print(f_h,
-				"class {0}\n"
+				"class {0} : {1}\n"
 				"\t{{\n"
 				"\tprivate:\n"
-				"\t\tstd::string m_xml_file {{}};\n"
 				"\t\tbool m_delta_only {{}};\n"
 				"\tpublic:\n"
-				"\t\t{0}(std::string xml_file, bool delta_only = true);\n", class_name);
+				"\t\t{0}(bool delta_only = true);\n", writer_class_name, reader_class_name);
 
 			fmt::print(f_cpp,
 				"\n"
-				"{0}::{0}(std::string xml_file, bool delta_only)\n"
+				"{0}::{0}(bool delta_only) : {1}()\n"
 				"{{\n"
-				"\tm_xml_file = xml_file;\n"
 				"\tm_delta_only = delta_only;\n"
 				"}}\n"
-				"\n", class_name);
+				"\n", writer_class_name, reader_class_name);
 
 			for (auto& pair : structs)
 				{
 				const struct_S& s = pair.second;
-				rv &= process_struct_writer(s, class_name, f_cpp, f_h);
+				if (s.incoming_count == 0)
+					{
+					fmt::print(f_h, "\t\tbool write_to_file(std::string const &filename, {} &struct_to_read);\n", s.name);
+
+					fmt::print(f_cpp,
+						"\n"
+						"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
+						"\t{{\n"
+						"\tbool rv{{}};\n"
+						"\ttinyxml2::XMLDocument doc_w;\n"
+						"\tauto ch = doc_w.NewElement(\"{1}\");\n"
+						"\tdoc_w.InsertFirstChild(ch);\n"
+						"\ttinyxml2::XMLElement * el = doc_w.RootElement();\n"
+						"\tdo_wr_{1}(el, &struct_to_read);\n"
+						"\tdoc_w.SaveFile(filename.c_str());\n"
+						"\treturn rv;\n"
+						"\t}}\n"
+						"\n", writer_class_name, s.name);
+					}
+				}
+
+			fmt::print(f_h, "\tprotected:\n");
+
+			for (auto& pair : structs)
+				{
+				const struct_S& s = pair.second;
+				rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
 				}
 
 			fmt::print(f_h,
@@ -475,10 +525,10 @@ bool process_items_C::process_struct_writer(struct_S const& s, std::string const
 	{
 	bool rv{ true };
 
-	fmt::print(out_file_h, "\t\tbool do_{0}(tinyxml2::XMLElement *el, {0} *data);\n", s.name);
+	fmt::print(out_file_h, "\t\tbool do_wr_{0}(tinyxml2::XMLElement *el, {0} *data);\n", s.name);
 
 	fmt::print(out_file_cpp,
-		"bool {0}::do_{1}(tinyxml2::XMLElement *el, {1} *data)\n"
+		"bool {0}::do_wr_{1}(tinyxml2::XMLElement *el, {1} *data)\n"
 		"\t{{\n", class_name, s.name);
 	fmt::print(out_file_cpp, "\tbool rv = true;\n");
 	fmt::print(out_file_cpp, "\t{0} default_data;\n", s.name);
@@ -541,7 +591,7 @@ bool process_items_C::process_struct_writer(struct_S const& s, std::string const
 					"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
-					"\t\tdo_{1}(ch_el, &data->{0});\n"
+					"\t\tdo_wr_{1}(ch_el, &data->{0});\n"
 					"\t\t}}\n", co.name, co.type_name);
 				break;
 			case complex_item_type_E::vector_E:
@@ -552,7 +602,7 @@ bool process_items_C::process_struct_writer(struct_S const& s, std::string const
 					"\t\tfor ({1} itr : data->{0})\n"
 					"\t\t\t{{\n"
 					"\t\t\ttinyxml2::XMLElement *ch_ch_el = ch_el->InsertNewChildElement(\"{1}\");\n"
-					"\t\t\tdo_{1}(ch_ch_el, &itr);\n"
+					"\t\t\tdo_wr_{1}(ch_ch_el, &itr);\n"
 					"\t\t\t}}\n"
 					"\t\t}}\n", co.name, co.type_name);
 				break;
