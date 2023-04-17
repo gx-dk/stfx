@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 		}
 	in_path = std::filesystem::canonical(in_path);
 	std::filesystem::path ext = in_path.extension();
-	if (ext == "stfx")
+	if (ext == ".stfx")
 		{
 		rv = process_stfx_file(in_path);
 		}
