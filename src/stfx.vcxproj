@@ -89,6 +89,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="configuration\config_data.h" />
+    <ClInclude Include="configuration\enums.h" />
+    <ClInclude Include="configuration\structs.h" />
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp" />
     <ClInclude Include="lex_parse\Parser.hpp" />
@@ -99,6 +101,8 @@
     <ClInclude Include="submodules\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="configuration\enums.cpp" />
+    <ClCompile Include="configuration\structs.cpp" />
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp" />
     <ClCompile Include="lex_parse\tokenize.cpp" />

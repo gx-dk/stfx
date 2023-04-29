@@ -33,6 +33,12 @@
     <ClInclude Include="configuration\config_data.h">
       <Filter>configuration</Filter>
     </ClInclude>
+    <ClInclude Include="configuration\enums.h">
+      <Filter>configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\structs.h">
+      <Filter>configuration</Filter>
+    </ClInclude>
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp">
       <Filter>lex_parse</Filter>
@@ -55,6 +61,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="configuration\enums.cpp">
+      <Filter>configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration\structs.cpp">
+      <Filter>configuration</Filter>
+    </ClCompile>
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp">
       <Filter>lex_parse</Filter>
