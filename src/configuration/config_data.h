@@ -30,6 +30,7 @@ struct in_out_spec
 struct config
 	{
 	std::vector <common_input> common_in_files;
+	output_spec common_out_files;
 	std::vector <in_out_spec> in_out_files;
 	};
 
