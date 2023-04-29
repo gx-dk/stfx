@@ -24,6 +24,8 @@
 #include "process_items.h"
 #include "config_data.h"
 
+#include "structs.h"
+
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
 
@@ -103,5 +105,12 @@ int process_single_header(std::filesystem::path in_path)
 int process_stfx_file(std::filesystem::path in_file)
 	{
 	int rv{};
+	xml_reader reader;
+	config conf;
+	bool ok;
+
+	ok = reader.read_from_file("test.stfx", conf);
+	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
+
 	return rv;
 	}
