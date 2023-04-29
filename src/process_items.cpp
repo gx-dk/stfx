@@ -301,7 +301,7 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 				const struct_S &s = pair.second;
 				if (s.incoming_count == 0)
 					{
-					fmt::print(f_h, "\t\tbool read_from_file(std::string const &filename, {} &struct_to_fill);\n", s.name);
+					fmt::print(f_h, "\t\tvirtual bool read_from_file(std::string const &filename, {} &struct_to_fill);\n", s.name);
 
 					fmt::print(f_cpp,
 						"\n"
@@ -359,7 +359,7 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 				const struct_S &s = pair.second;
 				if (s.incoming_count == 0)
 					{
-					fmt::print(f_h, "\t\tbool write_to_file(std::string const &filename, {} &struct_to_read);\n", s.name);
+					fmt::print(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);\n", s.name);
 
 					fmt::print(f_cpp,
 						"\n"
@@ -442,6 +442,7 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 				break;
 			default:
 				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
+				fmt::print("WARNING : FAILED TO PROCESS {}\n", sim.name);
 				break;
 			}
 		}
@@ -554,6 +555,7 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 				break;
 			default:
 				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
+				fmt::print("WARNING : FAILED TO PROCESS {}\n", sim.name);
 				break;
 			}
 		}
