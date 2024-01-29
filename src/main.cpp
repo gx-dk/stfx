@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 		{
 		rv = process_single_header(in_path);
 		}
+	fmt::println("Returning {} to caller", rv);
 	return rv;
 	}
 
@@ -86,7 +87,7 @@ int process_single_header(std::filesystem::path in_path)
 	if (rv == 0)
 		{
 		bool ok;
-		fmt::print("Sucessfully parsed file: {}\n", in_path.string());
+		fmt::print("Successfully parsed file: {}\n", in_path.string());
 		in_out_spec file_specs;
 		file_specs.in_file = in_path.string();
 		file_specs.out.enum_file = "enums";
@@ -109,7 +110,17 @@ int process_stfx_file(std::filesystem::path in_file)
 	config conf;
 	bool ok;
 
-	ok = reader.read_from_file("test.stfx", conf);
+	ok = reader.read_from_file(in_file.string(), conf);
+	if (ok == false)
+		{
+		fmt::println("failed to process {}", in_file.string());
+		rv = 1;		// fail !! 
+		return rv;	// and exit
+		}
+	// temp... write out what we have ... 
+	xml_writer writer(false);
+	writer.write_to_file("test.stfx", conf);
+
 	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 
 	return rv;
