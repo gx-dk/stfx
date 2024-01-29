@@ -1,9 +1,9 @@
 stfx : Structs To/From XML
 ==========================
 
-stfx is a program that translates a group of C++ structure and enum definitions and generates code to sae the data to an XML file and restore an XML file into the data structure.
+stfx is a program that translates a group of C++ structure and enum definitions and generates code to save the data to an XML file and restore an XML file into the data structure.
 
-stfx was concieved for the task of loading and saving a configuration file, automating this task has been seen to be benifitical.
+stfx was conceived for the task of loading and saving a configuration file, automating this task has been seen to be beneficial.
 
 stfx generates code that can translate enum strings to enums and enums to enum strings. Code is also generated that allows fmt::format to handle enum parameters directly, converting instances of the enums to strings in the output.
 
@@ -11,11 +11,11 @@ Use
 ===
 stfx takes one argument
 
-	stfx <xml_file_name>
+	stfx <stfx_file_name>
 		or
 	stfx <header_file_name>
 	
-(Curently ONLY stfx <header_file_name> is implemented)
+(Currently ONLY stfx <header_file_name> is implemented)
 
 When stfx <header_file_name> is used, then the named header file is read and parsed. Four files are generated:
 * structs.h
@@ -27,7 +27,7 @@ Restrictions on content of input header file
 ============================================
 The input file parser parses a subset of C++.
 
-Suppored constructs are:
+Supported constructs are:
 * enum
 * enum class
 * struct 
