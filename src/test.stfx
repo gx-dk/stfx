@@ -1,0 +1,14 @@
+<config>
+    <common_in_files>
+        <common_input in_file="test/config_data.h"/>
+    </common_in_files>
+    <common_out_files relative_directory="" enum_file="enumXX" structs_file="structXX"/>
+    <in_out_files>
+        <in_out_spec in_file="">
+            <out relative_directory="" enum_file="" structs_file=""/>
+        </in_out_spec>
+        <in_out_spec in_file="">
+            <out relative_directory="" enum_file="" structs_file=""/>
+        </in_out_spec>
+    </in_out_files>
+</config>
