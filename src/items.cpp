@@ -1,12 +1,30 @@
 // items.cpp
 
+#include "items.h"
+
 #include <string>
+#include <fstream>		// etc...
+#include <filesystem>
 #include <vector>
 #include <map>
 
 #include <fmt/format.h>
 
-#include "items.h"
+#ifdef WIN32
+#pragma warning( push )
+#pragma warning( disable : 4065 )		// we don't want to see warning C4065 from lex/bison generated code... so, we turn it off !!
+#endif
+
+#include "parser.hpp"
+
+#ifdef WIN32
+#pragma warning( pop )
+#endif
+
+#include <FlexLexer.h>
+#include "token_if.h"
+
+
 
 complex_item_type_E info_items_C::get_item_type(const std::string name)
 	{
@@ -25,9 +43,35 @@ complex_item_type_E info_items_C::get_item_type(const std::string name)
 	return rv;
 	}
 
+// ===========================================================================
+
 info_items_C::info_items_C()
 	{
 	}
+
+bool info_items_C::process_input_file(const std::filesystem::path& in_path)
+{
+	bool rv{};
+
+	std::istream* infile{ nullptr };
+	infile = new std::ifstream{ in_path };
+	if (infile == nullptr || infile->fail() == true)
+	{
+		fmt::print("Error: could not open file for reading: {}\n", in_path.string());
+		return false;
+	}
+	fmt::print("File '{}' opened for input\n", in_path.string());
+	std::cin.rdbuf(infile->rdbuf());
+
+	yy::Lexer scanner;
+	yy::Parser parser(&scanner, this, &std::cerr);
+
+	m_parse_rv = parser.parse();
+	rv = (m_parse_rv == 0);
+	return rv;
+}
+
+// ---- and functions called from parser --- 
 
 bool info_items_C::process_enum(std::string name, bool is_class_enum)
 	{

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <filesystem>
 
 struct enum_line_S
 	{
@@ -81,6 +82,11 @@ struct name_table_struct_items_S
 	};
 
 
+namespace yy
+{
+	class Parser;
+}
+
 class info_items_C
 	{
 	private:
@@ -88,27 +94,36 @@ class info_items_C
 		std::map< std::string, enum_S > m_enums;
 		struct_S *m_current_struct{ nullptr };
 		enum_S *m_current_enum{ nullptr };
+		int m_parse_rv{};
 
 	public:
 		info_items_C();
+
+		bool process_input_file(const std::filesystem::path& in_path);
+		int get_parse_rv()
+		{
+			return m_parse_rv;
+		}
+
+		complex_item_type_E get_item_type(const std::string name);
+
+		const std::map< std::string, enum_S >& get_enums()
+		{
+			return m_enums;
+		};
+
+		std::map< std::string, struct_S >& get_structs()
+		{
+			return m_structs;
+		};
+
+	protected:
+		friend yy::Parser;
 
 		bool process_enum(std::string name, bool is_class_enum);
 		bool process_enum_line(std::string name, bool initialize_value, std::string value);
 		bool process_struct(std::string name);
 		bool process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value);
 		bool process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name);
-
-		complex_item_type_E get_item_type(const std::string name);
-
-		const std::map< std::string, enum_S > &get_enums()
-			{
-			return m_enums;
-			};
-
-		std::map< std::string, struct_S > &get_structs()
-			{
-			return m_structs;
-			};
-
 	};
 
