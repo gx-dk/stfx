@@ -7,3 +7,6 @@
 [submodule "src/submodules/tinyxml2-ex"]
 	path = src/submodules/tinyxml2-ex
 	url = https://github.com/stanthomas/tinyxml2-ex.git
+[submodule "submodules/flex"]
+	path = submodules/flex
+	url = https://github.com/westes/flex.git
