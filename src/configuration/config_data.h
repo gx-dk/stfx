@@ -13,7 +13,9 @@ struct output_spec
 	std::string relative_directory {};		// path relative to input file
 	std::string enum_file {};				// file root name of enums files (.cpp and .h)
 	std::string structs_file {};			// file root name of enums files (.cpp and .h)
-	};
+	std::string structs_reader_class{"xml_reader_C"};	// within the generated structs module	
+	std::string structs_writer_class{"xml_writer_C"};	// ... 
+};
 
 struct input_file
 {

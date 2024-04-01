@@ -1,24 +1,23 @@
 // structs.cpp
-// created 2024-04-01 09:58:14.8619634
+// created 2024-04-01 12:46:25.9963557
+// created using stfx. Do not directly edit this file.
 
 #include "structs.h"
 
 #include <string>
 #include <map>
 #include <stdexcept>
-
 #include <tinyxml2.h>
 #include <tixml2ex.h>
 
 #include "enums.h"
 #include "C:\Users\john\source\repos\stfx\src\configuration\config_data.h"
 
-xml_reader::xml_reader()
+xml_reader_C::xml_reader_C()
 	{
 	}
 
-
-bool xml_reader::read_from_file(std::string const &filename, config &struct_to_fill)
+bool xml_reader_C::read_from_file(std::string const &filename, config &struct_to_fill)
 	{
 	bool rv{};
 	tinyxml2::XMLError er;
@@ -33,7 +32,7 @@ bool xml_reader::read_from_file(std::string const &filename, config &struct_to_f
 	return rv;
 	}
 
-bool xml_reader::do_config(tinyxml2::XMLElement *el, config *data)
+bool xml_reader_C::do_config(tinyxml2::XMLElement *el, config *data)
 	{
 	bool rv = true;
 	tinyxml2::XMLElement *ch_el;
@@ -62,7 +61,7 @@ bool xml_reader::do_config(tinyxml2::XMLElement *el, config *data)
 	return rv;
 	};
 
-bool xml_reader::do_input_file(tinyxml2::XMLElement *el, input_file *data)
+bool xml_reader_C::do_input_file(tinyxml2::XMLElement *el, input_file *data)
 	{
 	bool rv = true;
 		{
@@ -73,7 +72,7 @@ bool xml_reader::do_input_file(tinyxml2::XMLElement *el, input_file *data)
 	return rv;
 	};
 
-bool xml_reader::do_input_spec(tinyxml2::XMLElement *el, input_spec *data)
+bool xml_reader_C::do_input_spec(tinyxml2::XMLElement *el, input_spec *data)
 	{
 	bool rv = true;
 	tinyxml2::XMLElement *ch_el;
@@ -92,7 +91,7 @@ bool xml_reader::do_input_spec(tinyxml2::XMLElement *el, input_spec *data)
 	return rv;
 	};
 
-bool xml_reader::do_output_spec(tinyxml2::XMLElement *el, output_spec *data)
+bool xml_reader_C::do_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 	{
 	bool rv = true;
 		{
@@ -110,10 +109,20 @@ bool xml_reader::do_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("structs_file", &pt))
 			data->structs_file = pt;
 		}
+		{
+		const char *pt;
+		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("structs_reader_class", &pt))
+			data->structs_reader_class = pt;
+		}
+		{
+		const char *pt;
+		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("structs_writer_class", &pt))
+			data->structs_writer_class = pt;
+		}
 	return rv;
 	};
 
-bool xml_reader::do_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data)
+bool xml_reader_C::do_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data)
 	{
 	bool rv = true;
 	tinyxml2::XMLElement *ch_el;
@@ -140,13 +149,12 @@ bool xml_reader::do_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data)
 
 
 
-xml_writer::xml_writer(bool delta_only) : xml_reader()
+xml_writer_C::xml_writer_C(bool delta_only) : xml_reader_C()
 {
 	m_delta_only = delta_only;
 }
 
-
-bool xml_writer::write_to_file(std::string const &filename, config &struct_to_read)
+bool xml_writer_C::write_to_file(std::string const &filename, config &struct_to_read)
 	{
 	bool rv{};
 	tinyxml2::XMLError er;
@@ -160,7 +168,7 @@ bool xml_writer::write_to_file(std::string const &filename, config &struct_to_re
 	return rv;
 	}
 
-bool xml_writer::do_wr_config(tinyxml2::XMLElement *el, config *data)
+bool xml_writer_C::do_wr_config(tinyxml2::XMLElement *el, config *data)
 	{
 	bool rv = true;
 	config default_data;
@@ -187,7 +195,7 @@ bool xml_writer::do_wr_config(tinyxml2::XMLElement *el, config *data)
 	return rv;
 	};
 
-bool xml_writer::do_wr_input_file(tinyxml2::XMLElement *el, input_file *data)
+bool xml_writer_C::do_wr_input_file(tinyxml2::XMLElement *el, input_file *data)
 	{
 	bool rv = true;
 	input_file default_data;
@@ -196,7 +204,7 @@ bool xml_writer::do_wr_input_file(tinyxml2::XMLElement *el, input_file *data)
 	return rv;
 	};
 
-bool xml_writer::do_wr_input_spec(tinyxml2::XMLElement *el, input_spec *data)
+bool xml_writer_C::do_wr_input_spec(tinyxml2::XMLElement *el, input_spec *data)
 	{
 	bool rv = true;
 	input_spec default_data;
@@ -213,7 +221,7 @@ bool xml_writer::do_wr_input_spec(tinyxml2::XMLElement *el, input_spec *data)
 	return rv;
 	};
 
-bool xml_writer::do_wr_output_spec(tinyxml2::XMLElement *el, output_spec *data)
+bool xml_writer_C::do_wr_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 	{
 	bool rv = true;
 	output_spec default_data;
@@ -223,10 +231,14 @@ bool xml_writer::do_wr_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 		el->SetAttribute("enum_file", data->enum_file.c_str());
 	if(m_delta_only == false || data->structs_file != default_data.structs_file)
 		el->SetAttribute("structs_file", data->structs_file.c_str());
+	if(m_delta_only == false || data->structs_reader_class != default_data.structs_reader_class)
+		el->SetAttribute("structs_reader_class", data->structs_reader_class.c_str());
+	if(m_delta_only == false || data->structs_writer_class != default_data.structs_writer_class)
+		el->SetAttribute("structs_writer_class", data->structs_writer_class.c_str());
 	return rv;
 	};
 
-bool xml_writer::do_wr_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data)
+bool xml_writer_C::do_wr_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data)
 	{
 	bool rv = true;
 	uncommon_spec default_data;
