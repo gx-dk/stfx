@@ -15,9 +15,14 @@
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
 
+std::string stfx_version{ "0.9 : 20240401" };
+
 int main(int argc, char *argv[])
 	{
 	int rv{};
+
+	fmt::println("stfx version {}", stfx_version);
+
 	if (argc <= 1)
 		{
 		fmt::println("{} <filename> :\n"
