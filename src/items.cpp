@@ -45,10 +45,6 @@ complex_item_type_E info_items_C::get_item_type(const std::string name)
 
 // ===========================================================================
 
-info_items_C::info_items_C()
-	{
-	}
-
 bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 {
 	bool rv{};

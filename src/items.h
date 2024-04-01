@@ -97,7 +97,6 @@ class info_items_C
 		int m_parse_rv{};
 
 	public:
-		info_items_C();
 
 		bool process_input_file(const std::filesystem::path& in_path);
 		int get_parse_rv()
