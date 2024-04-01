@@ -1,0 +1,6 @@
+#test output ... so we don't want to save them in repo
+enums.*
+structs.*
+common_out/
+xtra_1/
+xtra_2/
