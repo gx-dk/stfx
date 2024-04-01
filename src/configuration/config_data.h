@@ -15,22 +15,28 @@ struct output_spec
 	std::string structs_file {};			// file root name of enums files (.cpp and .h)
 	};
 
-struct common_input
-	{
-	std::string in_file{};
-	};
+struct input_file
+{
+	std::string name;
+};
 
-struct in_out_spec
+struct input_spec
+{
+	std::vector<input_file> input;
+};
+
+
+struct uncommon_spec
 	{
-	std::string in_file{};
+	std::vector<input_file> input;
 	output_spec out;
 	};
 
 
 struct config
 	{
-	std::vector <common_input> common_in_files;
+	input_spec common_in_files;
 	output_spec common_out_files;
-	std::vector <in_out_spec> in_out_files;
+	std::vector <uncommon_spec> non_common;
 	};
 

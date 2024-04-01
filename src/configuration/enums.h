@@ -1,5 +1,5 @@
 // enums.h
-// created 2023-04-29 14:49:23.3733881
+// created 2024-04-01 09:58:14.8619634
 
 #pragma once
 
@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "config_data.h"
+#include "C:\Users\john\source\repos\stfx\src\configuration\config_data.h"
 
 namespace stfx
 	{
