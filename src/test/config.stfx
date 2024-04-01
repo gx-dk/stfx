@@ -17,7 +17,7 @@
 			<input>
 				<input_file name="test_extra2.h"/>
 			</input>
-			<out relative_directory="xtra_2" enum_file="-" structs_file="structS"/>
+			<out relative_directory="xtra_2" enum_file="-" structs_file="structS" structs_reader_class="xml_reader_2_C" structs_writer_class="xml_writer_2_C"/>
 		</uncommon_spec>
 	</non_common>
 </config>

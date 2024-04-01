@@ -85,7 +85,7 @@ int process_single_header(std::filesystem::path in_path)
 int process_stfx_file(std::filesystem::path in_file)
 	{
 	int rv{};
-	xml_reader reader;
+	xml_reader_C reader;
 	config conf;
 	bool ok;
 	std::vector<std::string> common_input_files;
@@ -99,7 +99,7 @@ int process_stfx_file(std::filesystem::path in_file)
 		}
 #ifdef NOT_NOW
 	// temp... write out what we have ... 
-	xml_writer writer(false);
+	xml_writer_C writer(false);
 	writer.write_to_file("test.stfx", conf);
 #endif
 

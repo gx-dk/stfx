@@ -266,8 +266,8 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
 	std::string out_filename_h{ out_filepath_h.filename().string() };
 	std::string enums_filename_h{ output.enum_file + ".h" };
-	std::string reader_class_name = "xml_reader";
-	std::string writer_class_name = "xml_writer";
+	std::string reader_class_name = output.structs_reader_class;
+	std::string writer_class_name = output.structs_writer_class;
 	auto &structs = items.get_structs();
 
 	std::FILE *f_cpp;
