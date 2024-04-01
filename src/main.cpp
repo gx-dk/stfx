@@ -20,20 +20,22 @@ int main(int argc, char *argv[])
 	int rv{};
 	if (argc <= 1)
 		{
-		fmt::print("{} <filename> :\n"
+		fmt::println("{} <filename> :\n"
 			"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
 			"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
-			"<filename> parameter must be given\n", argv[0]);
+			"<filename> parameter must be given",
+			argv[0]);
 		exit(1);
 		}
 	std::filesystem::path in_path(argv[1]);
 	if (std::filesystem::exists(in_path) == false)
 		{
-		fmt::print("{} <filename> :\n"
+		fmt::println("{} <filename> :\n"
 			"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
 			"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
-			"<filename> parameter must be given\n\n"
-			"<filename> '{}' does NOT exist\n", argv[0], in_path.string());
+			"<filename> parameter must be given\n"
+			"<filename> '{}' does NOT exist",
+			argv[0], in_path.string());
 		exit(1);
 		}
 	in_path = std::filesystem::canonical(in_path);
@@ -61,7 +63,7 @@ int process_single_header(std::filesystem::path in_path)
 	if (ok == true)
 		{
 		bool ok;
-		fmt::print("Successfully parsed file: {}\n", in_path.string());
+		fmt::println("Successfully parsed file: {}", in_path.string());
 		std::filesystem::path base_dir_path = in_path.parent_path();
 		std::vector<std::string> input;
 		output_spec output;
@@ -71,11 +73,11 @@ int process_single_header(std::filesystem::path in_path)
 		output.structs_file = "structs";
 		process_items_C process_items(base_dir_path);
 		ok = process_items.process_items(info_items, input, output);
-		fmt::print("Processing items done. Success = {}", ok);
+		fmt::println("Processing items done. Success = {}", ok);
 		}
 	else
 		{
-		fmt::print("Failed to correctly parse '{}' code {}", in_path.string(), rv);
+		fmt::println("Failed to correctly parse '{}' code {}", in_path.string(), rv);
 		}
 	return rv;
 	}
@@ -95,9 +97,11 @@ int process_stfx_file(std::filesystem::path in_file)
 		rv = 1;		// fail !! 
 		return rv;	// and exit
 		}
+#ifdef NOT_NOW
 	// temp... write out what we have ... 
 	xml_writer writer(false);
 	writer.write_to_file("test.stfx", conf);
+#endif
 
 	std::filesystem::path base_dir_path = in_file.parent_path();
 
@@ -112,7 +116,7 @@ int process_stfx_file(std::filesystem::path in_file)
 		ok = common_items.process_input_file(path);
 		if (ok == false)
 		{
-			fmt::println("Error : failed to process {}", path.string());
+			fmt::println("ERROR : failed to process {}", path.string());
 		}
 		common_input_files.push_back(filename.name);
 	}
@@ -133,7 +137,7 @@ int process_stfx_file(std::filesystem::path in_file)
 			ok = plus_items.process_input_file(path);
 			if (ok == false)
 			{
-				fmt::println("Error : failed to process {}", path.string());
+				fmt::println("ERROR : failed to process {}", path.string());
 			}
 			plus_input_files.push_back(filename.name);
 		}

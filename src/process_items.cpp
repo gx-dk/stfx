@@ -117,23 +117,25 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			{
 			rv = true;		// files are open
 
-			fmt::print(f_cpp, "// {0}\n// created {1}\n\n", out_filename_cpp, m_timestamp);
-			fmt::print(f_cpp, "#include \"{}\"\n\n", out_filename_h);
-			fmt::print(f_cpp, "#include <string>\n#include <map>\n\n");
+			fmt::println(f_cpp, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
+			fmt::println(f_cpp, "#include <string>\n#include <map>\n");
 			for (const auto &in_filename : input_files)
 			{
-				fmt::print(f_cpp, "#include \"{}\"\n\n", in_filename);
+				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 			}
+			fmt::println(f_cpp, "");
 
-			fmt::print(f_h, "// {0}\n// created {1}\n\n", out_filename_h, m_timestamp);
-			fmt::print(f_h, "#pragma once\n\n");
-			fmt::print(f_h, "#include <string>\n\n");
-			fmt::print(f_h, "#include <fmt/format.h>\n\n");
+			fmt::println(f_h, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_h, m_timestamp);
+			fmt::println(f_h, "#pragma once\n");
+			fmt::println(f_h, "#include <string>");
+			fmt::println(f_h, "#include <fmt/format.h>");
 			for (const auto& in_filename : input_files)
 			{
-				fmt::print(f_h, "#include \"{}\"\n\n", in_filename);
+				fmt::println(f_h, "#include \"{}\"", in_filename);
 			}
-			fmt::print(f_h, "namespace stfx\n\t{{\n");	// start namespace ! 
+			fmt::println(f_h, "");
+			fmt::println(f_h, "namespace stfx\n\t{{");	// start namespace ! 
 
 			for (auto &pair : enums)
 				{
@@ -141,7 +143,7 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 				process_enum(e, f_cpp, f_h);
 				}
 
-			fmt::print(f_h, "\t}};\n");		// finish namespace
+			fmt::println(f_h, "\t}};");		// finish namespace
 
 			// now generate fmt::formatter items
 			for (auto &pair : enums)
@@ -155,13 +157,13 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			}
 		else
 			{
-			fmt::print("\nERROR : Failed to open output file {}\n", out_filename_h);
+			fmt::println("\nERROR : Failed to open output file {}", out_filename_h);
 			}
 		std::fclose(f_cpp);
 		}
 	else
 		{
-		fmt::print("\nERROR : Failed to open output file {}\n", out_filename_cpp);
+		fmt::println("\nERROR : Failed to open output file {}", out_filename_cpp);
 		}
 	return rv;
 	}
@@ -170,49 +172,49 @@ bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_c
 	{
 	// s_from_e
 
-	fmt::print(out_file_h, "\tconst std::string s_from_e({0} e);\n", the_enum.name);
+	fmt::println(out_file_h, "\tconst std::string s_from_e({0} e);", the_enum.name);
 
-	fmt::print(out_file_cpp, "const std::string stfx::s_from_e({0} e)\n\t{{\n", the_enum.name);
+	fmt::println(out_file_cpp, "const std::string stfx::s_from_e({0} e)\n\t{{", the_enum.name);
 
-	fmt::print(out_file_cpp, "\tstd::map < {0}, std::string > {0}_to_string =\n\t\t{{\n", the_enum.name);
+	fmt::println(out_file_cpp, "\tstd::map < {0}, std::string > {0}_to_string =\n\t\t{{", the_enum.name);
 
 	for (auto &ent : the_enum.enums)
 		{
 		if (the_enum.is_class_enum == true)
 			{
-			fmt::print(out_file_cpp, "\t\t\t{{ {0}::{1}, \"{1}\" }},\n", the_enum.name, ent.name);
+			fmt::println(out_file_cpp, "\t\t\t{{ {0}::{1}, \"{1}\" }},", the_enum.name, ent.name);
 			}
 		else
 			{
-			fmt::print(out_file_cpp, "\t\t\t{{ {0}, \"{0}\" }},\n", ent.name);
+			fmt::println(out_file_cpp, "\t\t\t{{ {0}, \"{0}\" }},", ent.name);
 			}
 		}
-	fmt::print(out_file_cpp, "\t\t}};\n");
-	fmt::print(out_file_cpp, "\tstd::string rv = ({0}_to_string.find(e) != {0}_to_string.end()) ? {0}_to_string[e] : std::to_string(int(e));\n", the_enum.name);
-	fmt::print(out_file_cpp, "\treturn rv;\n\t}};\n\n");
+	fmt::println(out_file_cpp, "\t\t}};");
+	fmt::println(out_file_cpp, "\tstd::string rv = ({0}_to_string.find(e) != {0}_to_string.end()) ? {0}_to_string[e] : std::to_string(int(e));", the_enum.name);
+	fmt::println(out_file_cpp, "\treturn rv;\n\t}};\n");
 
 	// s_to_e
 
-	fmt::print(out_file_h, "\tbool s_to_e(std::string s, {} &e);\n", the_enum.name);
+	fmt::println(out_file_h, "\tbool s_to_e(std::string s, {} &e);", the_enum.name);
 
-	fmt::print(out_file_cpp, "bool stfx::s_to_e(std::string s, {} &e)\n\t{{\n", the_enum.name);
-	fmt::print(out_file_cpp, "\tbool rv {{false}};\n");
+	fmt::println(out_file_cpp, "bool stfx::s_to_e(std::string s, {} &e)\n\t{{", the_enum.name);
+	fmt::println(out_file_cpp, "\tbool rv {{false}};\n");
 
-	fmt::print(out_file_cpp, "\tstd::map < std::string, {0} > string_to_{0} =\n\t\t{{\n", the_enum.name);
+	fmt::println(out_file_cpp, "\tstd::map < std::string, {0} > string_to_{0} =\n\t\t{{", the_enum.name);
 
 	for (auto &ent : the_enum.enums)
 		{
 		if (the_enum.is_class_enum == true)
 			{
-			fmt::print(out_file_cpp, "\t\t\t{{ \"{1}\", {0}::{1} }},\n", the_enum.name, ent.name);
+			fmt::println(out_file_cpp, "\t\t\t{{ \"{1}\", {0}::{1} }},", the_enum.name, ent.name);
 			}
 		else
 			{
-			fmt::print(out_file_cpp, "\t\t\t{{ \"{0}\", {0} }},\n", ent.name);
+			fmt::println(out_file_cpp, "\t\t\t{{ \"{0}\", {0} }},", ent.name);
 			}
 		}
-	fmt::print(out_file_cpp, "\t\t}};\n");
-	fmt::print(out_file_cpp,
+	fmt::println(out_file_cpp, "\t\t}};");
+	fmt::println(out_file_cpp,
 		"\tif(string_to_{0}.find(s) != string_to_{0}.end())\n"
 		"\t\t{{\n"
 		"\t\te = string_to_{0}[s];\n"
@@ -223,15 +225,15 @@ bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_c
 		"\t\tint i = std::stoi(s);	// give this rubbish ... and get an invalid_argument exception ;-)\n"
 		"\t\te = {0}(i);\n"
 		"\t\t// note rv NOT set to true ! \n"
-		"\t\t}}\n", the_enum.name);
+		"\t\t}}", the_enum.name);
 
-	fmt::print(out_file_cpp, "\treturn rv;\n\t}};\n\n");
+	fmt::println(out_file_cpp, "\treturn rv;\n\t}};\n");
 	return true;
 	}
 
 bool process_items_C::create_fmt_templates_for_enum(const enum_S &the_enum, std::FILE *out_file_h)
 	{
-	fmt::print(out_file_h,
+	fmt::println(out_file_h,
 		"\n"
 		"template <> struct fmt::formatter < {0} > : formatter<string_view>\n"
 		"\t{{\n"
@@ -243,7 +245,7 @@ bool process_items_C::create_fmt_templates_for_enum(const enum_S &the_enum, std:
 		"\t\tstring_view name = str;\n"
 		"\t\treturn formatter<string_view>::format(name, ctx);\n"
 		"\t\t}}\n"
-		"\t}};\n", the_enum.name);
+		"\t}};", the_enum.name);
 	return true;
 	}
 
@@ -278,33 +280,32 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 			{
 			rv = true;
 
-			fmt::print(f_cpp, "// {0}\n// created {1}\n\n", out_filename_cpp, m_timestamp);
-			fmt::print(f_cpp, "#include \"{}\"\n\n", out_filename_h);
-			fmt::print(f_cpp, "#include <string>\n"
+			fmt::println(f_cpp, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
+			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
-				"#include <stdexcept>\n"
-				"\n");
-			fmt::print(f_cpp, "#include <tinyxml2.h>\n"
-				"#include <tixml2ex.h>\n\n");
+				"#include <stdexcept>");
+			fmt::println(f_cpp, "#include <tinyxml2.h>\n"
+				"#include <tixml2ex.h>\n");
 			if (output.enum_file.empty() || output.enum_file == "-")
 			{
-				fmt::print("// not including blank enum file");
+				fmt::println(f_cpp, "// not including blank enum file");
 			}
 			else
 			{
-				fmt::print(f_cpp, "#include \"{}\"\n", enums_filename_h);
+				fmt::println(f_cpp, "#include \"{}\"", enums_filename_h);
 			}
 			for (const auto& in_filename : input_files)
 			{
-				fmt::print(f_cpp, "#include \"{}\"\n", in_filename);
+				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 			}
 
-			fmt::print(f_h, "// {0}\n// created {1}\n\n", out_filename_h, m_timestamp);
-			fmt::print(f_h,
+			fmt::println(f_h, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_h, m_timestamp);
+			fmt::println(f_h,
 				"#pragma once\n"
 				"\n"
 				"#include <string>\n"
-				"#include <tinyxml2.h>\n");
+				"#include <tinyxml2.h>");
 			for (const auto& in_filename : input_files)
 			{
 				fmt::println(f_h, "#include \"{}\"", in_filename);
@@ -313,28 +314,26 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 
 
 			// reader class ===============================================================
-			fmt::print(f_h,
+			fmt::println(f_h,
 				"class {0}\n"
 				"\t{{\n"
 				"\tpublic:\n"
-				"\t\t{0}();\n", reader_class_name);
+				"\t\t{0}();", reader_class_name);
 
-			fmt::print(f_cpp,
+			fmt::println(f_cpp,
 				"\n"
 				"{0}::{0}()\n"
 				"\t{{\n"
-				"\t}}\n"
-				"\n", reader_class_name);
+				"\t}}\n", reader_class_name);
 
 			for (auto &pair : structs)
 				{
 				const struct_S &s = pair.second;
 				if (s.incoming_count == 0)
 					{
-					fmt::print(f_h, "\t\tvirtual bool read_from_file(std::string const &filename, {} &struct_to_fill);\n", s.name);
+					fmt::println(f_h, "\t\tvirtual bool read_from_file(std::string const &filename, {} &struct_to_fill);", s.name);
 
-					fmt::print(f_cpp,
-						"\n"
+					fmt::println(f_cpp,
 						"bool {0}::read_from_file(std::string const &filename, {1} &struct_to_fill)\n"
 						"\t{{\n"
 						"\tbool rv{{}};\n"
@@ -348,12 +347,11 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 						"\t\trv = do_{1}(el, &struct_to_fill);\n"
 						"\t\t}}\n"
 						"\treturn rv;\n"
-						"\t}}\n"
-						"\n", reader_class_name, s.name);
+						"\t}}\n", reader_class_name, s.name);
 					}
 				}
 
-			fmt::print(f_h, "\tprotected:\n");
+			fmt::println(f_h, "\tprotected:");
 
 			for (auto &pair : structs)
 				{
@@ -361,38 +359,37 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 				rv &= process_struct_reader(s, reader_class_name, f_cpp, f_h);
 				}
 
-			fmt::print(f_h,
-				"\n"
+			fmt::println(f_h,
 				"\t}};\n");
-			fmt::print(f_cpp,
-				"\n\n");
+			fmt::println(f_cpp,
+				"\n");
 
 			// writer class ===============================================================
-			fmt::print(f_h,
+			fmt::println(f_h,
 				"class {0} : {1}\n"
 				"\t{{\n"
 				"\tprivate:\n"
 				"\t\tbool m_delta_only {{}};\n"
 				"\tpublic:\n"
-				"\t\t{0}(bool delta_only = true);\n", writer_class_name, reader_class_name);
+				"\t\t{0}(bool delta_only = true);",
+				writer_class_name, reader_class_name);
 
-			fmt::print(f_cpp,
+			fmt::println(f_cpp,
 				"\n"
 				"{0}::{0}(bool delta_only) : {1}()\n"
 				"{{\n"
 				"\tm_delta_only = delta_only;\n"
-				"}}\n"
-				"\n", writer_class_name, reader_class_name);
+				"}}\n",
+				writer_class_name, reader_class_name);
 
 			for (auto &pair : structs)
 				{
 				const struct_S &s = pair.second;
 				if (s.incoming_count == 0)
 					{
-					fmt::print(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);\n", s.name);
+					fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
 
-					fmt::print(f_cpp,
-						"\n"
+					fmt::println(f_cpp,
 						"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
 						"\t{{\n"
 						"\tbool rv{{}};\n"
@@ -405,12 +402,11 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 						"\ter = doc_w.SaveFile(filename.c_str());\n"
 						"\trv = (er == tinyxml2::XML_SUCCESS);\n"
 						"\treturn rv;\n"
-						"\t}}\n"
-						"\n", writer_class_name, s.name);
+						"\t}}\n", writer_class_name, s.name);
 					}
 				}
 
-			fmt::print(f_h, "\tprotected:\n");
+			fmt::println(f_h, "\tprotected:");
 
 			for (auto &pair : structs)
 				{
@@ -418,23 +414,22 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 				rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
 				}
 
-			fmt::print(f_h,
-				"\n"
-				"\t}};\n");
-			fmt::print(f_cpp,
-				"\n\n");
+			fmt::println(f_h,
+				"\t}};");
+			fmt::println(f_cpp,
+				"\n");
 
 			std::fclose(f_h);
 			}
 		else
 			{
-			fmt::print("\nERROR : Failed to open output file {}\n", out_filename_h);
+			fmt::println("\nERROR : Failed to open output file {}", out_filename_h);
 			}
 		std::fclose(f_cpp);
 		}
 	else
 		{
-		fmt::print("\nERROR : Failed to open output file {}\n", out_filename_cpp);
+		fmt::println("\nERROR : Failed to open output file {}", out_filename_cpp);
 		}
 
 	return rv;
@@ -444,12 +439,13 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 	{
 	bool rv{ true };
 
-	fmt::print(out_file_h, "\t\tbool do_{0}(tinyxml2::XMLElement *el, {0} *data);\n", s.name);
+	fmt::println(out_file_h, "\t\tbool do_{0}(tinyxml2::XMLElement *el, {0} *data);", s.name);
 
-	fmt::print(out_file_cpp,
+	fmt::println(out_file_cpp,
 		"bool {0}::do_{1}(tinyxml2::XMLElement *el, {1} *data)\n"
-		"\t{{\n", class_name, s.name);
-	fmt::print(out_file_cpp, "\tbool rv = true;\n");
+		"\t{{",
+		class_name, s.name);
+	fmt::println(out_file_cpp, "\tbool rv = true;");
 
 	for (auto &sim : s.simple)
 		{
@@ -460,19 +456,19 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 			case simple_item_type_E::unsigned_int_E:
 			case simple_item_type_E::float_E:
 			case simple_item_type_E::double_E:
-				fmt::print(out_file_cpp, "\tel->QueryAttribute(\"{0}\", &data->{0});\n", sim.name);
+				fmt::println(out_file_cpp, "\tel->QueryAttribute(\"{0}\", &data->{0});", sim.name);
 				break;
 			case simple_item_type_E::std_string_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\t\t{{\n"
 					"\t\tconst char *pt;\n"
 					"\t\tif (tinyxml2::XML_SUCCESS == el->QueryAttribute(\"{0}\", &pt))\n"
 					"\t\t\tdata->{0} = pt;\n"
-					"\t\t}}\n", sim.name);
+					"\t\t}}", sim.name);
 				break;
 			default:
-				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
-				fmt::print("WARNING : FAILED TO PROCESS {}\n", sim.name);
+				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", sim.name);
+				fmt::println("WARNING : FAILED TO PROCESS {}", sim.name);
 				break;
 			}
 		}
@@ -494,7 +490,7 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 		}
 	if (has_children == true)
 		{
-		fmt::print(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;\n");
+		fmt::println(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;");
 		}
 	for (auto &co : s.complex)
 		{
@@ -503,23 +499,23 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 		switch (line_type)
 			{
 			case complex_item_type_E::enum_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\t\t{{\n"
 					"\t\tconst char *pt;\n"
 					"\t\tif (tinyxml2::XML_SUCCESS == el->QueryAttribute(\"{0}\", &pt))\n"
 					"\t\t\tstfx::s_to_e(pt, data->{0});\n"
-					"\t\t}}\n", co.name);
+					"\t\t}}", co.name);
 				break;
 			case complex_item_type_E::struct_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tch_el = el->FirstChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
 					"\t\tdo_{1}(ch_el, &data->{0});\n"
-					"\t\t}}\n", co.name, co.type_name);
+					"\t\t}}", co.name, co.type_name);
 				break;
 			case complex_item_type_E::vector_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tch_el = el->FirstChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
@@ -531,24 +527,23 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 					"\t\t\t\tdata->{0}.push_back(s);\n"
 					"\t\t\t\t}}\n"
 					"\t\t\t}}\n"
-					"\t\t}}\n", co.name, co.type_name);
+					"\t\t}}", co.name, co.type_name);
 				break;
 			case complex_item_type_E::enum_or_struct_E:
-				fmt::print(out_file_cpp, "// enum_or_struct_E {}\t NEEDS TO BE FIXED!!\n", co.name);
-				fmt::print("// enum_or_struct_E {}\t NEEDS TO BE FIXED!!\n", co.name);
+				fmt::println(out_file_cpp, "// enum_or_struct_E {}\t NEEDS TO BE FIXED!!", co.name);
+				fmt::println("// enum_or_struct_E {}\t NEEDS TO BE FIXED!!", co.name);
 				rv = false;
 				break;
 			default:
-				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", co.name);
-				fmt::print("\t// WARNING FAILED TO PROCESS {}\n", co.name);
+				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", co.name);
+				fmt::println("\t// WARNING FAILED TO PROCESS {}", co.name);
 				rv = false;
 				break;
 			}
 		}
-	fmt::print(out_file_cpp,
+	fmt::println(out_file_cpp,
 		"\treturn rv;\n"
-		"\t}};\n"
-		"\n");
+		"\t}};\n");
 
 	return rv;
 	}
@@ -557,13 +552,13 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 	{
 	bool rv{ true };
 
-	fmt::print(out_file_h, "\t\tbool do_wr_{0}(tinyxml2::XMLElement *el, {0} *data);\n", s.name);
+	fmt::println(out_file_h, "\t\tbool do_wr_{0}(tinyxml2::XMLElement *el, {0} *data);", s.name);
 
-	fmt::print(out_file_cpp,
+	fmt::println(out_file_cpp,
 		"bool {0}::do_wr_{1}(tinyxml2::XMLElement *el, {1} *data)\n"
-		"\t{{\n", class_name, s.name);
-	fmt::print(out_file_cpp, "\tbool rv = true;\n");
-	fmt::print(out_file_cpp, "\t{0} default_data;\n", s.name);
+		"\t{{", class_name, s.name);
+	fmt::println(out_file_cpp, "\tbool rv = true;");
+	fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
 
 	for (auto &sim : s.simple)
 		{
@@ -574,18 +569,18 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 			case simple_item_type_E::unsigned_int_E:
 			case simple_item_type_E::float_E:
 			case simple_item_type_E::double_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\tel->SetAttribute(\"{0}\", data->{0});\n", sim.name);
+					"\t\tel->SetAttribute(\"{0}\", data->{0});", sim.name);
 				break;
 			case simple_item_type_E::std_string_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\tel->SetAttribute(\"{0}\", data->{0}.c_str());\n", sim.name);
+					"\t\tel->SetAttribute(\"{0}\", data->{0}.c_str());", sim.name);
 				break;
 			default:
-				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
-				fmt::print("WARNING : FAILED TO PROCESS {}\n", sim.name);
+				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
+				fmt::println("WARNING : FAILED TO PROCESS {}", sim.name);
 				break;
 			}
 		}
@@ -606,7 +601,7 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 		}
 	if (has_children == true)
 		{
-		fmt::print(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;\n");
+		fmt::println(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;");
 		}
 	for (auto &co : s.complex)
 		{
@@ -615,20 +610,20 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 		switch (line_type)
 			{
 			case complex_item_type_E::enum_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\tel->SetAttribute(\"{0}\", stfx::s_from_e(data->{0}).c_str());\n", co.name);
+					"\t\tel->SetAttribute(\"{0}\", stfx::s_from_e(data->{0}).c_str());", co.name);
 				break;
 			case complex_item_type_E::struct_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
 					"\t\tdo_wr_{1}(ch_el, &data->{0});\n"
-					"\t\t}}\n", co.name, co.type_name);
+					"\t\t}}", co.name, co.type_name);
 				break;
 			case complex_item_type_E::vector_E:
-				fmt::print(out_file_cpp,
+				fmt::println(out_file_cpp,
 					"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
@@ -637,24 +632,23 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 					"\t\t\ttinyxml2::XMLElement *ch_ch_el = ch_el->InsertNewChildElement(\"{1}\");\n"
 					"\t\t\tdo_wr_{1}(ch_ch_el, &itr);\n"
 					"\t\t\t}}\n"
-					"\t\t}}\n", co.name, co.type_name);
+					"\t\t}}", co.name, co.type_name);
 				break;
 			case complex_item_type_E::enum_or_struct_E:
-				fmt::print(out_file_cpp, "// enum_or_struct_E {}\t NEEDS TO BE FIXED!!\n", co.name);
-				fmt::print("// enum_or_struct_E {}\t NEEDS TO BE FIXED!!\n", co.name);
+				fmt::println(out_file_cpp, "// enum_or_struct_E {}\t NEEDS TO BE FIXED!!", co.name);
+				fmt::println("// enum_or_struct_E {}\t NEEDS TO BE FIXED!!", co.name);
 				rv = false;
 				break;
 			default:
-				fmt::print(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", co.name);
-				fmt::print("\t// WARNING FAILED TO PROCESS {}\n", co.name);
+				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", co.name);
+				fmt::println("\t// WARNING FAILED TO PROCESS {}", co.name);
 				rv = false;
 				break;
 			}
 		}
-	fmt::print(out_file_cpp,
+	fmt::println(out_file_cpp,
 		"\treturn rv;\n"
-		"\t}};\n"
-		"\n");
+		"\t}};\n");
 
 	return rv;
 	}

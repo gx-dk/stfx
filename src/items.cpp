@@ -53,10 +53,10 @@ bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 	infile = new std::ifstream{ in_path };
 	if (infile == nullptr || infile->fail() == true)
 	{
-		fmt::print("Error: could not open file for reading: {}\n", in_path.string());
+		fmt::println("ERROR: could not open file for reading: {}\n", in_path.string());
 		return false;
 	}
-	fmt::print("File '{}' opened for input\n", in_path.string());
+	fmt::println("File '{}' opened for input", in_path.string());
 	std::cin.rdbuf(infile->rdbuf());
 
 	yy::Lexer scanner;
@@ -75,7 +75,7 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum)
 	bool rv{ false };
 	if (get_item_type(name) != complex_item_type_E::unknown_E)
 		{
-		fmt::print("ERROR process_enum : name '{} already in use", name);
+		fmt::println("ERROR process_enum : name '{} already in use", name);
 		}
 	else
 		{
@@ -112,7 +112,7 @@ bool info_items_C::process_struct(std::string name)
 	bool rv{ false };
 	if (get_item_type(name) != complex_item_type_E::unknown_E)
 		{
-		fmt::print("ERROR process_struct : name '{} already in use", name);
+		fmt::println("ERROR process_struct : name '{} already in use", name);
 		}
 	else
 		{
