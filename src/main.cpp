@@ -68,6 +68,8 @@ int process_single_header(std::filesystem::path in_path)
 		file_specs.out.structs_file = "structs";
 		process_items_C process_items;
 		ok = process_items.process_items(info_items, file_specs);
+		std::filesystem::path base_dir_path = in_path.parent_path();
+		process_items_C process_items(base_dir_path);
 		fmt::print("Processing items done. Success = {}", ok);
 		}
 	else
@@ -95,6 +97,8 @@ int process_stfx_file(std::filesystem::path in_file)
 	xml_writer writer(false);
 	writer.write_to_file("test.stfx", conf);
 
+	std::filesystem::path base_dir_path = in_file.parent_path();
+	process_items_C process_items(base_dir_path);
 	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 
 	return rv;

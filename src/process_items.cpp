@@ -77,11 +77,7 @@ bool process_items_C::find_top_struct(info_items_C &items)
 bool process_items_C::process_all_enums(info_items_C &items, in_out_spec const &files_specification)
 	{
 	bool rv{ true };
-	std::filesystem::path inpath{ files_specification.in_file };
-	std::string in_filename{ inpath.filename().string() };
-	std::filesystem::path outpath{ inpath };
-	outpath = outpath.parent_path();		// remove filename.ext
-	if (files_specification.out.relative_directory.empty() == false)
+	std::filesystem::path outpath{ m_base_dir_path };
 		{
 		outpath = outpath /= files_specification.out.relative_directory;
 		outpath = std::filesystem::canonical(outpath);
@@ -232,11 +228,7 @@ bool process_items_C::create_fmt_templates_for_enum(const enum_S &the_enum, std:
 bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const &files_specification)
 	{
 	bool rv{ false };
-	std::filesystem::path inpath{ files_specification.in_file };
-	std::string in_filename{ inpath.filename().string() };
-	std::filesystem::path outpath{ inpath };
-	outpath = outpath.parent_path();
-	if (files_specification.out.relative_directory.empty() == false)
+	std::filesystem::path outpath{ m_base_dir_path };
 		{
 		outpath = outpath /= files_specification.out.relative_directory;
 		outpath = std::filesystem::canonical(outpath);

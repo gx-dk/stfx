@@ -9,9 +9,13 @@ class process_items_C
 	{
 	private:
 		std::string m_timestamp;
+		std::filesystem::path m_base_dir_path;
 
 	public:
 		bool process_items(info_items_C &items, in_out_spec const &files_specification);
+		process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
+			{
+			};
 
 	private:
 		bool fixup_types_of_names(info_items_C &items);
