@@ -1,12 +1,14 @@
 // structs.h
-// created 2024-04-01 12:46:25.9963557
-// created using stfx. Do not directly edit this file.
+// created 2024-04-01 13:47:20.5601552
+// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
+// Licence : MIT License
 
 #pragma once
 
 #include <string>
 #include <tinyxml2.h>
-#include "C:\Users\john\source\repos\stfx\src\configuration\config_data.h"
+
+#include "config_data.h"
 
 class xml_reader_C
 	{
