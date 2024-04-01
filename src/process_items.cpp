@@ -11,6 +11,8 @@
 #include "items.h"
 #include "config_data.h"
 
+std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
+
 bool process_items_C::process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output)
 	{
 	bool rv{ false };
@@ -117,7 +119,8 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			{
 			rv = true;		// files are open
 
-			fmt::println(f_cpp, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "// {}\n// created {}", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "{}", made_by);
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n#include <map>\n");
 			for (const auto &in_filename : input_files)
@@ -126,7 +129,8 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			}
 			fmt::println(f_cpp, "");
 
-			fmt::println(f_h, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_h, m_timestamp);
+			fmt::println(f_h, "// {0}\n// created {1}", out_filename_h, m_timestamp);
+			fmt::println(f_h, "{}", made_by);
 			fmt::println(f_h, "#pragma once\n");
 			fmt::println(f_h, "#include <string>");
 			fmt::println(f_h, "#include <fmt/format.h>");
@@ -280,7 +284,8 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 			{
 			rv = true;
 
-			fmt::println(f_cpp, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "// {0}\n// created {1}", out_filename_cpp, m_timestamp);
+			fmt::println(f_cpp, "{}", made_by);
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
@@ -300,7 +305,9 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 			}
 
-			fmt::println(f_h, "// {0}\n// created {1}\n// created using stfx. Do not directly edit this file.\n", out_filename_h, m_timestamp);
+			fmt::println(f_h, "// {0}\n// created {1}", out_filename_h, m_timestamp);
+			fmt::println(f_h, "{}", made_by);
+
 			fmt::println(f_h,
 				"#pragma once\n"
 				"\n"
