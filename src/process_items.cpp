@@ -11,7 +11,7 @@
 #include "items.h"
 #include "config_data.h"
 
-bool process_items_C::process_items(info_items_C &items, in_out_spec const &files_specification)
+bool process_items_C::process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output)
 	{
 	bool rv{ false };
 
@@ -20,8 +20,22 @@ bool process_items_C::process_items(info_items_C &items, in_out_spec const &file
 
 	rv = fixup_types_of_names(items);
 	rv &= find_top_struct(items);
-	rv &= process_all_enums(items, files_specification);
-	rv &= process_all_structs(items, files_specification);
+	if (output.enum_file.empty() || output.enum_file == "-")
+	{
+		fmt::println("Not generating enum information at this point");
+	}
+	else
+	{
+		rv &= process_all_enums(items, input_files, output);
+	}
+	if (output.structs_file.empty() || output.structs_file == "-")
+	{
+		fmt::println("Not generating struct information at this point");
+	}
+	else
+	{
+		rv &= process_all_structs(items, input_files, output);
+	}
 	return rv;
 	}
 
@@ -74,15 +88,17 @@ bool process_items_C::find_top_struct(info_items_C &items)
 
 
 
-bool process_items_C::process_all_enums(info_items_C &items, in_out_spec const &files_specification)
+bool process_items_C::process_all_enums(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ true };
 	std::filesystem::path outpath{ m_base_dir_path };
+	if (output.relative_directory.empty() == false)
 		{
-		outpath = outpath /= files_specification.out.relative_directory;
+		outpath = outpath /= output.relative_directory;
+		std::filesystem::create_directories(outpath);
 		outpath = std::filesystem::canonical(outpath);
 		}
-	std::filesystem::path out_filepath_cpp = outpath /= files_specification.out.enum_file + ".cpp";
+	std::filesystem::path out_filepath_cpp = outpath /= output.enum_file + ".cpp";
 	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
 	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
 	std::string out_pathfilename_h{ out_filepath_h.string() };
@@ -104,19 +120,25 @@ bool process_items_C::process_all_enums(info_items_C &items, in_out_spec const &
 			fmt::print(f_cpp, "// {0}\n// created {1}\n\n", out_filename_cpp, m_timestamp);
 			fmt::print(f_cpp, "#include \"{}\"\n\n", out_filename_h);
 			fmt::print(f_cpp, "#include <string>\n#include <map>\n\n");
-			fmt::print(f_cpp, "#include \"{}\"\n\n", in_filename);
+			for (const auto &in_filename : input_files)
+			{
+				fmt::print(f_cpp, "#include \"{}\"\n\n", in_filename);
+			}
 
 			fmt::print(f_h, "// {0}\n// created {1}\n\n", out_filename_h, m_timestamp);
 			fmt::print(f_h, "#pragma once\n\n");
 			fmt::print(f_h, "#include <string>\n\n");
 			fmt::print(f_h, "#include <fmt/format.h>\n\n");
-			fmt::print(f_h, "#include \"{}\"\n\n", in_filename);
+			for (const auto& in_filename : input_files)
+			{
+				fmt::print(f_h, "#include \"{}\"\n\n", in_filename);
+			}
 			fmt::print(f_h, "namespace stfx\n\t{{\n");	// start namespace ! 
 
 			for (auto &pair : enums)
 				{
 				const enum_S &e = pair.second;
-				process_enum(e, files_specification.in_file, f_cpp, f_h);
+				process_enum(e, f_cpp, f_h);
 				}
 
 			fmt::print(f_h, "\t}};\n");		// finish namespace
@@ -144,7 +166,7 @@ bool process_items_C::process_all_enums(info_items_C &items, in_out_spec const &
 	return rv;
 	}
 
-bool process_items_C::process_enum(const enum_S &the_enum, std::string in_filename, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_cpp, std::FILE *out_file_h)
 	{
 	// s_from_e
 
@@ -225,21 +247,23 @@ bool process_items_C::create_fmt_templates_for_enum(const enum_S &the_enum, std:
 	return true;
 	}
 
-bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const &files_specification)
+bool process_items_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
 	std::filesystem::path outpath{ m_base_dir_path };
+	if (output.relative_directory.empty() == false)
 		{
-		outpath = outpath /= files_specification.out.relative_directory;
+		outpath = outpath /= output.relative_directory;
+		std::filesystem::create_directories(outpath);
 		outpath = std::filesystem::canonical(outpath);
 		}
-	std::filesystem::path out_filepath_cpp = outpath /= files_specification.out.structs_file + ".cpp";
+	std::filesystem::path out_filepath_cpp = outpath /= output.structs_file + ".cpp";
 	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
 	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
 	std::string out_pathfilename_h{ out_filepath_h.string() };
 	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
 	std::string out_filename_h{ out_filepath_h.filename().string() };
-	std::string enums_filename_h{ files_specification.out.enum_file + ".h" };
+	std::string enums_filename_h{ output.enum_file + ".h" };
 	std::string reader_class_name = "xml_reader";
 	std::string writer_class_name = "xml_writer";
 	auto &structs = items.get_structs();
@@ -262,17 +286,31 @@ bool process_items_C::process_all_structs(info_items_C &items, in_out_spec const
 				"\n");
 			fmt::print(f_cpp, "#include <tinyxml2.h>\n"
 				"#include <tixml2ex.h>\n\n");
-			fmt::print(f_cpp, "#include \"{}\"\n"
-				"#include \"{}\"\n\n", enums_filename_h, in_filename);
+			if (output.enum_file.empty() || output.enum_file == "-")
+			{
+				fmt::print("// not including blank enum file");
+			}
+			else
+			{
+				fmt::print(f_cpp, "#include \"{}\"\n", enums_filename_h);
+			}
+			for (const auto& in_filename : input_files)
+			{
+				fmt::print(f_cpp, "#include \"{}\"\n", in_filename);
+			}
 
 			fmt::print(f_h, "// {0}\n// created {1}\n\n", out_filename_h, m_timestamp);
 			fmt::print(f_h,
 				"#pragma once\n"
 				"\n"
 				"#include <string>\n"
-				"#include <tinyxml2.h>\n"
-				"#include \"{0}\"\n"
-				"\n", in_filename);
+				"#include <tinyxml2.h>\n");
+			for (const auto& in_filename : input_files)
+			{
+				fmt::println(f_h, "#include \"{}\"", in_filename);
+			}
+			fmt::println(f_h, "");
+
 
 			// reader class ===============================================================
 			fmt::print(f_h,

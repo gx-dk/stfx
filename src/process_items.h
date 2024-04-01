@@ -12,20 +12,20 @@ class process_items_C
 		std::filesystem::path m_base_dir_path;
 
 	public:
-		bool process_items(info_items_C &items, in_out_spec const &files_specification);
 		process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
 			{
 			};
+		bool process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output);
 
 	private:
 		bool fixup_types_of_names(info_items_C &items);
 		bool find_top_struct(info_items_C &items);
 
-		bool process_all_enums(info_items_C &items, in_out_spec const &files_specification);
-		bool process_enum(const enum_S &e, std::string in_filename, std::FILE *out_file_cpp, std::FILE *out_file_h);
+		bool process_all_enums(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output);
+		bool process_enum(const enum_S &e, std::FILE *out_file_cpp, std::FILE *out_file_h);
 		bool create_fmt_templates_for_enum(const enum_S &e, std::FILE *out_file_h);
 
-		bool process_all_structs(info_items_C &items, in_out_spec const &file_specifications);
+		bool process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec & output);
 		bool process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h);
 		bool process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h);
 	};
