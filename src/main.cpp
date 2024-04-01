@@ -1,26 +1,12 @@
 // main.cpp
 
-#include <iostream>		// included ... at least "for now" ... 
-#include <fstream>		// etc...
 #include <filesystem>
 #include <string>
 #include <fmt/format.h>
 
 #include "items.h"			// parser.hpp *SHOULD* have included this... but didn't so...
 
-#ifdef WIN32
-#pragma warning( push )
-#pragma warning( disable : 4065 )		// we don't want to see warning C4065 from lex/bison generated code... so, we turn it off !!
-#endif
 
-#include "parser.hpp"
-
-#ifdef WIN32
-#pragma warning( pop )
-#endif
-
-#include <FlexLexer.h>
-#include "token_if.h"
 #include "process_items.h"
 #include "config_data.h"
 
@@ -29,25 +15,32 @@
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
 
+std::string stfx_version{ "0.9 : 20240401" };
+
 int main(int argc, char *argv[])
 	{
 	int rv{};
+
+	fmt::println("stfx version {}", stfx_version);
+
 	if (argc <= 1)
 		{
-		fmt::print("{} <filename> :\n"
+		fmt::println("{} <filename> :\n"
 			"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
 			"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
-			"<filename> parameter must be given\n", argv[0]);
+			"<filename> parameter must be given",
+			argv[0]);
 		exit(1);
 		}
 	std::filesystem::path in_path(argv[1]);
 	if (std::filesystem::exists(in_path) == false)
 		{
-		fmt::print("{} <filename> :\n"
+		fmt::println("{} <filename> :\n"
 			"\nProgram that creates code that performs the translation of Structs To/From Xml file\n\n"
 			"<filename> is <inputheader> headerfile or <setup>.stfx stfx configuration file.\n"
-			"<filename> parameter must be given\n\n"
-			"<filename> '{}' does NOT exist\n", argv[0], in_path.string());
+			"<filename> parameter must be given\n"
+			"<filename> '{}' does NOT exist",
+			argv[0], in_path.string());
 		exit(1);
 		}
 	in_path = std::filesystem::canonical(in_path);
@@ -60,7 +53,14 @@ int main(int argc, char *argv[])
 		{
 		rv = process_single_header(in_path);
 		}
-	fmt::println("Returning {} to caller", rv);
+	if (rv == 0)
+	{
+		fmt::println("Processing successful. Returning {} to caller", rv);
+	}
+	else
+	{
+		fmt::println("Processing failed. Returning {} to caller", rv);
+	}
 	return rv;
 	}
 
@@ -68,47 +68,41 @@ int process_single_header(std::filesystem::path in_path)
 	{
 	int rv{};
 
-	std::istream *infile{ nullptr };
-	infile = new std::ifstream{ in_path };
-	if (infile == nullptr || infile->fail() == true)
-		{
-		fmt::print("Error: could not open file for reading: {}\n", in_path.string());
-		return 1;
-		}
-	fmt::print("File '{}' opened for input\n", in_path.string());
-	std::cin.rdbuf(infile->rdbuf());
-
 	info_items_C info_items;
-	yy::Lexer scanner;
-	yy::Parser parser(&scanner, &info_items, &std::cerr);
+	bool ok = info_items.process_input_file(in_path);
+	rv = info_items.get_parse_rv();
 
-	rv = parser.parse();
-
-	if (rv == 0)
+	if (ok == true)
 		{
 		bool ok;
-		fmt::print("Successfully parsed file: {}\n", in_path.string());
-		in_out_spec file_specs;
-		file_specs.in_file = in_path.string();
-		file_specs.out.enum_file = "enums";
-		file_specs.out.structs_file = "structs";
-		process_items_C process_items;
-		ok = process_items.process_items(info_items, file_specs);
-		fmt::print("Processing items done. Success = {}", ok);
+		fmt::println("Successfully parsed file: {}", in_path.string());
+		std::filesystem::path base_dir_path = in_path.parent_path();
+		std::vector<std::string> input;
+		output_spec output;
+
+		input.push_back(in_path.filename().string());		// filename only ... path to file is in base_dir_path.. 
+		output.enum_file = "enums";
+		output.structs_file = "structs";
+		process_items_C process_items(base_dir_path);
+		ok = process_items.process_items(info_items, input, output);
+		fmt::println("Processing items done. Success = {}", ok);
 		}
 	else
 		{
-		fmt::print("Failed to correctly parse '{}' code {}", in_path.string(), rv);
+		fmt::println("Failed to correctly parse '{}' code {}", in_path.string(), rv);
 		}
+
+	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 	return rv;
 	}
 
 int process_stfx_file(std::filesystem::path in_file)
 	{
 	int rv{};
-	xml_reader reader;
+	xml_reader_C reader;
 	config conf;
 	bool ok;
+	std::vector<std::string> common_input_files;
 
 	ok = reader.read_from_file(in_file.string(), conf);
 	if (ok == false)
@@ -117,9 +111,54 @@ int process_stfx_file(std::filesystem::path in_file)
 		rv = 1;		// fail !! 
 		return rv;	// and exit
 		}
+#ifdef NOT_NOW
 	// temp... write out what we have ... 
-	xml_writer writer(false);
+	xml_writer_C writer(false);
 	writer.write_to_file("test.stfx", conf);
+#endif
+
+	std::filesystem::path base_dir_path = in_file.parent_path();
+
+	// process common input files
+	info_items_C common_items;
+	// read input files
+	for (const auto &filename : conf.common_in_files.input)
+	{
+		bool ok;
+		std::filesystem::path path(base_dir_path);
+		path /= filename.name;
+		ok = common_items.process_input_file(path);
+		if (ok == false)
+		{
+			fmt::println("ERROR : failed to process {}", path.string());
+		}
+		common_input_files.push_back(filename.name);
+	}
+	process_items_C process_items(base_dir_path);
+	output_spec common_output_files = conf.common_out_files;
+	process_items.process_items(common_items, common_input_files, common_output_files);
+
+	// now process the "uncommon" files ... which are common plus local part 
+	for (const auto& uncom : conf.non_common)
+	{
+		info_items_C plus_items(common_items);
+		std::vector<std::string> plus_input_files(common_input_files);
+		for (const auto& filename : uncom.input)
+		{
+			bool ok;
+			std::filesystem::path path(base_dir_path);
+			path /= filename.name;
+			ok = plus_items.process_input_file(path);
+			if (ok == false)
+			{
+				fmt::println("ERROR : failed to process {}", path.string());
+			}
+			plus_input_files.push_back(filename.name);
+		}
+		process_items_C process_items(base_dir_path);
+		output_spec plus_output_files = uncom.out;
+		process_items.process_items(plus_items, plus_input_files, plus_output_files);
+	}
 
 	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 

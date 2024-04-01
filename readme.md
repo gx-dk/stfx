@@ -45,6 +45,7 @@ Submodules used
 * tinyxml2 : a simple, small, efficient, C++ XML parser https://github.com/leethomason/tinyxml2.git
 * tinyxml2-ex : a set of add-on classes and helper functions for tinyxml2 https://github.com/stanthomas/tinyxml2-ex.git
 * fmt : a formatting library providing a fast and safe alternative to C stdio and C++ iostreams. (Basis of std::format) https://github.com/fmtlib/fmt.git
+* flex : flex is a tool for generating scanners: programs which recognize lexical patterns in text. https://github.com/westes/flex  (we need to include FlexLexer.h)
 
 building stfx
 =============
@@ -53,6 +54,7 @@ The parser : lex_parse sub-directory of src
 The two files struct_lex.l and struct_yacc.y contain the input declaration. Use gnu flex and gnu bison to process these files (there is a script for use on windows "do_processing.bat" which is used to run these steps. Command line arguments should be the same when run on Unix style operating systems. 
 
 The current output from win_flex and win_bison has been stored in this directory, to avoid the need to install/run flex and bison.
+I use chocolatey to install win_flex and win_bison (package WinFlexBison)
 
 Building the executable
 -----------------------
