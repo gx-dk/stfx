@@ -62,14 +62,15 @@ int process_single_header(std::filesystem::path in_path)
 		{
 		bool ok;
 		fmt::print("Successfully parsed file: {}\n", in_path.string());
-		in_out_spec file_specs;
-		file_specs.in_file = in_path.string();
-		file_specs.out.enum_file = "enums";
-		file_specs.out.structs_file = "structs";
-		process_items_C process_items;
-		ok = process_items.process_items(info_items, file_specs);
 		std::filesystem::path base_dir_path = in_path.parent_path();
+		std::vector<std::string> input;
+		output_spec output;
+
+		input.push_back(in_path.string());
+		output.enum_file = "enums";
+		output.structs_file = "structs";
 		process_items_C process_items(base_dir_path);
+		ok = process_items.process_items(info_items, input, output);
 		fmt::print("Processing items done. Success = {}", ok);
 		}
 	else
@@ -85,6 +86,7 @@ int process_stfx_file(std::filesystem::path in_file)
 	xml_reader reader;
 	config conf;
 	bool ok;
+	std::vector<std::string> common_input_files;
 
 	ok = reader.read_from_file(in_file.string(), conf);
 	if (ok == false)
@@ -98,7 +100,48 @@ int process_stfx_file(std::filesystem::path in_file)
 	writer.write_to_file("test.stfx", conf);
 
 	std::filesystem::path base_dir_path = in_file.parent_path();
+
+	// process common input files
+	info_items_C common_items;
+	// read input files
+	for (const auto &filename : conf.common_in_files.input)
+	{
+		bool ok;
+		std::filesystem::path path(base_dir_path);
+		path /= filename.name;
+		ok = common_items.process_input_file(path);
+		if (ok == false)
+		{
+			fmt::println("Error : failed to process {}", path.string());
+		}
+		common_input_files.push_back(filename.name);
+	}
 	process_items_C process_items(base_dir_path);
+	output_spec common_output_files = conf.common_out_files;
+	process_items.process_items(common_items, common_input_files, common_output_files);
+
+	// now process the "uncommon" files ... which are common plus local part 
+	for (const auto& uncom : conf.non_common)
+	{
+		info_items_C plus_items(common_items);
+		std::vector<std::string> plus_input_files(common_input_files);
+		for (const auto& filename : uncom.input)
+		{
+			bool ok;
+			std::filesystem::path path(base_dir_path);
+			path /= filename.name;
+			ok = plus_items.process_input_file(path);
+			if (ok == false)
+			{
+				fmt::println("Error : failed to process {}", path.string());
+			}
+			plus_input_files.push_back(filename.name);
+		}
+		process_items_C process_items(base_dir_path);
+		output_spec plus_output_files = uncom.out;
+		process_items.process_items(plus_items, plus_input_files, plus_output_files);
+	}
+
 	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 
 	return rv;
