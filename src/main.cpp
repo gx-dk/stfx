@@ -48,7 +48,14 @@ int main(int argc, char *argv[])
 		{
 		rv = process_single_header(in_path);
 		}
-	fmt::println("Returning {} to caller", rv);
+	if (rv == 0)
+	{
+		fmt::println("Processing successful. Returning {} to caller", rv);
+	}
+	else
+	{
+		fmt::println("Processing failed. Returning {} to caller", rv);
+	}
 	return rv;
 	}
 
@@ -68,7 +75,7 @@ int process_single_header(std::filesystem::path in_path)
 		std::vector<std::string> input;
 		output_spec output;
 
-		input.push_back(in_path.string());
+		input.push_back(in_path.filename().string());		// filename only ... path to file is in base_dir_path.. 
 		output.enum_file = "enums";
 		output.structs_file = "structs";
 		process_items_C process_items(base_dir_path);
@@ -79,6 +86,8 @@ int process_single_header(std::filesystem::path in_path)
 		{
 		fmt::println("Failed to correctly parse '{}' code {}", in_path.string(), rv);
 		}
+
+	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 	return rv;
 	}
 

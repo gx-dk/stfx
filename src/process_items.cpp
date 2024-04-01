@@ -133,7 +133,7 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			fmt::println(f_h, "{}", made_by);
 			fmt::println(f_h, "#pragma once\n");
 			fmt::println(f_h, "#include <string>");
-			fmt::println(f_h, "#include <fmt/format.h>");
+			fmt::println(f_h, "#include <fmt/format.h>\n");
 			for (const auto& in_filename : input_files)
 			{
 				fmt::println(f_h, "#include \"{}\"", in_filename);
@@ -312,7 +312,7 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 				"#pragma once\n"
 				"\n"
 				"#include <string>\n"
-				"#include <tinyxml2.h>");
+				"#include <tinyxml2.h>\n");
 			for (const auto& in_filename : input_files)
 			{
 				fmt::println(f_h, "#include \"{}\"", in_filename);

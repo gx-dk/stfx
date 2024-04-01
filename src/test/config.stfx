@@ -5,19 +5,19 @@
 			<input_file name="config_data.h"/>
 		</input>
 	</common_in_files>
-	<common_out_files relative_directory="common_out" enum_file="enums" structs_file="-"/>
+	<common_out_files relative_directory="common_out" enum_file="enums" structs_file="structs"/>
 	<non_common>
 		<uncommon_spec>
 			<input>
 				<input_file name="test_extra1.h"/>
 			</input>
-			<out relative_directory="xtra_1" enum_file="enumz" structs_file="structz"/>
+			<out relative_directory="xtra_1" enum_file="enums_1" structs_file="structs_1" structs_reader_class="xml_reader_1_C" structs_writer_class="xml_writer_1_C"/>
 		</uncommon_spec>
 		<uncommon_spec>
 			<input>
 				<input_file name="test_extra2.h"/>
 			</input>
-			<out relative_directory="xtra_2" enum_file="-" structs_file="structS" structs_reader_class="xml_reader_2_C" structs_writer_class="xml_writer_2_C"/>
+			<out relative_directory="xtra_2" enum_file="enums_2" structs_file="structs_2" structs_reader_class="xml_reader_2_C" structs_writer_class="xml_writer_2_C"/>
 		</uncommon_spec>
 	</non_common>
 </config>
