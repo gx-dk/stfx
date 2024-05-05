@@ -473,6 +473,18 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 					"\t\t\tdata->{0} = pt;\n"
 					"\t\t}}", sim.name);
 				break;
+			case simple_item_type_E::short_E:
+				fmt::println(out_file_cpp, "\t{{ int i; el->QueryIntAttribute(\"{0}\", &i); data->{0} = short(i); }}", sim.name);
+				break;
+			case simple_item_type_E::unsigned_short_E:
+				fmt::println(out_file_cpp, "\t{{ unsigned int i; el->QueryUnsignedAttribute(\"{0}\", &i); data->{0} = unsigned short(i); }}", sim.name);
+				break;
+			case simple_item_type_E::long_E:
+				fmt::println(out_file_cpp, "\t{{ int i; el->QueryIntAttribute(\"{0}\", &i); data->{0} = long(i); }}", sim.name);
+				break;
+			case simple_item_type_E::unsigned_long_E:
+				fmt::println(out_file_cpp, "\t{{ unsigned int i; el->QueryUnsignedAttribute(\"{0}\", &i); data->{0} = unsigned long(i); }}", sim.name);
+				break;
 			default:
 				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", sim.name);
 				fmt::println("WARNING : FAILED TO PROCESS {}", sim.name);
@@ -584,6 +596,18 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\tel->SetAttribute(\"{0}\", data->{0}.c_str());", sim.name);
+				break;
+			case simple_item_type_E::long_E:
+			case simple_item_type_E::short_E:
+				fmt::println(out_file_cpp,
+					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+					"\t\tel->SetAttribute(\"{0}\", int(data->{0}));", sim.name);
+				break;
+			case simple_item_type_E::unsigned_long_E:
+			case simple_item_type_E::unsigned_short_E:
+				fmt::println(out_file_cpp,
+					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+					"\t\tel->SetAttribute(\"{0}\", unsigned(data->{0}));", sim.name);
 				break;
 			default:
 				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);
