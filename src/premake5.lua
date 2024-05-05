@@ -34,6 +34,8 @@ solution "_stfx"
 		includedirs {"lex_parse"}
 		files {"configuration/*.cpp", "configuration/*.h"}
 		includedirs {"configuration"}
+		files {"creation/**.cpp", "creation/**.h"}
+		includedirs {"creation/*"}
 		includedirs {"C:/ProgramData/chocolatey/lib/winflexbison3/tools"}	-- for <FlexLexer.h> 
 		files {"lex_parse/*.y", "lex_parse/*.l"}
 

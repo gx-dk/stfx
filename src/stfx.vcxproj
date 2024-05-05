@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>__STDC_VERSION__=199901L;WIN32; _CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;lex_parse;configuration;C:\ProgramData\chocolatey\lib\winflexbison3\tools;submodules\fmt\include;submodules\tinyxml2;submodules\tinyxml2-ex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;lex_parse;configuration;creation\xml_attrib;C:\ProgramData\chocolatey\lib\winflexbison3\tools;submodules\fmt\include;submodules\tinyxml2;submodules\tinyxml2-ex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -73,7 +73,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>__STDC_VERSION__=199901L;WIN32; _CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;lex_parse;configuration;C:\ProgramData\chocolatey\lib\winflexbison3\tools;submodules\fmt\include;submodules\tinyxml2;submodules\tinyxml2-ex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;lex_parse;configuration;creation\xml_attrib;C:\ProgramData\chocolatey\lib\winflexbison3\tools;submodules\fmt\include;submodules\tinyxml2;submodules\tinyxml2-ex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -91,10 +91,10 @@
     <ClInclude Include="configuration\config_data.h" />
     <ClInclude Include="configuration\enums.h" />
     <ClInclude Include="configuration\structs.h" />
+    <ClInclude Include="creation\xml_attrib\process_items.h" />
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp" />
     <ClInclude Include="lex_parse\Parser.hpp" />
-    <ClInclude Include="process_items.h" />
     <ClInclude Include="submodules\fmt\include\fmt\format.h" />
     <ClInclude Include="submodules\tinyxml2-ex\tixml2cx.h" />
     <ClInclude Include="submodules\tinyxml2-ex\tixml2ex.h" />
@@ -103,11 +103,11 @@
   <ItemGroup>
     <ClCompile Include="configuration\enums.cpp" />
     <ClCompile Include="configuration\structs.cpp" />
+    <ClCompile Include="creation\xml_attrib\process_items.cpp" />
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp" />
     <ClCompile Include="lex_parse\tokenize.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="process_items.cpp" />
     <ClCompile Include="submodules\fmt\src\format.cc" />
     <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
