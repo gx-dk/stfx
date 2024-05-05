@@ -7,6 +7,13 @@
 #include <string>
 #include <vector>
 
+enum class serialization_type_E
+	{
+	xml_attrib,		// xml file, with values saved as named attributes
+	xml,
+	ini,
+	json
+	};
 
 struct output_spec
 	{
@@ -15,6 +22,7 @@ struct output_spec
 	std::string structs_file {};			// file root name of enums files (.cpp and .h)
 	std::string structs_reader_class{"xml_reader_C"};	// within the generated structs module	
 	std::string structs_writer_class{"xml_writer_C"};	// ... 
+	serialization_type_E file_type{ serialization_type_E::xml_attrib };	// file format of serialization file
 };
 
 struct input_file
