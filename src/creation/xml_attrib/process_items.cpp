@@ -226,8 +226,15 @@ bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_c
 		"\t\t}}\n"
 		"\telse\n"
 		"\t\t{{\n"
-		"\t\tint i = std::stoi(s);	// give this rubbish ... and get an invalid_argument exception ;-)\n"
-		"\t\te = {0}(i);\n"
+		"\t\ttry\n"
+		"\t\t\t{{\n"
+		"\t\t\tint i = std::stoi(s);\t\t// just in case the value of enum has been given\n"
+		"\t\t\te = serialization_type_E(i);\n"
+		"\t\t\t}}\n"
+		"\t\tcatch (std::exception &)\n"
+		"\t\t\t{{\n"
+		"\t\t\t// unexpected string, will just be ignored (for now!)... This *COULD* throw an exception .. \n"
+		"\t\t\t}}\n"
 		"\t\t// note rv NOT set to true ! \n"
 		"\t\t}}", the_enum.name);
 

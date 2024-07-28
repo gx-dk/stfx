@@ -12,6 +12,7 @@ enum class serialization_type_E
 	xml_attrib,		// xml file, with values saved as named attributes
 	xml,
 	ini,
+	ini_no_equals,	// ini file without = separator (i.e. only a whitespace separator)
 	json
 	};
 
