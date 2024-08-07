@@ -52,6 +52,7 @@
 %token <std::string> HEXVALUE
 %token <std::string> FVALUE
 %token <std::string> STRING_CONSTANT
+%token <std::string> CHAR_CONSTANT
 
 %nterm <std::string> name
 %nterm <enum class simple_item_type_E> simple_type
@@ -60,24 +61,24 @@
 
 
 %code requires {
-        namespace yy {
-                class Lexer;
-        }
+		namespace yy {
+				class Lexer;
+		}
 }
 
 %code {
-        #include <FlexLexer.h>
-        #include "token_if.h"
-        #define yylex(a, b) lexer->lex(a, b)
-        #define VALID_OP(op1, op2, op, l) \
-                if (op1->type() != op2->type()) { \
-                        error(l, "mixed-mode operations are not allowed"); \
-                        YYERROR; \
-                } \
-                else if (valid_ops.at(op).second.find(op1->type()) == valid_ops.at(op).second.end()) { \
-                        error(l, "operator not supported for this type"); \
-                        YYERROR; \
-                }
+		#include <FlexLexer.h>
+		#include "token_if.h"
+		#define yylex(a, b) lexer->lex(a, b)
+		#define VALID_OP(op1, op2, op, l) \
+				if (op1->type() != op2->type()) { \
+						error(l, "mixed-mode operations are not allowed"); \
+						YYERROR; \
+				} \
+				else if (valid_ops.at(op).second.find(op1->type()) == valid_ops.at(op).second.end()) { \
+						error(l, "operator not supported for this type"); \
+						YYERROR; \
+				}
 }
 
 
@@ -110,30 +111,30 @@ true : TRUE
 
 false : FALSE
 
-unsigned : UNSIGNED 
+unsigned : UNSIGNED
 
-int : INT 
+int : INT
 
-short : SHORT 
+short : SHORT
 
 long : LONG
 
 
-std_string : STD_STRING 
+std_string : STD_STRING
 
 std_vector : STD_VECTOR
 
-enum : ENUM 
+enum : ENUM
 
-class : CLASS 
+class : CLASS
 
-struct: STRUCT 
+struct: STRUCT
 
-float: FLOAT 
+float: FLOAT
 
-double: DOUBLE 
+double: DOUBLE
 
-bool: BOOL 
+bool: BOOL
 
 
 
@@ -142,24 +143,26 @@ name: NAME														{ $$ = $1; }
 enum_part :  enum_start enum_block
 
 enum_start : enum NAME                                          { info_items->process_enum($2, false); }
-            | enum class name                                   { info_items->process_enum($3, true); }
-	
+			| enum class name                                   { info_items->process_enum($3, true); }
+
 enum_block : block_start enum_block_ents block_end semicolon
 
 enum_block_ents : 	enum_ent
 			| enum_ent comma enum_block_ents
+			| enum_ent comma
 
- 
+
 enum_ent : name 							                    { info_items->process_enum_line($1, false, "-");}
 			|  name equals VALUE                                { info_items->process_enum_line($1, true, $3);}
 			|  name equals HEXVALUE                             { info_items->process_enum_line($1, true, $3);}
+			|  name equals CHAR_CONSTANT                        { info_items->process_enum_line($1, true, $3);}
 
 struct_part : struct_start block_start struct_block_ents block_end semicolon
 
 struct_start : struct name                                      { info_items->process_struct($2); }
 
 struct_block_ents : struct_block_ent
-			| struct_block_ent struct_block_ents	
+			| struct_block_ent struct_block_ents
 
 struct_block_ent : simple_type name semicolon                   { info_items->process_struct_line_simple($1, $2, "-");}
 			| simple_type name simple_default_value semicolon   { info_items->process_struct_line_simple($1, $2, $3);}
@@ -187,19 +190,20 @@ value : VALUE                                                   { $$ = $1; }
 	| false                                                     { $$ = "false"; }
 	| ENUM_VALUE                                                { $$ = $1; }
 	| STRING_CONSTANT                                           { $$ = $1; }
+	| CHAR_CONSTANT                                             { $$ = $1; }
 
 struct_block_vector : std_vector lessthan name greaterthan      { $$ = $3; }
 
 %%
 
 void yy::Parser::error(const location_type& loc, const std::string &e) {
-        *err << "Location " << loc.begin.line << ':' << loc.begin.column;
-        if (loc.end.line != loc.begin.line) {
-                *err << '-' << loc.end.line << ':' << loc.end.column - 1;
-        }
-        else if ((loc.end.column - loc.begin.column) > 1) {
-                *err << '-' << loc.end.column - 1;
-        }
-        *err << ", " << e << '\n';
+		*err << "Location " << loc.begin.line << ':' << loc.begin.column;
+		if (loc.end.line != loc.begin.line) {
+				*err << '-' << loc.end.line << ':' << loc.end.column - 1;
+		}
+		else if ((loc.end.column - loc.begin.column) > 1) {
+				*err << '-' << loc.end.column - 1;
+		}
+		*err << ", " << e << '\n';
 }
 
