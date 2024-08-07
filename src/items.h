@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include <filesystem>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <filesystem>
 
 struct enum_line_S
 	{

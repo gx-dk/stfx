@@ -4,6 +4,12 @@
     <Filter Include="configuration">
       <UniqueIdentifier>{3DC23A57-A982-B68D-72BD-FF0ADE3CFB69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="creation">
+      <UniqueIdentifier>{BA644D13-A631-A81E-CF4A-96C6BB76DDAC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creation\xml_attrib">
+      <UniqueIdentifier>{1F91C90B-8BF2-A619-1460-EDCB80C0DDD8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="lex_parse">
       <UniqueIdentifier>{689F9D47-D409-52BE-1D48-036489F12F13}</UniqueIdentifier>
     </Filter>
@@ -39,6 +45,9 @@
     <ClInclude Include="configuration\structs.h">
       <Filter>configuration</Filter>
     </ClInclude>
+    <ClInclude Include="creation\xml_attrib\process_items.h">
+      <Filter>creation\xml_attrib</Filter>
+    </ClInclude>
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp">
       <Filter>lex_parse</Filter>
@@ -46,7 +55,6 @@
     <ClInclude Include="lex_parse\Parser.hpp">
       <Filter>lex_parse</Filter>
     </ClInclude>
-    <ClInclude Include="process_items.h" />
     <ClInclude Include="submodules\fmt\include\fmt\format.h">
       <Filter>submodules\fmt\include\fmt</Filter>
     </ClInclude>
@@ -67,6 +75,9 @@
     <ClCompile Include="configuration\structs.cpp">
       <Filter>configuration</Filter>
     </ClCompile>
+    <ClCompile Include="creation\xml_attrib\process_items.cpp">
+      <Filter>creation\xml_attrib</Filter>
+    </ClCompile>
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp">
       <Filter>lex_parse</Filter>
@@ -75,7 +86,6 @@
       <Filter>lex_parse</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="process_items.cpp" />
     <ClCompile Include="submodules\fmt\src\format.cc">
       <Filter>submodules\fmt\src</Filter>
     </ClCompile>

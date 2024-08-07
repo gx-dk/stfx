@@ -2,20 +2,20 @@
 
 #include <filesystem>
 #include <string>
+
 #include <fmt/format.h>
 
 #include "items.h"			// parser.hpp *SHOULD* have included this... but didn't so...
 
-
-#include "process_items.h"
 #include "config_data.h"
-
+#include "enums.h"
+#include "process_items.h"
 #include "structs.h"
 
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
 
-std::string stfx_version{ "0.9 : 20240401" };
+std::string stfx_version{ "0.91 : 20240728" };
 
 int main(int argc, char *argv[])
 	{
@@ -54,13 +54,13 @@ int main(int argc, char *argv[])
 		rv = process_single_header(in_path);
 		}
 	if (rv == 0)
-	{
+		{
 		fmt::println("Processing successful. Returning {} to caller", rv);
-	}
+		}
 	else
-	{
+		{
 		fmt::println("Processing failed. Returning {} to caller", rv);
-	}
+		}
 	return rv;
 	}
 
@@ -123,42 +123,64 @@ int process_stfx_file(std::filesystem::path in_file)
 	info_items_C common_items;
 	// read input files
 	for (const auto &filename : conf.common_in_files.input)
-	{
+		{
 		bool ok;
 		std::filesystem::path path(base_dir_path);
 		path /= filename.name;
 		ok = common_items.process_input_file(path);
 		if (ok == false)
-		{
+			{
 			fmt::println("ERROR : failed to process {}", path.string());
-		}
+			}
 		common_input_files.push_back(filename.name);
-	}
-	process_items_C process_items(base_dir_path);
+		}
 	output_spec common_output_files = conf.common_out_files;
-	process_items.process_items(common_items, common_input_files, common_output_files);
+	switch (common_output_files.file_type)
+		{
+		case serialization_type_E::xml_attrib:
+			if (true)
+				{
+				process_items_C process_items(base_dir_path);
+				process_items.process_items(common_items, common_input_files, common_output_files);
+				}
+			break;
+		default:
+			fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
+			break;
+		}
 
 	// now process the "uncommon" files ... which are common plus local part 
-	for (const auto& uncom : conf.non_common)
-	{
+	for (const auto &uncom : conf.non_common)
+		{
 		info_items_C plus_items(common_items);
 		std::vector<std::string> plus_input_files(common_input_files);
-		for (const auto& filename : uncom.input)
-		{
+		for (const auto &filename : uncom.input)
+			{
 			bool ok;
 			std::filesystem::path path(base_dir_path);
 			path /= filename.name;
 			ok = plus_items.process_input_file(path);
 			if (ok == false)
-			{
+				{
 				fmt::println("ERROR : failed to process {}", path.string());
-			}
+				}
 			plus_input_files.push_back(filename.name);
-		}
-		process_items_C process_items(base_dir_path);
+			}
 		output_spec plus_output_files = uncom.out;
-		process_items.process_items(plus_items, plus_input_files, plus_output_files);
-	}
+		switch (common_output_files.file_type)
+			{
+			case serialization_type_E::xml_attrib:
+				if (true)
+					{
+					process_items_C process_items(base_dir_path);
+					process_items.process_items(plus_items, plus_input_files, plus_output_files);
+					}
+				break;
+			default:
+				fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
+				break;
+			}
+		}
 
 	rv = (ok == true) ? 0 : 1;		// yes... 0 = good !! 
 

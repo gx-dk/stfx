@@ -6,8 +6,10 @@
 #include <cstdio>
 #include <filesystem>
 #include <string>
+
 #include <fmt/format.h>
 #include <fmt/chrono.h>
+
 #include "items.h"
 #include "config_data.h"
 
@@ -226,8 +228,15 @@ bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_c
 		"\t\t}}\n"
 		"\telse\n"
 		"\t\t{{\n"
-		"\t\tint i = std::stoi(s);	// give this rubbish ... and get an invalid_argument exception ;-)\n"
-		"\t\te = {0}(i);\n"
+		"\t\ttry\n"
+		"\t\t\t{{\n"
+		"\t\t\tint i = std::stoi(s);\t\t// just in case the value of enum has been given\n"
+		"\t\t\te = serialization_type_E(i);\n"
+		"\t\t\t}}\n"
+		"\t\tcatch (std::exception &)\n"
+		"\t\t\t{{\n"
+		"\t\t\t// unexpected string, will just be ignored (for now!)... This *COULD* throw an exception .. \n"
+		"\t\t\t}}\n"
 		"\t\t// note rv NOT set to true ! \n"
 		"\t\t}}", the_enum.name);
 
@@ -473,6 +482,18 @@ bool process_items_C::process_struct_reader(struct_S const &s, std::string const
 					"\t\t\tdata->{0} = pt;\n"
 					"\t\t}}", sim.name);
 				break;
+			case simple_item_type_E::short_E:
+				fmt::println(out_file_cpp, "\t{{ int i; el->QueryIntAttribute(\"{0}\", &i); data->{0} = short(i); }}", sim.name);
+				break;
+			case simple_item_type_E::unsigned_short_E:
+				fmt::println(out_file_cpp, "\t{{ unsigned int i; el->QueryUnsignedAttribute(\"{0}\", &i); data->{0} = unsigned short(i); }}", sim.name);
+				break;
+			case simple_item_type_E::long_E:
+				fmt::println(out_file_cpp, "\t{{ int i; el->QueryIntAttribute(\"{0}\", &i); data->{0} = long(i); }}", sim.name);
+				break;
+			case simple_item_type_E::unsigned_long_E:
+				fmt::println(out_file_cpp, "\t{{ unsigned int i; el->QueryUnsignedAttribute(\"{0}\", &i); data->{0} = unsigned long(i); }}", sim.name);
+				break;
 			default:
 				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", sim.name);
 				fmt::println("WARNING : FAILED TO PROCESS {}", sim.name);
@@ -584,6 +605,18 @@ bool process_items_C::process_struct_writer(struct_S const &s, std::string const
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\tel->SetAttribute(\"{0}\", data->{0}.c_str());", sim.name);
+				break;
+			case simple_item_type_E::long_E:
+			case simple_item_type_E::short_E:
+				fmt::println(out_file_cpp,
+					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+					"\t\tel->SetAttribute(\"{0}\", int(data->{0}));", sim.name);
+				break;
+			case simple_item_type_E::unsigned_long_E:
+			case simple_item_type_E::unsigned_short_E:
+				fmt::println(out_file_cpp,
+					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+					"\t\tel->SetAttribute(\"{0}\", unsigned(data->{0}));", sim.name);
 				break;
 			default:
 				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}\n", sim.name);

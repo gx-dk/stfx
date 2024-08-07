@@ -1,5 +1,5 @@
 // structs.h
-// created 2024-04-01 13:47:20.5601552
+// created 2024-07-28 16:22:06.6503051
 // Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
 // Licence : MIT License
 
