@@ -2,14 +2,14 @@
 
 #include <filesystem>
 #include <string>
+
 #include <fmt/format.h>
 
 #include "items.h"			// parser.hpp *SHOULD* have included this... but didn't so...
 
-
-#include "process_items.h"
 #include "config_data.h"
-
+#include "enums.h"
+#include "process_items.h"
 #include "structs.h"
 
 int process_single_header(std::filesystem::path in_file);
