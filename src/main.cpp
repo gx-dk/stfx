@@ -137,6 +137,13 @@ int process_stfx_file(std::filesystem::path in_file)
 	output_spec common_output_files = conf.common_out_files;
 	switch (common_output_files.file_type)
 		{
+		case serialization_type_E::xml:
+			if (true)
+				{
+				process_items_xml_C process_items(base_dir_path);
+				process_items.process_items(common_items, common_input_files, common_output_files);
+				}
+			break;
 		case serialization_type_E::xml_attrib:
 			if (true)
 				{
@@ -169,6 +176,13 @@ int process_stfx_file(std::filesystem::path in_file)
 		output_spec plus_output_files = uncom.out;
 		switch (common_output_files.file_type)
 			{
+			case serialization_type_E::xml:
+				if (true)
+					{
+					process_items_xml_C process_items(base_dir_path);
+					process_items.process_items(plus_items, plus_input_files, plus_output_files);
+					}
+				break;
 			case serialization_type_E::xml_attrib:
 				if (true)
 					{
