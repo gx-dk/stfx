@@ -1,5 +1,7 @@
 // test_enums.h
 
+#pragma once
+
 enum first_E
 {
 	one = 1,

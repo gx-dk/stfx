@@ -5,7 +5,7 @@
 			<input_file name="config_data.h"/>
 		</input>
 	</common_in_files>
-	<common_out_files relative_directory="common_out" enum_file="enums" structs_file="structs"/>
+	<common_out_files file_type="xml" relative_directory="common_out" enum_file="co_enums" structs_file="co_structs"/>
 	<non_common>
 		<uncommon_spec>
 			<input>
