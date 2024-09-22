@@ -53,4 +53,17 @@ solution "_stfx"
 		using_tinyxml2_ex()
 		standard_configuration()
 
+	project "test"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		
+		files {"test/test_main.cpp", "test/common_out/*.cpp", "test/common_out/*.h" }
+		includedirs {"test", "test/common_out"}
+		
+		filter {}
 
+		using_fmt(true)
+		using_tinyxml2(true)
+		using_tinyxml2_ex()
+		standard_configuration()
