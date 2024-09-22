@@ -83,7 +83,7 @@ int process_single_header(std::filesystem::path in_path)
 		input.push_back(in_path.filename().string());		// filename only ... path to file is in base_dir_path.. 
 		output.enum_file = "enums";
 		output.structs_file = "structs";
-		process_items_C process_items(base_dir_path);
+		process_items_xml_attrib_C process_items(base_dir_path);
 		ok = process_items.process_items(info_items, input, output);
 		fmt::println("Processing items done. Success = {}", ok);
 		}
@@ -140,7 +140,7 @@ int process_stfx_file(std::filesystem::path in_file)
 		case serialization_type_E::xml_attrib:
 			if (true)
 				{
-				process_items_C process_items(base_dir_path);
+				process_items_xml_attrib_C process_items(base_dir_path);
 				process_items.process_items(common_items, common_input_files, common_output_files);
 				}
 			break;
@@ -172,7 +172,7 @@ int process_stfx_file(std::filesystem::path in_file)
 			case serialization_type_E::xml_attrib:
 				if (true)
 					{
-					process_items_C process_items(base_dir_path);
+					process_items_xml_attrib_C process_items(base_dir_path);
 					process_items.process_items(plus_items, plus_input_files, plus_output_files);
 					}
 				break;

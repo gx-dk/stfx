@@ -5,14 +5,14 @@
 #include "items.h"
 #include "config_data.h"
 
-class process_items_C
+class process_items_xml_attrib_C
 	{
 	private:
 		std::string m_timestamp;
 		std::filesystem::path m_base_dir_path;
 
 	public:
-		process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
+		process_items_xml_attrib_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
 			{
 			};
 		bool process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output);
