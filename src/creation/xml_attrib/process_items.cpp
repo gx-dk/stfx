@@ -231,7 +231,7 @@ bool process_items_C::process_enum(const enum_S &the_enum, std::FILE *out_file_c
 		"\t\ttry\n"
 		"\t\t\t{{\n"
 		"\t\t\tint i = std::stoi(s);\t\t// just in case the value of enum has been given\n"
-		"\t\t\te = serialization_type_E(i);\n"
+		"\t\t\te = {0}(i);\n"
 		"\t\t\t}}\n"
 		"\t\tcatch (std::exception &)\n"
 		"\t\t\t{{\n"
@@ -382,7 +382,7 @@ bool process_items_C::process_all_structs(info_items_C &items, const std::vector
 
 			// writer class ===============================================================
 			fmt::println(f_h,
-				"class {0} : {1}\n"
+				"class {0} : public {1}\n"
 				"\t{{\n"
 				"\tprivate:\n"
 				"\t\tbool m_delta_only {{}};\n"
