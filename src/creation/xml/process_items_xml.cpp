@@ -473,31 +473,36 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 				fmt::println(out_file_cpp,
 					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tif(ch_el != nullptr)\n"
-					"\t\tch_el->QueryBoolText(&data->{0});\n", sim.name);
+					"\t\tch_el->QueryBoolText(&data->{0});"
+					, sim.name);
 				break;
 			case simple_item_type_E::int_E:
 				fmt::println(out_file_cpp,
 					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tif(ch_el != nullptr)\n"
-					"\t\tch_el->QueryIntText(&data->{0});\n", sim.name);
+					"\t\tch_el->QueryIntText(&data->{0});"
+					, sim.name);
 				break;
 			case simple_item_type_E::unsigned_int_E:
 				fmt::println(out_file_cpp,
 					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tif(ch_el != nullptr)\n"
-					"\t\tch_el->QueryUnsignedText(&data->{0});\n", sim.name);
+					"\t\tch_el->QueryUnsignedText(&data->{0});"
+					, sim.name);
 				break;
 			case simple_item_type_E::float_E:
 				fmt::println(out_file_cpp,
 					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tif(ch_el != nullptr)\n"
-					"\t\tch_el->QueryFloatText(&data->{0});\n", sim.name);
+					"\t\tch_el->QueryFloatText(&data->{0});"
+					, sim.name);
 				break;
 			case simple_item_type_E::double_E:
 				fmt::println(out_file_cpp,
 					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tif(ch_el != nullptr)\n"
-					"\t\tch_el->QueryDoubleText(&data->{0});\n", sim.name);
+					"\t\tch_el->QueryDoubleText(&data->{0});"
+					, sim.name);
 				break;
 			case simple_item_type_E::std_string_E:
 				fmt::println(out_file_cpp,
@@ -505,8 +510,10 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\tif(ch_el != nullptr)\n"
 					"\t\t{{\n"
 					"\t\tconst char *pt = ch_el->GetText();\n"
-					"\t\tdata->{0} = pt;\n"
-					"\t\t}}\n", sim.name);
+					"\t\tif(pt != nullptr)\n"
+					"\t\t\tdata->{0} = pt;\n"
+					"\t\t}}"
+					, sim.name);
 				break;
 			case simple_item_type_E::short_E:
 				fmt::println(out_file_cpp,
@@ -516,7 +523,8 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\t\tint i;\n"
 					"\t\tch_el->QueryIntText(&i);\n"
 					"\t\tdata->{0} = (short)i;\n"
-					"\t\t}}\n", sim.name);
+					"\t\t}}"
+					, sim.name);
 				break;
 			case simple_item_type_E::unsigned_short_E:
 				fmt::println(out_file_cpp,
@@ -526,7 +534,8 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\t\tunsigned int ui;\n"
 					"\t\tch_el->QueryUnsignedText(&ui);\n"
 					"\t\tdata->{0} = (unsigned short)ui;\n"
-					"\t\t}}\n", sim.name);
+					"\t\t}}"
+					, sim.name);
 				break;
 			case simple_item_type_E::long_E:
 				fmt::println(out_file_cpp,
@@ -536,7 +545,8 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\t\tint i;\n"
 					"\t\tch_el->QueryIntText(&i);\n"
 					"\t\tdata->{0} = (long)i;\n"
-					"\t\t}}\n", sim.name);
+					"\t\t}}"
+					, sim.name);
 				break;
 			case simple_item_type_E::unsigned_long_E:
 				fmt::println(out_file_cpp,
@@ -546,7 +556,8 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\t\tunsigned int ui;\n"
 					"\t\tch_el->QueryUnsignedText(&ui);\n"
 					"\t\tdata->{0} = (unsigned long)ui;\n"
-					"\t\t}}\n", sim.name);
+					"\t\t}}"
+					, sim.name);
 				break;
 			default:
 				fmt::println(out_file_cpp, "\t// WARNING FAILED TO PROCESS {}", sim.name);
@@ -570,12 +581,7 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 				break;
 			}
 		}
-#ifdef NOT_NOW
-	if (has_children == true)
-		{
-		fmt::println(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;");
-		}
-#endif
+
 	for (auto &co : s.complex)
 		{
 		complex_item_type_E line_type = co.line_type;
@@ -588,12 +594,13 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 					"\tif(ch_el != nullptr)\n"
 					"\t\t{{\n"
 					"\t\tconst char *pt = ch_el->GetText();\n"
+					"\t\tif(pt != nullptr)\n"
 					"\t\t\tstfx::s_to_e(pt, data->{0});\n"
 					"\t\t}}", co.name);
 				break;
 			case complex_item_type_E::struct_E:
 				fmt::println(out_file_cpp,
-					"\tch_el = find_element(el, \"{0}\");\n"
+//					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tch_el = el->FirstChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
@@ -657,19 +664,15 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 			case simple_item_type_E::unsigned_int_E:
 			case simple_item_type_E::float_E:
 			case simple_item_type_E::double_E:
-
-				// try these 4 here ... might not know?? 
 			case simple_item_type_E::long_E:
 			case simple_item_type_E::short_E:
-//			case simple_item_type_E::unsigned_long_E:
 			case simple_item_type_E::unsigned_short_E:
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\t{{\n"
 					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\t\tch_el->SetText(data->{0});\n"
-					"\t\t}}\n"
-					"\n"
+					"\t\t}}"
 					, sim.name);
 				break;
 			case simple_item_type_E::std_string_E:
@@ -678,27 +681,16 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 					"\t\t{{\n"
 					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\t\tch_el->SetText(data->{0}.c_str());\n"
-					"\t\t}}\n"
-					"\n"
+					"\t\t}}"
 					, sim.name);
 				break;
-#ifdef NOT_NOW
-			case simple_item_type_E::long_E:
-			case simple_item_type_E::short_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\tel->SetAttribute(\"{0}\", int(data->{0}));", sim.name);
-				break;
-#endif
 			case simple_item_type_E::unsigned_long_E:
-//			case simple_item_type_E::unsigned_short_E:
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\t{{\n"
 					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
 					"\t\tch_el->SetText((unsigned)data->{0});\n"
-					"\t\t}}\n"
-					"\n"
+					"\t\t}}"
 					, sim.name);
 				break;
 
@@ -738,7 +730,11 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 			case complex_item_type_E::enum_E:
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\tel->SetAttribute(\"{0}\", stfx::s_from_e(data->{0}).c_str());", co.name);
+					"\t\t{{\n"
+					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+					"\t\tch_el->SetText(stfx::s_from_e(data->{0}).c_str());\n"
+					"\t\t}}"
+					, co.name);
 				break;
 			case complex_item_type_E::struct_E:
 				fmt::println(out_file_cpp,
@@ -746,7 +742,8 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
 					"\t\tdo_wr_{1}(ch_el, &data->{0});\n"
-					"\t\t}}", co.name, co.type_name);
+					"\t\t}}"
+					, co.name, co.type_name);
 				break;
 			case complex_item_type_E::vector_E:
 				fmt::println(out_file_cpp,
@@ -758,7 +755,8 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 					"\t\t\ttinyxml2::XMLElement *ch_ch_el = ch_el->InsertNewChildElement(\"{1}\");\n"
 					"\t\t\tdo_wr_{1}(ch_ch_el, &itr);\n"
 					"\t\t\t}}\n"
-					"\t\t}}", co.name, co.type_name);
+					"\t\t}}"
+					, co.name, co.type_name);
 				break;
 			case complex_item_type_E::enum_or_struct_E:
 				fmt::println(out_file_cpp, "// enum_or_struct_E {}\t NEEDS TO BE FIXED!!", co.name);
