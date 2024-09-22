@@ -9,7 +9,7 @@
 
 #include "config_data.h"
 #include "enums.h"
-#include "process_items.h"
+#include "process_items_xml.h"
 #include "structs.h"
 
 int process_single_header(std::filesystem::path in_file);
