@@ -1,6 +1,6 @@
-//process_items.cpp
+//process_items_xml.cpp
 
-#include "process_items.h"
+#include "process_items_xml.h"
 
 #include <chrono>
 #include <cstdio>
@@ -13,9 +13,9 @@
 #include "items.h"
 #include "config_data.h"
 
-std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
+static std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
 
-bool process_items_xml_attrib_C::process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output)
+bool process_items_xml_C::process_items(info_items_C &items, const std::vector<std::string>&input_files, const output_spec &output)
 	{
 	bool rv{ false };
 
@@ -44,7 +44,7 @@ bool process_items_xml_attrib_C::process_items(info_items_C &items, const std::v
 	}
 
 // look though all items in the struct dictionary ... and fixup enum_or_struct to the correct type!!
-bool process_items_xml_attrib_C::fixup_types_of_names(info_items_C &items)
+bool process_items_xml_C::fixup_types_of_names(info_items_C &items)
 	{
 	bool rv{ true };
 	auto &structs = items.get_structs();
@@ -64,7 +64,7 @@ bool process_items_xml_attrib_C::fixup_types_of_names(info_items_C &items)
 	return rv;
 	}
 
-bool process_items_xml_attrib_C::find_top_struct(info_items_C &items)
+bool process_items_xml_C::find_top_struct(info_items_C &items)
 	{
 	bool rv{ true };
 	auto &structs = items.get_structs();
@@ -92,7 +92,7 @@ bool process_items_xml_attrib_C::find_top_struct(info_items_C &items)
 
 
 
-bool process_items_xml_attrib_C::process_all_enums(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
+bool process_items_xml_C::process_all_enums(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ true };
 	std::filesystem::path outpath{ m_base_dir_path };
@@ -174,7 +174,7 @@ bool process_items_xml_attrib_C::process_all_enums(info_items_C &items, const st
 	return rv;
 	}
 
-bool process_items_xml_attrib_C::process_enum(const enum_S &the_enum, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_xml_C::process_enum(const enum_S &the_enum, std::FILE *out_file_cpp, std::FILE *out_file_h)
 	{
 	// s_from_e
 
@@ -244,7 +244,7 @@ bool process_items_xml_attrib_C::process_enum(const enum_S &the_enum, std::FILE 
 	return true;
 	}
 
-bool process_items_xml_attrib_C::create_fmt_templates_for_enum(const enum_S &the_enum, std::FILE *out_file_h)
+bool process_items_xml_C::create_fmt_templates_for_enum(const enum_S &the_enum, std::FILE *out_file_h)
 	{
 	fmt::println(out_file_h,
 		"\n"
@@ -262,7 +262,7 @@ bool process_items_xml_attrib_C::create_fmt_templates_for_enum(const enum_S &the
 	return true;
 	}
 
-bool process_items_xml_attrib_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
+bool process_items_xml_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
 	std::filesystem::path outpath{ m_base_dir_path };
@@ -451,7 +451,7 @@ bool process_items_xml_attrib_C::process_all_structs(info_items_C &items, const 
 	return rv;
 	}
 
-bool process_items_xml_attrib_C::process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
 	{
 	bool rv{ true };
 
@@ -576,7 +576,7 @@ bool process_items_xml_attrib_C::process_struct_reader(struct_S const &s, std::s
 	return rv;
 	}
 
-bool process_items_xml_attrib_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
 	{
 	bool rv{ true };
 
