@@ -15,6 +15,19 @@ enum class may_ish_E
 };
 	
 
+struct test_data
+	{
+	unsigned int ui{ 42 };
+	int i{ -42 };
+	unsigned short us{ 42 };
+	short s{ -42 };
+	unsigned long ul{ 42 };
+	long l{ -42 };
+	float f{ 42.01f };
+	double d{ 42.0001 };
+	std::string str{ "testing 1 2 3 4 5" };
+	may_ish_E maybe{};
+	};
 
 struct output_spec
 	{
@@ -46,5 +59,6 @@ struct config
 	input_spec common_in_files;
 	output_spec common_out_files;
 	std::vector <uncommon_spec> non_common;
+	test_data erik;
 	};
 

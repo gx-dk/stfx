@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="submodules">
+      <UniqueIdentifier>{48444C85-34FC-8DD2-9D03-672E89DA28C3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt">
+      <UniqueIdentifier>{7EAE001F-6A7C-F424-5310-654B3F7DD089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\include">
+      <UniqueIdentifier>{F1739B03-DD6D-C455-C6DA-5A66B2732AC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\include\fmt">
+      <UniqueIdentifier>{A78A418B-939A-ED5B-FC53-527AE882DCF4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\fmt\src">
+      <UniqueIdentifier>{957BABF4-815F-6C4A-EABF-669DD6C256CC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\tinyxml2">
+      <UniqueIdentifier>{FE6A0A39-6ACC-E746-F339-2EF95F9A1E06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="submodules\tinyxml2-ex">
+      <UniqueIdentifier>{283F764F-1439-9FA1-FDA5-35B2E93E050E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{65689E7C-519F-9F0D-FA8B-8510E6A11B0F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\common_out">
+      <UniqueIdentifier>{544C5EC3-C0D7-CB87-C9E8-4E7C35F32788}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="submodules\fmt\include\fmt\format.h">
+      <Filter>submodules\fmt\include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2-ex\tixml2cx.h">
+      <Filter>submodules\tinyxml2-ex</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2-ex\tixml2ex.h">
+      <Filter>submodules\tinyxml2-ex</Filter>
+    </ClInclude>
+    <ClInclude Include="submodules\tinyxml2\tinyxml2.h">
+      <Filter>submodules\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="test\common_out\co_enums.h">
+      <Filter>test\common_out</Filter>
+    </ClInclude>
+    <ClInclude Include="test\common_out\co_structs.h">
+      <Filter>test\common_out</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="submodules\fmt\src\format.cc">
+      <Filter>submodules\fmt\src</Filter>
+    </ClCompile>
+    <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp">
+      <Filter>submodules\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="test\common_out\co_enums.cpp">
+      <Filter>test\common_out</Filter>
+    </ClCompile>
+    <ClCompile Include="test\common_out\co_structs.cpp">
+      <Filter>test\common_out</Filter>
+    </ClCompile>
+    <ClCompile Include="test\test_main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

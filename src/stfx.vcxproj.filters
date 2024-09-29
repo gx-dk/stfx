@@ -7,8 +7,8 @@
     <Filter Include="creation">
       <UniqueIdentifier>{BA644D13-A631-A81E-CF4A-96C6BB76DDAC}</UniqueIdentifier>
     </Filter>
-    <Filter Include="creation\xml_attrib">
-      <UniqueIdentifier>{1F91C90B-8BF2-A619-1460-EDCB80C0DDD8}</UniqueIdentifier>
+    <Filter Include="creation\xml">
+      <UniqueIdentifier>{7A04A110-6667-30B5-0FED-686BFB2EFC37}</UniqueIdentifier>
     </Filter>
     <Filter Include="lex_parse">
       <UniqueIdentifier>{689F9D47-D409-52BE-1D48-036489F12F13}</UniqueIdentifier>
@@ -45,8 +45,8 @@
     <ClInclude Include="configuration\structs.h">
       <Filter>configuration</Filter>
     </ClInclude>
-    <ClInclude Include="creation\xml_attrib\process_items.h">
-      <Filter>creation\xml_attrib</Filter>
+    <ClInclude Include="creation\xml\process_items_xml.h">
+      <Filter>creation\xml</Filter>
     </ClInclude>
     <ClInclude Include="items.h" />
     <ClInclude Include="lex_parse\Location.hpp">
@@ -75,8 +75,11 @@
     <ClCompile Include="configuration\structs.cpp">
       <Filter>configuration</Filter>
     </ClCompile>
-    <ClCompile Include="creation\xml_attrib\process_items.cpp">
-      <Filter>creation\xml_attrib</Filter>
+    <ClCompile Include="creation\xml\process_items_xml.cpp">
+      <Filter>creation\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="creation\xml\process_items_xml_attrib.cpp">
+      <Filter>creation\xml</Filter>
     </ClCompile>
     <ClCompile Include="items.cpp" />
     <ClCompile Include="lex_parse\Parser.cpp">
