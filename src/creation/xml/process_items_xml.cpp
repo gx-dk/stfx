@@ -13,7 +13,6 @@
 #include "items.h"
 #include "config_data.h"
 
-static std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
 
 
 
