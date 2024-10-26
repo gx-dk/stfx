@@ -408,8 +408,8 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 
 	fmt::println(out_file_cpp,
 		"bool {0}::do_wr_{1}(tinyxml2::XMLElement *el, {1} *data)\n"
-		"\t{{"
-		"\t\ttinyxml2::XMLElement *ch_el;\n"
+		"\t{{\n"
+		"\ttinyxml2::XMLElement *ch_el;\n"
 		, class_name, s.name);
 	fmt::println(out_file_cpp, "\tbool rv = true;");
 	fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
