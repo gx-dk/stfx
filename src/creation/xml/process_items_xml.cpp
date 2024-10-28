@@ -41,10 +41,12 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
+		fmt::println("Opened xml struct .cpp file :\t{}", out_pathfilename_cpp);
 		std::FILE *f_h;
 		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
+			fmt::println("Opened xml struct .h file :\t{}", out_pathfilename_h);
 			rv = true;
 
 			fmt::println(f_cpp, "// {0}\n// created {1}", out_filename_cpp, m_timestamp);

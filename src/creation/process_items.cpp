@@ -20,6 +20,8 @@ bool process_items_C::process_items(info_items_C &items, const std::vector<std::
 	auto time = std::chrono::system_clock::now();
 	m_timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
 
+	fmt::println("Starting to create output. Timestamp will be : {}", m_timestamp);
+
 	rv = fixup_types_of_names(items);
 	rv &= find_top_struct(items);
 	if (output.enum_file.empty() || output.enum_file == "-")
@@ -65,10 +67,12 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
+		fmt::println("Opened enum .cpp file :\t{}", out_pathfilename_cpp);
 		std::FILE *f_h;
 		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
+			fmt::println("Opened enum .h file :\t{}", out_pathfilename_h);
 			rv = true;		// files are open
 
 			fmt::println(f_cpp, "// {}\n// created {}", out_filename_cpp, m_timestamp);
