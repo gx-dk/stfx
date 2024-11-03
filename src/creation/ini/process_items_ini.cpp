@@ -51,6 +51,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
+				"#include <regex>\n"
 				"#include <stdexcept>");
 			if (output.enum_file.empty() || output.enum_file == "-")
 				{
@@ -71,18 +72,30 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_h,
 				"#pragma once\n"
 				"\n"
-				"#include <string>\n");
+				"#include <string>\n"
+				"#include <map>\n"
+			);
 			for (const auto &in_filename : input_files)
 				{
 				fmt::println(f_h, "#include \"{}\"", in_filename);
 				}
-			fmt::println(f_h, "");
+			fmt::println(f_h, 
+				"\n"
+				"struct read_item_S\n"
+				"\t{{\n"
+				"\tstd::map<std::string, std::string>items;\n"
+				"\tstd::map<std::string, read_item_S>under;\n"
+				"\t}};\n"
+				"\n"
+				);
 
 
 			// reader class ===============================================================
 			fmt::println(f_h,
 				"class {0}\n"
 				"\t{{\n"
+				"\tprivate:\n"
+				"\t\tread_item_S m_lookup;\n"
 				"\tpublic:\n"
 				"\t\t{0}();", reader_class_name);
 
@@ -103,7 +116,59 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"bool {0}::read_from_file(std::string const &filename, {1} &struct_to_fill)\n"
 						"\t{{\n"
 						"\tbool rv{{}};\n"
+						"\tstd::FILE *file{{}};\n"
+						"\tfile = std::fopen(filename.c_str(), \"r\");\n"
+						"\tif (file != nullptr)\n"
+						"\t\t{{\n"
+						"\t\tread_item_S *current_lookup = &m_lookup;\n"
+						"\t\tconst int buflen = 80;\n"
+						"\t\tchar buf[buflen + 1];\n"
+						"\t\twhile(nullptr != std::fgets(buf, buflen, file))\n"
+						"\t\t\t{{\n"
+						"\t\t\tstd::string line{{ buf }};\n"
+						"\t\t\tsize_t pos = line.find('%');\t// remove remainder of line after comment character... \n"
+						"\t\t\tif (pos != std::string::npos)\n"
+						"\t\t\t\t{{\n"
+						"\t\t\t\tline = line.substr(0, pos - 1);\n"
+						"\t\t\t\t}}\n"
+						"\t\t\tif (line.length() == 0)\n"
+						"\t\t\t\tcontinue;\n"
 						"\n"
+						"\t\t\tstd::smatch res;\n"
+						"\t\t\tstd::regex regex;\n"
+						"\t\t\tswitch (line[0])\n"
+						"\t\t\t\t{{\n"
+						"\t\t\t\tcase '[':\n"
+						"\t\t\t\t\tregex = \"\\\\[(\\\\w+)\\\\]\";\n"
+						"\t\t\t\t\tif (std::regex_search(line, res, regex) == true)\n"
+						"\t\t\t\t\t\t{{\n"
+						"\t\t\t\t\t\tstd::string key = res[1].str();\n"
+						"\t\t\t\t\t\tread_item_S new_item;\n"
+						"\t\t\t\t\t\tm_lookup.under[key] = new_item;\n"
+						"\t\t\t\t\t\tcurrent_lookup = &m_lookup.under[key];\n"
+						"\t\t\t\t\t\tfmt::println(\"[{{}}]\", key);\n"
+						"\t\t\t\t\t\t}}\n"
+						"\n"
+						"\t\t\t\t\tbreak;\n"
+						"\t\t\t\tcase ' ':\n"
+						"\t\t\t\t\t// space as first character is a \"continue previous line\" thing... (but not implemented currently)\n"
+						"\t\t\t\t\tbreak;\n"
+						"\t\t\t\tdefault:\n"
+						"\t\t\t\t\tregex = \"(\\\\w+) (\\\\w+)\";\n"
+						"\t\t\t\t\tif (std::regex_search(line, res, regex) == true)\n"
+						"\t\t\t\t\t\t{{\n"
+						"\t\t\t\t\t\tstd::string key = res[1].str();\n"
+						"\t\t\t\t\t\tstd::string value = res[2].str();\n"
+						"\t\t\t\t\t\tcurrent_lookup->items[key] = value;\n"
+						"\t\t\t\t\t\tfmt::println(\"{{}} = {{}}\", key, value);\n"
+						"\t\t\t\t\t\t}}\n"
+						"\t\t\t\t\tbreak;\n"
+						"\t\t\t\t}}\n"
+						"\t\t\t}}\n"
+						"\t\tstd::fclose(file);\n"
+						"\n"
+						"//\t\trv = do_rd_parameters(\"\", &struct_to_fill);\n"
+						"\t\t}}\n"
 						"\treturn rv;\n"
 						"\t}}\n", reader_class_name, s.name);
 					}
@@ -245,7 +310,7 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\t{{\n"
-					"\t\tfmt::println(m_file, \"{0}\", data->{0});\n"
+					"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
 					"\t\t}}"
 					, sim.name);
 				break;
@@ -287,7 +352,7 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 				fmt::println(out_file_cpp,
 					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
 					"\t\t{{\n"
-					"\t\tfmt::println(m_file, \"{0}\", data->{0});\n"
+					"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
 					"\t\t}}"
 					, co.name);
 				break;
