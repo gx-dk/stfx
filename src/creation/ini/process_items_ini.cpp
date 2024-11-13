@@ -293,22 +293,33 @@ bool process_items_n_ini_C::process_struct_reader(struct_S const &s, std::string
 			switch (sim.line_type)
 				{
 				case simple_item_type_E::bool_E:
+					convert = "(bool)std::stoi";
 					break;
 				case simple_item_type_E::int_E:
-				case simple_item_type_E::unsigned_int_E:
 					convert = "std::stoi";
+					break;
+				case simple_item_type_E::unsigned_int_E:
+					convert = "(unsigned int)std::stoul";
 					break;
 				case simple_item_type_E::float_E:
 					convert = "std::stof";
 					break;
 				case simple_item_type_E::double_E:
-					convert = "std::stoi";
+					convert = "std::stod";
 					break;
 				case simple_item_type_E::long_E:
+					convert = "std::stol";
+					break;
 				case simple_item_type_E::short_E:
+					convert = "(short)std::stoi";
+					break;
 				case simple_item_type_E::unsigned_short_E:
+					convert = "(unsigned short)std::stoul";
+					break;
 				case simple_item_type_E::std_string_E:
+					break;
 				case simple_item_type_E::unsigned_long_E:
+					convert = "std::stoul";
 					break;
 
 				default:
@@ -437,6 +448,13 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 		switch (sim.line_type)
 			{
 			case simple_item_type_E::bool_E:
+				fmt::println(out_file_cpp,
+					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+					"\t\t{{\n"
+					"\t\tfmt::println(m_file, \"{0} {{}}\", (int)data->{0});\n"
+					"\t\t}}"
+					, sim.name);
+				break;
 			case simple_item_type_E::int_E:
 			case simple_item_type_E::unsigned_int_E:
 			case simple_item_type_E::float_E:
