@@ -32,4 +32,9 @@ class process_items_n_ini_C : public process_items_ini_C
 	protected:
 	bool process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h) override;
 	bool process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h) override;
+	private:
+		inline void replace_underline_with_space(std::string &str)
+			{
+			std::replace(str.begin(), str.end(), '_', ' ');
+			}
 	};

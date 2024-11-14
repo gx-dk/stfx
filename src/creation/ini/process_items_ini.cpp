@@ -139,7 +139,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\tswitch (line[0])\n"
 						"\t\t\t\t{{\n"
 						"\t\t\t\tcase '[':\n"
-						"\t\t\t\t\tregex = \"\\\\[(\\\\w+)\\\\]\";\n"
+						"\t\t\t\t\tregex = \"\\\\[(.+)\\\\]\";\n"
 						"\t\t\t\t\tif (std::regex_search(line, res, regex) == true)\n"
 						"\t\t\t\t\t\t{{\n"
 						"\t\t\t\t\t\tstd::string key = res[1].str();\n"
@@ -382,6 +382,8 @@ bool process_items_n_ini_C::process_struct_reader(struct_S const &s, std::string
 		for (auto &co : s.complex)
 			{
 			complex_item_type_E line_type = co.line_type;
+			std::string space_name = co.name;
+			replace_underline_with_space(space_name);
 
 			switch (line_type)
 				{
@@ -389,8 +391,8 @@ bool process_items_n_ini_C::process_struct_reader(struct_S const &s, std::string
 					break;
 				case complex_item_type_E::struct_E:
 					fmt::println(out_file_cpp,
-						"\t\trv = do_rd_{1}(path + \"{0}\", data.{0});"
-						, co.name, co.type_name);
+						"\t\trv = do_rd_{1}(path + \"{2}\", data.{0});"
+						, co.name, co.type_name, space_name);
 					break;
 				case complex_item_type_E::vector_E:
 					fmt::println(out_file_cpp, "// vector {}\t within structure NOT SUPPORTED by n_ini", co.name);
@@ -439,6 +441,7 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 	fmt::println(out_file_cpp,
 		"\tif (path.length() > 0)\n"
 		"\t\t{{\n"
+		"\t\tfmt::println(m_file, \"\");\n"
 		"\t\tfmt::println(m_file, \"[{{}}]\", path);\n"
 		"\t\t}}\n"
 	);
@@ -496,6 +499,8 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 	for (auto &co : s.complex)
 		{
 		complex_item_type_E line_type = co.line_type;
+		std::string space_name = co.name;
+		replace_underline_with_space(space_name);
 
 		switch (line_type)
 			{
@@ -514,9 +519,9 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 					"\t{{\n"
 					"\t\tlower_path += \".\";\t\t//separator\n"
 					"\t}}\n"
-					"\tlower_path += \"{0}\";\n"
+					"\tlower_path += \"{2}\";\n"
 					"\tdo_wr_{1}(lower_path, &data->{0});\n"
-					, co.name, co.type_name);
+					, co.name, co.type_name, space_name);
 				break;
 			case complex_item_type_E::vector_E:
 				fmt::println(out_file_cpp, "// vector {}\t within structure NOT SUPPORTED by n_ini", co.name);
