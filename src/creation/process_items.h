@@ -10,18 +10,14 @@
 #include "items.h"
 
 
-
 class process_items_C
 	{
 	protected:
-		std::string m_timestamp;
 		std::filesystem::path m_base_dir_path;
-		std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
+		std::string m_stfx_info;
 
 	public:
-		process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
-			{
-			};
+		process_items_C(std::filesystem::path base_dir_path);;
 
 		bool process_items(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output);
 
