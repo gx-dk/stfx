@@ -12,17 +12,16 @@
 #include "process_items_ini.h"
 #include "process_items_xml.h"
 #include "structs.h"
+#include "timestamp.h"
 
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
-
-std::string stfx_version{ "0.92 : 20241005" };
 
 int main(int argc, char *argv[])
 	{
 	int rv{};
 
-	fmt::println("stfx version {}", stfx_version);
+	fmt::println("{}", app_timestamp);
 
 	if (argc <= 1)
 		{

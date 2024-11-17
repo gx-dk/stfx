@@ -14,8 +14,6 @@
 #include "config_data.h"
 
 
-
-
 bool process_items_xml_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
@@ -49,8 +47,8 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println("Opened xml struct .h file :\t{}", out_pathfilename_h);
 			rv = true;
 
-			fmt::println(f_cpp, "// {0}\n// created {1}", out_filename_cpp, m_timestamp);
-			fmt::println(f_cpp, "{}", made_by);
+			fmt::println(f_cpp, "// {}", out_filename_cpp);
+			fmt::println(f_cpp, "{}", m_stfx_info);
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
@@ -70,8 +68,8 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 				}
 
-			fmt::println(f_h, "// {0}\n// created {1}", out_filename_h, m_timestamp);
-			fmt::println(f_h, "{}", made_by);
+			fmt::println(f_h, "// {0}", out_filename_h);
+			fmt::println(f_h, "{}", m_stfx_info);
 
 			fmt::println(f_h,
 				"#pragma once\n"

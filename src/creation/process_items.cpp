@@ -12,15 +12,24 @@
 
 #include "items.h"
 #include "config_data.h"
+#include "timestamp.h"
+
+process_items_C::process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
+	{
+	m_stfx_info += fmt::format(	"// Automatically generated using stfx\n"
+								"// Do not directly edit this file, use stfx to re-create this file.\n"
+								"// Licence : MIT License\n"
+								"// {}\n", app_timestamp);
+	}
 
 bool process_items_C::process_items(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
 
 	auto time = std::chrono::system_clock::now();
-	m_timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
+	std::string creation_time = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
 
-	fmt::println("Starting to create output. Timestamp will be : {}", m_timestamp);
+	fmt::println("Starting to create output. Timestamp will be : {}", creation_time);
 
 	rv = fixup_types_of_names(items);
 	rv &= find_top_struct(items);
@@ -75,8 +84,8 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			fmt::println("Opened enum .h file :\t{}", out_pathfilename_h);
 			rv = true;		// files are open
 
-			fmt::println(f_cpp, "// {}\n// created {}", out_filename_cpp, m_timestamp);
-			fmt::println(f_cpp, "{}", made_by);
+			fmt::println(f_cpp, "// {}", out_filename_cpp);
+			fmt::println(f_cpp, "{}", m_stfx_info);
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n#include <map>\n");
 			for (const auto &in_filename : input_files)
@@ -85,8 +94,8 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 				}
 			fmt::println(f_cpp, "");
 
-			fmt::println(f_h, "// {0}\n// created {1}", out_filename_h, m_timestamp);
-			fmt::println(f_h, "{}", made_by);
+			fmt::println(f_h, "// {}", out_filename_h);
+			fmt::println(f_h, "{}", m_stfx_info);
 			fmt::println(f_h, "#pragma once\n");
 			fmt::println(f_h, "#include <string>");
 			fmt::println(f_h, "#include <fmt/format.h>\n");

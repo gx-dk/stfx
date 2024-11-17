@@ -13,6 +13,7 @@
 #include "items.h"
 #include "config_data.h"
 
+
 bool process_items_ini_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
@@ -46,8 +47,8 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println("Opened ini struct .h file :\t{}", out_pathfilename_h);
 			rv = true;
 
-			fmt::println(f_cpp, "// {0}\n// created {1}", out_filename_cpp, m_timestamp);
-			fmt::println(f_cpp, "{}", made_by);
+			fmt::println(f_cpp, "// {}", out_filename_cpp);
+			fmt::println(f_cpp, "{}", m_stfx_info);
 			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
@@ -66,8 +67,8 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 				}
 
-			fmt::println(f_h, "// {0}\n// created {1}", out_filename_h, m_timestamp);
-			fmt::println(f_h, "{}", made_by);
+			fmt::println(f_h, "// {}\n", out_filename_h);
+			fmt::println(f_h, "{}", m_stfx_info);
 
 			fmt::println(f_h,
 				"#pragma once\n"
@@ -346,7 +347,7 @@ bool process_items_n_ini_C::process_struct_reader(struct_S const &s, std::string
 						"\t\t\tauto {0} = items.find(\"{0}\");\n"
 						"\t\t\tif({0} != items.cend())\n"
 						"\t\t\t\t{{\n"
-						"\t\t\t\tstfx::s_to_e(({0}->second, data.{0});\n"
+						"\t\t\t\tstfx::s_to_e({0}->second, data.{0});\n"
 						"\t\t\t\t}}"
 						, co.name);
 					break;
