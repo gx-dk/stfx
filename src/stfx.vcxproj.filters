@@ -76,6 +76,8 @@
     <ClInclude Include="submodules\tinyxml2\tinyxml2.h">
       <Filter>submodules\tinyxml2</Filter>
     </ClInclude>
+    <ClInclude Include="timestamp.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="configuration\enums.cpp">
@@ -110,6 +112,7 @@
     <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp">
       <Filter>submodules\tinyxml2</Filter>
     </ClCompile>
+    <ClCompile Include="timestamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lex_parse\struct_lex.l">

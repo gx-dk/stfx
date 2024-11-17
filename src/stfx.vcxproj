@@ -67,6 +67,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>del $(IntDir)\timestamp.obj</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -86,6 +89,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>del $(IntDir)\timestamp.obj</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="configuration\config_data.h" />
@@ -101,6 +107,8 @@
     <ClInclude Include="submodules\tinyxml2-ex\tixml2cx.h" />
     <ClInclude Include="submodules\tinyxml2-ex\tixml2ex.h" />
     <ClInclude Include="submodules\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="timestamp.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="configuration\enums.cpp" />
@@ -115,6 +123,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="submodules\fmt\src\format.cc" />
     <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="timestamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lex_parse\struct_lex.l" />
