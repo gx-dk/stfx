@@ -1,5 +1,5 @@
 // enums.h
-// created 2024-07-28 16:22:06.6503051
+// created 2024-10-04 15:39:18.3911740
 // Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
 // Licence : MIT License
 

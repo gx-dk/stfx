@@ -9,19 +9,19 @@
 
 #include "config_data.h"
 #include "enums.h"
+#include "process_items_ini.h"
 #include "process_items_xml.h"
 #include "structs.h"
+#include "timestamp.h"
 
 int process_single_header(std::filesystem::path in_file);
 int process_stfx_file(std::filesystem::path in_file);
-
-std::string stfx_version{ "0.91 : 20240728" };
 
 int main(int argc, char *argv[])
 	{
 	int rv{};
 
-	fmt::println("stfx version {}", stfx_version);
+	fmt::println("{}", app_timestamp);
 
 	if (argc <= 1)
 		{
@@ -134,6 +134,9 @@ int process_stfx_file(std::filesystem::path in_file)
 			}
 		common_input_files.push_back(filename.name);
 		}
+
+	fmt::println("");
+
 	output_spec common_output_files = conf.common_out_files;
 	switch (common_output_files.file_type)
 		{
@@ -151,6 +154,21 @@ int process_stfx_file(std::filesystem::path in_file)
 				process_items.process_items(common_items, common_input_files, common_output_files);
 				}
 			break;
+		case serialization_type_E::ini:
+			if (true)
+				{
+				process_items_ini_C process_items(base_dir_path);
+				process_items.process_items(common_items, common_input_files, common_output_files);
+				}
+			break;
+		case serialization_type_E::n_ini:
+			if (true)
+				{
+				process_items_n_ini_C process_items(base_dir_path);
+				process_items.process_items(common_items, common_input_files, common_output_files);
+				}
+			break;
+		case serialization_type_E::json:
 		default:
 			fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
 			break;
@@ -190,6 +208,21 @@ int process_stfx_file(std::filesystem::path in_file)
 					process_items.process_items(plus_items, plus_input_files, plus_output_files);
 					}
 				break;
+			case serialization_type_E::ini:
+				if (true)
+					{
+					process_items_ini_C process_items(base_dir_path);
+					process_items.process_items(plus_items, plus_input_files, plus_output_files);
+					}
+				break;
+			case serialization_type_E::n_ini:
+				if (true)
+					{
+					process_items_n_ini_C process_items(base_dir_path);
+					process_items.process_items(plus_items, plus_input_files, plus_output_files);
+					}
+				break;
+			case serialization_type_E::json:
 			default:
 				fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
 				break;

@@ -1,5 +1,5 @@
 // structs.h
-// created 2024-07-28 16:22:06.6503051
+// created 2024-10-04 15:39:18.3911740
 // Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
 // Licence : MIT License
 
@@ -23,7 +23,7 @@ class xml_reader_C
 		bool do_uncommon_spec(tinyxml2::XMLElement *el, uncommon_spec *data);
 	};
 
-class xml_writer_C : xml_reader_C
+class xml_writer_C : public xml_reader_C
 	{
 	private:
 		bool m_delta_only {};

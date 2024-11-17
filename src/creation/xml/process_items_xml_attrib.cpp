@@ -13,9 +13,6 @@
 #include "items.h"
 #include "config_data.h"
 
-static std::string made_by{ "// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.\n// Licence : MIT License\n" };
-
-
 bool process_items_xml_attrib_C::process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
 	{
 	bool rv{ true };

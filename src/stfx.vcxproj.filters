@@ -7,6 +7,9 @@
     <Filter Include="creation">
       <UniqueIdentifier>{BA644D13-A631-A81E-CF4A-96C6BB76DDAC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="creation\ini">
+      <UniqueIdentifier>{C9C4A010-B527-30B5-5EAD-686B4AEFFB37}</UniqueIdentifier>
+    </Filter>
     <Filter Include="creation\xml">
       <UniqueIdentifier>{7A04A110-6667-30B5-0FED-686BFB2EFC37}</UniqueIdentifier>
     </Filter>
@@ -45,6 +48,12 @@
     <ClInclude Include="configuration\structs.h">
       <Filter>configuration</Filter>
     </ClInclude>
+    <ClInclude Include="creation\ini\process_items_ini.h">
+      <Filter>creation\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="creation\process_items.h">
+      <Filter>creation</Filter>
+    </ClInclude>
     <ClInclude Include="creation\xml\process_items_xml.h">
       <Filter>creation\xml</Filter>
     </ClInclude>
@@ -67,6 +76,8 @@
     <ClInclude Include="submodules\tinyxml2\tinyxml2.h">
       <Filter>submodules\tinyxml2</Filter>
     </ClInclude>
+    <ClInclude Include="timestamp.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="configuration\enums.cpp">
@@ -74,6 +85,12 @@
     </ClCompile>
     <ClCompile Include="configuration\structs.cpp">
       <Filter>configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="creation\ini\process_items_ini.cpp">
+      <Filter>creation\ini</Filter>
+    </ClCompile>
+    <ClCompile Include="creation\process_items.cpp">
+      <Filter>creation</Filter>
     </ClCompile>
     <ClCompile Include="creation\xml\process_items_xml.cpp">
       <Filter>creation\xml</Filter>
@@ -95,6 +112,7 @@
     <ClCompile Include="submodules\tinyxml2\tinyxml2.cpp">
       <Filter>submodules\tinyxml2</Filter>
     </ClCompile>
+    <ClCompile Include="timestamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lex_parse\struct_lex.l">

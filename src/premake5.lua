@@ -17,6 +17,20 @@ function standard_configuration()
 end
 
 
+function using_timestamp()
+-- print("using_timestamp")
+	filter {"system:windows"}
+		prebuildcommands {"del $(IntDir)\\timestamp.obj"}
+
+
+	filter {"system:linux", "configurations:Debug", "kind:ConsoleApp or WindowedApp"}
+		prebuildcommands {"mkdir -pv obj/Debug;touch obj/Debug/timestamp.o;rm obj/Debug/timestamp.o"}
+	filter {"system:linux", "configurations:Release", "kind:ConsoleApp or WindowedApp"}
+		prebuildcommands {"mkdir -pv obj/Release;touch obj/Release/timestamp.o;rm obj/Release/timestamp.o"}
+	filter {}
+end
+
+
 dofile("submodules/premake5_submodules.lua")
 
 
@@ -35,7 +49,7 @@ solution "_stfx"
 		files {"configuration/*.cpp", "configuration/*.h"}
 		includedirs {"configuration"}
 		files {"creation/**.cpp", "creation/**.h"}
-		includedirs {"creation/*"}
+		includedirs {"creation", "creation/*"}
 		includedirs {"C:/ProgramData/chocolatey/lib/winflexbison3/tools"}	-- for <FlexLexer.h> 
 		files {"lex_parse/*.y", "lex_parse/*.l"}
 
@@ -51,6 +65,7 @@ solution "_stfx"
 		using_fmt(true)
 		using_tinyxml2(true)
 		using_tinyxml2_ex()
+		using_timestamp()
 		standard_configuration()
 
 	project "test"
