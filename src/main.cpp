@@ -111,11 +111,6 @@ int process_stfx_file(std::filesystem::path in_file)
 		rv = 1;		// fail !! 
 		return rv;	// and exit
 		}
-#ifdef NOT_NOW
-	// temp... write out what we have ... 
-	xml_writer_C writer(false);
-	writer.write_to_file("test.stfx", conf);
-#endif
 
 	std::filesystem::path base_dir_path = in_file.parent_path();
 

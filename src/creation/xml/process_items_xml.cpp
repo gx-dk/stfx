@@ -474,12 +474,7 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 				break;
 			}
 		}
-#ifdef NOT_NOW
-	if (has_children == true)
-		{
-		fmt::println(out_file_cpp, "\ttinyxml2::XMLElement *ch_el;");
-		}
-#endif
+
 	for (auto &co : s.complex)
 		{
 		complex_item_type_E line_type = co.line_type;

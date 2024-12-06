@@ -29,10 +29,7 @@ bool process_items_C::process_items(info_items_C &items, const std::vector<std::
 	{
 	bool rv{ false };
 
-	auto time = std::chrono::system_clock::now();
-	std::string creation_time = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
-
-	fmt::println("Starting to create output. Timestamp will be : {}", creation_time);
+	fmt::println("\nStarting to create output.");
 
 	rv = fixup_types_of_names(items);
 	rv &= find_top_struct(items);
