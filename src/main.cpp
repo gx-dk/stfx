@@ -192,7 +192,7 @@ int process_stfx_file(std::filesystem::path in_file)
 			plus_input_files.push_back(filename.name);
 			}
 		output_spec plus_output_files = uncom.out;
-		switch (common_output_files.file_type)
+		switch (plus_output_files.file_type)
 			{
 			case serialization_type_E::xml:
 				if (true)

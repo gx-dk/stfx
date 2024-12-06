@@ -53,7 +53,8 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
 				"#include <regex>\n"
-				"#include <stdexcept>");
+				"#include <stdexcept>\n"
+				"#include <fmt/format.h>");
 			if (output.enum_file.empty() || output.enum_file == "-")
 				{
 				fmt::println(f_cpp, "// not including blank enum file");
