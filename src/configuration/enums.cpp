@@ -1,7 +1,11 @@
 // enums.cpp
-// created 2024-10-04 15:39:18.3911740
-// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
+//
+// Automatically generated using stfx
+// Do not directly edit this file, use stfx to re-create this file.
+//
 // Licence : MIT License
+//
+// stfx built at : Dec  6 2024 17:38:52, Software Version : 24.11
 
 #include "enums.h"
 
