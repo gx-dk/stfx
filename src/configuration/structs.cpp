@@ -3,9 +3,9 @@
 // Automatically generated using stfx
 // Do not directly edit this file, use stfx to re-create this file.
 //
-// Licence : MIT License
+// License : MIT License
 //
-// stfx built at : Dec 23 2024 09:06:21, Software Version : 24.11
+// stfx built at : Dec 23 2024 09:17:57, Software Version : 24.11
 
 #include "structs.h"
 
@@ -125,6 +125,7 @@ bool xml_reader_C::do_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 			data->structs_writer_class = pt;
 		}
 	el->QueryAttribute("only_read_code", &data->only_read_code);
+	el->QueryAttribute("no_special_delta", &data->no_special_delta);
 		{
 		const char *pt;
 		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("file_type", &pt))
@@ -248,6 +249,8 @@ bool xml_writer_C::do_wr_output_spec(tinyxml2::XMLElement *el, output_spec *data
 		el->SetAttribute("structs_writer_class", data->structs_writer_class.c_str());
 	if(m_delta_only == false || data->only_read_code != default_data.only_read_code)
 		el->SetAttribute("only_read_code", data->only_read_code);
+	if(m_delta_only == false || data->no_special_delta != default_data.no_special_delta)
+		el->SetAttribute("no_special_delta", data->no_special_delta);
 	if(m_delta_only == false || data->file_type != default_data.file_type)
 		el->SetAttribute("file_type", stfx::s_from_e(data->file_type).c_str());
 	return rv;

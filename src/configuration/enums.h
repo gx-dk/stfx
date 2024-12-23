@@ -3,9 +3,9 @@
 // Automatically generated using stfx
 // Do not directly edit this file, use stfx to re-create this file.
 //
-// Licence : MIT License
+// License : MIT License
 //
-// stfx built at : Dec 23 2024 09:06:21, Software Version : 24.11
+// stfx built at : Dec 23 2024 09:17:57, Software Version : 24.11
 
 #pragma once
 
