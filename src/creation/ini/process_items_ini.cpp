@@ -53,8 +53,13 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
 				"#include <regex>\n"
-				"#include <stdexcept>\n"
-				"#include <fmt/format.h>");
+				"#include <stdexcept>");
+			if (output.only_read_code == false)
+				{
+				fmt::println(f_cpp, "#include <fmt/format.h>");
+				}
+			fmt::println(f_cpp, "");		// a blank line ! 
+
 			if (output.enum_file.empty() || output.enum_file == "-")
 				{
 				fmt::println(f_cpp, "// not including blank enum file");
@@ -148,7 +153,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t\t\tread_item_S new_item;\n"
 						"\t\t\t\t\t\tm_lookup.under[key] = new_item;\n"
 						"\t\t\t\t\t\tcurrent_lookup = &m_lookup.under[key];\n"
-						"\t\t\t\t\t\tfmt::println(\"[{{}}]\", key);\n"
+						"\t\t\t\t\t\t// fmt::println(\"[{{}}]\", key);\n"
 						"\t\t\t\t\t\t}}\n"
 						"\n"
 						"\t\t\t\t\tbreak;\n"
@@ -162,7 +167,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t\t\tstd::string key = res[1].str();\n"
 						"\t\t\t\t\t\tstd::string value = res[2].str();\n"
 						"\t\t\t\t\t\tcurrent_lookup->items[key] = value;\n"
-						"\t\t\t\t\t\tfmt::println(\"{{}} = {{}}\", key, value);\n"
+						"\t\t\t\t\t\t// fmt::println(\"{{}} = {{}}\", key, value);\n"
 						"\t\t\t\t\t\t}}\n"
 						"\t\t\t\t\tbreak;\n"
 						"\t\t\t\t}}\n"
