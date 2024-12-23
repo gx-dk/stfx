@@ -183,7 +183,7 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 				for (auto &pair : structs)
 					{
 					const struct_S &s = pair.second;
-					rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
+					rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h, output.no_special_delta);
 					}
 
 				fmt::println(f_h,
@@ -403,7 +403,7 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 
 
 
-bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h, bool no_special_delta)
 	{
 	bool rv{ true };
 
@@ -415,7 +415,10 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 		"\ttinyxml2::XMLElement *ch_el;\n"
 		, class_name, s.name);
 	fmt::println(out_file_cpp, "\tbool rv = true;");
-	fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
+	if (no_special_delta == false)
+		{
+		fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
+		}
 
 	for (auto &sim : s.simple)
 		{
@@ -429,31 +432,61 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 			case simple_item_type_E::long_E:
 			case simple_item_type_E::short_E:
 			case simple_item_type_E::unsigned_short_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
-					"\t\tch_el->SetText(data->{0});\n"
-					"\t\t}}"
-					, sim.name);
+				if(no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\tch_el->SetText(data->{0});"
+						, sim.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\t\tch_el->SetText(data->{0});\n"
+						"\t\t}}"
+						, sim.name);
+					}
 				break;
 			case simple_item_type_E::std_string_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
-					"\t\tch_el->SetText(data->{0}.c_str());\n"
-					"\t\t}}"
-					, sim.name);
+				if (no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\tch_el->SetText(data->{0}.c_str());"
+						, sim.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\t\tch_el->SetText(data->{0}.c_str());\n"
+						"\t\t}}"
+						, sim.name);
+					}
 				break;
 			case simple_item_type_E::unsigned_long_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
-					"\t\tch_el->SetText((unsigned)data->{0});\n"
-					"\t\t}}"
-					, sim.name);
+				if (no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\tch_el->SetText((unsigned)data->{0});"
+						, sim.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\t\tch_el->SetText((unsigned)data->{0});\n"
+						"\t\t}}"
+						, sim.name);
+					}
 				break;
 
 			default:
@@ -485,13 +518,23 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 		switch (line_type)
 			{
 			case complex_item_type_E::enum_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
-					"\t\tch_el->SetText(stfx::s_from_e(data->{0}).c_str());\n"
-					"\t\t}}"
-					, co.name);
+				if (no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\tch_el->SetText(stfx::s_from_e(data->{0}).c_str());"
+						, co.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tch_el = el->InsertNewChildElement(\"{0}\");\n"
+						"\t\tch_el->SetText(stfx::s_from_e(data->{0}).c_str());\n"
+						"\t\t}}"
+						, co.name);
+					}
 				break;
 			case complex_item_type_E::struct_E:
 				fmt::println(out_file_cpp,
