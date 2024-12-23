@@ -24,6 +24,8 @@ struct output_spec
 	std::string structs_reader_class{"xml_reader_C"};	// within the generated structs module	
 	std::string structs_writer_class{"xml_writer_C"};	// ... 
 	serialization_type_E file_type{ serialization_type_E::xml_attrib };	// file format of serialization file
+	bool only_read_code{ false };			// if true, ONLY generate READ class (not writer class)
+	bool no_special_delta{ false };			// if true, do NOT include code that tests for default values when writing
 };
 
 struct input_file

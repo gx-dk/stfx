@@ -16,9 +16,12 @@
 
 process_items_C::process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
 	{
-	m_stfx_info += fmt::format(	"// Automatically generated using stfx\n"
+	m_stfx_info += fmt::format(	"//\n"
+								"// Automatically generated using stfx\n"
 								"// Do not directly edit this file, use stfx to re-create this file.\n"
-								"// Licence : MIT License\n"
+								"//\n"
+								"// License : MIT License\n"
+								"//\n"
 								"// {}\n", app_timestamp);
 	}
 
@@ -26,10 +29,7 @@ bool process_items_C::process_items(info_items_C &items, const std::vector<std::
 	{
 	bool rv{ false };
 
-	auto time = std::chrono::system_clock::now();
-	std::string creation_time = fmt::format("{:%Y-%m-%d %H:%M:%S}", time);
-
-	fmt::println("Starting to create output. Timestamp will be : {}", creation_time);
+	fmt::println("\nStarting to create output.");
 
 	rv = fixup_types_of_names(items);
 	rv &= find_top_struct(items);
@@ -76,12 +76,12 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
-		fmt::println("Opened enum .cpp file :\t{}", out_pathfilename_cpp);
+		fmt::println("Opened enum .cpp file :\t\t{}", out_pathfilename_cpp);
 		std::FILE *f_h;
 		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
-			fmt::println("Opened enum .h file :\t{}", out_pathfilename_h);
+			fmt::println("Opened enum .h file :\t\t{}", out_pathfilename_h);
 			rv = true;		// files are open
 
 			fmt::println(f_cpp, "// {}", out_filename_cpp);

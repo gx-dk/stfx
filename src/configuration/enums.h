@@ -1,7 +1,11 @@
 // enums.h
-// created 2024-10-04 15:39:18.3911740
-// Automatically generated using stfx. Do not directly edit this file, use stfx to re-create this file.
-// Licence : MIT License
+//
+// Automatically generated using stfx
+// Do not directly edit this file, use stfx to re-create this file.
+//
+// License : MIT License
+//
+// stfx built at : Dec 23 2024 11:03:42, Software Version : 24.12
 
 #pragma once
 

@@ -55,11 +55,11 @@ int main(int argc, char *argv[])
 		}
 	if (rv == 0)
 		{
-		fmt::println("Processing successful. Returning {} to caller", rv);
+		fmt::println("\nProcessing successful. Returning {} to caller", rv);
 		}
 	else
 		{
-		fmt::println("Processing failed. Returning {} to caller", rv);
+		fmt::println("\nProcessing failed. Returning {} to caller", rv);
 		}
 	return rv;
 	}
@@ -75,7 +75,7 @@ int process_single_header(std::filesystem::path in_path)
 	if (ok == true)
 		{
 		bool ok;
-		fmt::println("Successfully parsed file: {}", in_path.string());
+		fmt::println("Successfully parsed file:\t{}", in_path.string());
 		std::filesystem::path base_dir_path = in_path.parent_path();
 		std::vector<std::string> input;
 		output_spec output;
@@ -111,11 +111,6 @@ int process_stfx_file(std::filesystem::path in_file)
 		rv = 1;		// fail !! 
 		return rv;	// and exit
 		}
-#ifdef NOT_NOW
-	// temp... write out what we have ... 
-	xml_writer_C writer(false);
-	writer.write_to_file("test.stfx", conf);
-#endif
 
 	std::filesystem::path base_dir_path = in_file.parent_path();
 
@@ -128,7 +123,11 @@ int process_stfx_file(std::filesystem::path in_file)
 		std::filesystem::path path(base_dir_path);
 		path /= filename.name;
 		ok = common_items.process_input_file(path);
-		if (ok == false)
+		if (ok == true)
+			{
+			fmt::println("Successfully parsed file:\t{}", path.string());
+			}
+		else
 			{
 			fmt::println("ERROR : failed to process {}", path.string());
 			}
@@ -185,14 +184,18 @@ int process_stfx_file(std::filesystem::path in_file)
 			std::filesystem::path path(base_dir_path);
 			path /= filename.name;
 			ok = plus_items.process_input_file(path);
-			if (ok == false)
+			if (ok == true)
+				{
+				fmt::println("Successfully parsed file:\t{}", path.string());
+				}
+			else
 				{
 				fmt::println("ERROR : failed to process {}", path.string());
 				}
 			plus_input_files.push_back(filename.name);
 			}
 		output_spec plus_output_files = uncom.out;
-		switch (common_output_files.file_type)
+		switch (plus_output_files.file_type)
 			{
 			case serialization_type_E::xml:
 				if (true)

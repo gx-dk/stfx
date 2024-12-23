@@ -56,7 +56,7 @@ bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 		fmt::println("ERROR: could not open file for reading: {}\n", in_path.string());
 		return false;
 	}
-	fmt::println("File '{}' opened for input", in_path.string());
+	fmt::println("\nFile opened for input:\t\t{}", in_path.string());
 	std::cin.rdbuf(infile->rdbuf());
 
 	yy::Lexer scanner;

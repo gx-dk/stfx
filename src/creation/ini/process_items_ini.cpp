@@ -54,6 +54,12 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				"#include <map>\n"
 				"#include <regex>\n"
 				"#include <stdexcept>");
+			if (output.only_read_code == false)
+				{
+				fmt::println(f_cpp, "#include <fmt/format.h>");
+				}
+			fmt::println(f_cpp, "");		// a blank line ! 
+
 			if (output.enum_file.empty() || output.enum_file == "-")
 				{
 				fmt::println(f_cpp, "// not including blank enum file");
@@ -147,7 +153,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t\t\tread_item_S new_item;\n"
 						"\t\t\t\t\t\tm_lookup.under[key] = new_item;\n"
 						"\t\t\t\t\t\tcurrent_lookup = &m_lookup.under[key];\n"
-						"\t\t\t\t\t\tfmt::println(\"[{{}}]\", key);\n"
+						"\t\t\t\t\t\t// fmt::println(\"[{{}}]\", key);\n"
 						"\t\t\t\t\t\t}}\n"
 						"\n"
 						"\t\t\t\t\tbreak;\n"
@@ -161,7 +167,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t\t\tstd::string key = res[1].str();\n"
 						"\t\t\t\t\t\tstd::string value = res[2].str();\n"
 						"\t\t\t\t\t\tcurrent_lookup->items[key] = value;\n"
-						"\t\t\t\t\t\tfmt::println(\"{{}} = {{}}\", key, value);\n"
+						"\t\t\t\t\t\t// fmt::println(\"{{}} = {{}}\", key, value);\n"
 						"\t\t\t\t\t\t}}\n"
 						"\t\t\t\t\tbreak;\n"
 						"\t\t\t\t}}\n"
@@ -188,59 +194,62 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_cpp,
 				"\n");
 
-			// writer class ===============================================================
-			fmt::println(f_h,
-				"class {0} : public {1}\n"
-				"\t{{\n"
-				"\tprivate:\n"
-				"\t\tbool m_delta_only {{}};\n"
-				"\t\tstd::FILE *m_file {{nullptr}};\n"
-				"\tpublic:\n"
-				"\t\t{0}(bool delta_only = true);",
-				writer_class_name, reader_class_name);
-
-			fmt::println(f_cpp,
-				"\n"
-				"{0}::{0}(bool delta_only) : {1}()\n"
-				"{{\n"
-				"\tm_delta_only = delta_only;\n"
-				"}}\n",
-				writer_class_name, reader_class_name);
-
-			for (auto &pair : structs)
+			if (output.only_read_code == false)
 				{
-				const struct_S &s = pair.second;
-				if (s.incoming_count == 0)
+				// writer class ===============================================================
+				fmt::println(f_h,
+					"class {0} : public {1}\n"
+					"\t{{\n"
+					"\tprivate:\n"
+					"\t\tbool m_delta_only {{}};\n"
+					"\t\tstd::FILE *m_file {{nullptr}};\n"
+					"\tpublic:\n"
+					"\t\t{0}(bool delta_only = true);",
+					writer_class_name, reader_class_name);
+
+				fmt::println(f_cpp,
+					"\n"
+					"{0}::{0}(bool delta_only) : {1}()\n"
+					"{{\n"
+					"\tm_delta_only = delta_only;\n"
+					"}}\n",
+					writer_class_name, reader_class_name);
+
+				for (auto &pair : structs)
 					{
-					fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
+					const struct_S &s = pair.second;
+					if (s.incoming_count == 0)
+						{
+						fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
 
-					fmt::println(f_cpp,
-						"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
-						"\t{{\n"
-						"\tbool rv{{}};\n"
-						"\tm_file = std::fopen(filename.c_str(), \"w\");\n"
-						"\tif (m_file != nullptr)\n"
-						"\t\t{{\n"
-						"\t\trv = do_wr_{1}(\"\", &struct_to_read);\n"
-						"\t\tstd::fclose(m_file);\n"
-						"\t\t}}\n"
-						"\treturn rv;\n"
-						"\t}}\n", writer_class_name, s.name);
+						fmt::println(f_cpp,
+							"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
+							"\t{{\n"
+							"\tbool rv{{}};\n"
+							"\tm_file = std::fopen(filename.c_str(), \"w\");\n"
+							"\tif (m_file != nullptr)\n"
+							"\t\t{{\n"
+							"\t\trv = do_wr_{1}(\"\", &struct_to_read);\n"
+							"\t\tstd::fclose(m_file);\n"
+							"\t\t}}\n"
+							"\treturn rv;\n"
+							"\t}}\n", writer_class_name, s.name);
+						}
 					}
+
+				fmt::println(f_h, "\tprotected:");
+
+				for (auto &pair : structs)
+					{
+					const struct_S &s = pair.second;
+					rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h, output.no_special_delta);
+					}
+
+				fmt::println(f_h,
+					"\t}};");
+				fmt::println(f_cpp,
+					"\n");
 				}
-
-			fmt::println(f_h, "\tprotected:");
-
-			for (auto &pair : structs)
-				{
-				const struct_S &s = pair.second;
-				rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
-				}
-
-			fmt::println(f_h,
-				"\t}};");
-			fmt::println(f_cpp,
-				"\n");
 
 			std::fclose(f_h);
 			}
@@ -264,7 +273,7 @@ bool process_items_ini_C::process_struct_reader(struct_S const &s, std::string c
 	return false;
 	}
 
-bool process_items_ini_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_ini_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h, bool no_special_delta)
 	{
 	return false;
 	}
@@ -426,7 +435,7 @@ bool process_items_n_ini_C::process_struct_reader(struct_S const &s, std::string
 	return rv;
 	}
 
-bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h)
+bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h, bool no_special_delta)
 	{
 	bool rv{ true };
 
@@ -438,7 +447,10 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 		, class_name, s.name);
 	fmt::println(out_file_cpp, "\tbool rv = true;");
 	fmt::println(out_file_cpp, "\tstd::string lower_path;");
-	fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
+	if (no_special_delta == false)
+		{
+		fmt::println(out_file_cpp, "\t{0} default_data;", s.name);
+		}
 	fmt::println(out_file_cpp,
 		"\tif (path.length() > 0)\n"
 		"\t\t{{\n"
@@ -452,12 +464,21 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 		switch (sim.line_type)
 			{
 			case simple_item_type_E::bool_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tfmt::println(m_file, \"{0} {{}}\", (int)data->{0});\n"
-					"\t\t}}"
-					, sim.name);
+				if(no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tfmt::println(m_file, \"{0} {{}}\", (int)data->{0});"
+						, sim.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tfmt::println(m_file, \"{0} {{}}\", (int)data->{0});\n"
+						"\t\t}}"
+						, sim.name);
+					}
 				break;
 			case simple_item_type_E::int_E:
 			case simple_item_type_E::unsigned_int_E:
@@ -468,12 +489,21 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 			case simple_item_type_E::unsigned_short_E:
 			case simple_item_type_E::std_string_E:
 			case simple_item_type_E::unsigned_long_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
-					"\t\t}}"
-					, sim.name);
+				if (no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tfmt::println(m_file, \"{0} {{}}\", data->{0});"
+						, sim.name);
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
+						"\t\t}}"
+						, sim.name);
+					}
 				break;
 
 			default:
@@ -506,12 +536,22 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 		switch (line_type)
 			{
 			case complex_item_type_E::enum_E:
-				fmt::println(out_file_cpp,
-					"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
-					"\t\t{{\n"
-					"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
-					"\t\t}}"
-					, co.name);
+				if (no_special_delta == true)
+					{
+					fmt::println(out_file_cpp,
+						"\tfmt::println(m_file, \"{0} {{}}\", data->{0});"
+						, co.name);
+
+					}
+				else
+					{
+					fmt::println(out_file_cpp,
+						"\tif(m_delta_only == false || data->{0} != default_data.{0})\n"
+						"\t\t{{\n"
+						"\t\tfmt::println(m_file, \"{0} {{}}\", data->{0});\n"
+						"\t\t}}"
+						, co.name);
+					}
 				break;
 			case complex_item_type_E::struct_E:
 				fmt::println(out_file_cpp,
