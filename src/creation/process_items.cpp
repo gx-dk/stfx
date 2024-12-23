@@ -20,7 +20,7 @@ process_items_C::process_items_C(std::filesystem::path base_dir_path) : m_base_d
 								"// Automatically generated using stfx\n"
 								"// Do not directly edit this file, use stfx to re-create this file.\n"
 								"//\n"
-								"// Licence : MIT License\n"
+								"// License : MIT License\n"
 								"//\n"
 								"// {}\n", app_timestamp);
 	}
