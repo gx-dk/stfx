@@ -189,59 +189,62 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			fmt::println(f_cpp,
 				"\n");
 
-			// writer class ===============================================================
-			fmt::println(f_h,
-				"class {0} : public {1}\n"
-				"\t{{\n"
-				"\tprivate:\n"
-				"\t\tbool m_delta_only {{}};\n"
-				"\t\tstd::FILE *m_file {{nullptr}};\n"
-				"\tpublic:\n"
-				"\t\t{0}(bool delta_only = true);",
-				writer_class_name, reader_class_name);
-
-			fmt::println(f_cpp,
-				"\n"
-				"{0}::{0}(bool delta_only) : {1}()\n"
-				"{{\n"
-				"\tm_delta_only = delta_only;\n"
-				"}}\n",
-				writer_class_name, reader_class_name);
-
-			for (auto &pair : structs)
+			if (output.only_read_code == false)
 				{
-				const struct_S &s = pair.second;
-				if (s.incoming_count == 0)
+				// writer class ===============================================================
+				fmt::println(f_h,
+					"class {0} : public {1}\n"
+					"\t{{\n"
+					"\tprivate:\n"
+					"\t\tbool m_delta_only {{}};\n"
+					"\t\tstd::FILE *m_file {{nullptr}};\n"
+					"\tpublic:\n"
+					"\t\t{0}(bool delta_only = true);",
+					writer_class_name, reader_class_name);
+
+				fmt::println(f_cpp,
+					"\n"
+					"{0}::{0}(bool delta_only) : {1}()\n"
+					"{{\n"
+					"\tm_delta_only = delta_only;\n"
+					"}}\n",
+					writer_class_name, reader_class_name);
+
+				for (auto &pair : structs)
 					{
-					fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
+					const struct_S &s = pair.second;
+					if (s.incoming_count == 0)
+						{
+						fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
 
-					fmt::println(f_cpp,
-						"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
-						"\t{{\n"
-						"\tbool rv{{}};\n"
-						"\tm_file = std::fopen(filename.c_str(), \"w\");\n"
-						"\tif (m_file != nullptr)\n"
-						"\t\t{{\n"
-						"\t\trv = do_wr_{1}(\"\", &struct_to_read);\n"
-						"\t\tstd::fclose(m_file);\n"
-						"\t\t}}\n"
-						"\treturn rv;\n"
-						"\t}}\n", writer_class_name, s.name);
+						fmt::println(f_cpp,
+							"bool {0}::write_to_file(std::string const &filename, {1} &struct_to_read)\n"
+							"\t{{\n"
+							"\tbool rv{{}};\n"
+							"\tm_file = std::fopen(filename.c_str(), \"w\");\n"
+							"\tif (m_file != nullptr)\n"
+							"\t\t{{\n"
+							"\t\trv = do_wr_{1}(\"\", &struct_to_read);\n"
+							"\t\tstd::fclose(m_file);\n"
+							"\t\t}}\n"
+							"\treturn rv;\n"
+							"\t}}\n", writer_class_name, s.name);
+						}
 					}
+
+				fmt::println(f_h, "\tprotected:");
+
+				for (auto &pair : structs)
+					{
+					const struct_S &s = pair.second;
+					rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
+					}
+
+				fmt::println(f_h,
+					"\t}};");
+				fmt::println(f_cpp,
+					"\n");
 				}
-
-			fmt::println(f_h, "\tprotected:");
-
-			for (auto &pair : structs)
-				{
-				const struct_S &s = pair.second;
-				rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h);
-				}
-
-			fmt::println(f_h,
-				"\t}};");
-			fmt::println(f_cpp,
-				"\n");
 
 			std::fclose(f_h);
 			}

@@ -5,7 +5,7 @@
 //
 // Licence : MIT License
 //
-// stfx built at : Dec  6 2024 17:38:52, Software Version : 24.11
+// stfx built at : Dec 23 2024 09:06:21, Software Version : 24.11
 
 #include "structs.h"
 
@@ -124,6 +124,7 @@ bool xml_reader_C::do_output_spec(tinyxml2::XMLElement *el, output_spec *data)
 		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("structs_writer_class", &pt))
 			data->structs_writer_class = pt;
 		}
+	el->QueryAttribute("only_read_code", &data->only_read_code);
 		{
 		const char *pt;
 		if (tinyxml2::XML_SUCCESS == el->QueryAttribute("file_type", &pt))
@@ -245,6 +246,8 @@ bool xml_writer_C::do_wr_output_spec(tinyxml2::XMLElement *el, output_spec *data
 		el->SetAttribute("structs_reader_class", data->structs_reader_class.c_str());
 	if(m_delta_only == false || data->structs_writer_class != default_data.structs_writer_class)
 		el->SetAttribute("structs_writer_class", data->structs_writer_class.c_str());
+	if(m_delta_only == false || data->only_read_code != default_data.only_read_code)
+		el->SetAttribute("only_read_code", data->only_read_code);
 	if(m_delta_only == false || data->file_type != default_data.file_type)
 		el->SetAttribute("file_type", stfx::s_from_e(data->file_type).c_str());
 	return rv;
