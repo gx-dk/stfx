@@ -86,22 +86,18 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				{
 				fmt::println(f_h, "#include \"{}\"", in_filename);
 				}
-			fmt::println(f_h, 
-				"\n"
-				"struct read_item_S\n"
-				"\t{{\n"
-				"\tstd::map<std::string, std::string>items;\n"
-				"\tstd::map<std::string, read_item_S>under;\n"
-				"\t}};\n"
-				"\n"
-				);
-
+			fmt::println(f_h, "");
 
 			// reader class ===============================================================
 			fmt::println(f_h,
 				"class {0}\n"
 				"\t{{\n"
 				"\tprivate:\n"
+				"\t\tstruct read_item_S\n"
+				"\t\t\t{{\n"
+				"\t\t\tstd::map<std::string, std::string>items;\n"
+				"\t\t\tstd::map<std::string, read_item_S>under;\n"
+				"\t\t\t}};\n"
 				"\t\tread_item_S m_lookup;\n"
 				"\tpublic:\n"
 				"\t\t{0}();", reader_class_name);
