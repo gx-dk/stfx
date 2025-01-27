@@ -86,23 +86,21 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				{
 				fmt::println(f_h, "#include \"{}\"", in_filename);
 				}
-			fmt::println(f_h, 
-				"\n"
-				"struct read_item_S\n"
-				"\t{{\n"
-				"\tstd::map<std::string, std::string>items;\n"
-				"\tstd::map<std::string, read_item_S>under;\n"
-				"\t}};\n"
-				"\n"
-				);
-
+			fmt::println(f_h, "");
 
 			// reader class ===============================================================
 			fmt::println(f_h,
 				"class {0}\n"
 				"\t{{\n"
 				"\tprivate:\n"
+				"\t\tstruct read_item_S\n"
+				"\t\t\t{{\n"
+				"\t\t\tstd::map<std::string, std::string>items;\n"
+				"\t\t\tstd::map<std::string, read_item_S>under;\n"
+				"\t\t\t}};\n"
 				"\t\tread_item_S m_lookup;\n"
+				"\t\tstd::string m_multiline_string_key;\n"
+				"\t\tstd::string m_multiline_string_value;\n"
 				"\tpublic:\n"
 				"\t\t{0}();", reader_class_name);
 
@@ -140,6 +138,12 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t}}\n"
 						"\t\t\tif (line.length() == 0)\n"
 						"\t\t\t\tcontinue;\n"
+						"\t\t\tif (m_multiline_string_key.length() != 0 && line[0] != ' ')\n"
+						"\t\t\t\t{{\n"
+						"\t\t\t\tcurrent_lookup->items[m_multiline_string_key] = m_multiline_string_value;\n"
+						"\t\t\t\tm_multiline_string_key = \"\";\n"
+						"\t\t\t\tm_multiline_string_value = \"\";\n"
+						"\t\t\t\t}}\n"
 						"\n"
 						"\t\t\tstd::smatch res;\n"
 						"\t\t\tstd::regex regex;\n"
@@ -158,7 +162,8 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\n"
 						"\t\t\t\t\tbreak;\n"
 						"\t\t\t\tcase ' ':\n"
-						"\t\t\t\t\t// space as first character is a \"continue previous line\" thing... (but not implemented currently)\n"
+						"\t\t\t\t\t// space as first character is a \"continue previous line\" string...\n"
+						"\t\t\t\t\tm_multiline_string_value += line;\n"
 						"\t\t\t\t\tbreak;\n"
 						"\t\t\t\tdefault:\n"
 						"\t\t\t\t\tregex = \"(\\\\w+) (.+)\";\n"
@@ -168,6 +173,15 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\t\t\t\t\tstd::string value = res[2].str();\n"
 						"\t\t\t\t\t\tcurrent_lookup->items[key] = value;\n"
 						"\t\t\t\t\t\t// fmt::println(\"{{}} = {{}}\", key, value);\n"
+						"\t\t\t\t\t\t}}\n"
+						"\t\t\t\t\telse\n"
+						"\t\t\t\t\t\t{{\n"
+						"\t\t\t\t\t\tregex = \"(\\\\w+)\";\n"
+						"\t\t\t\t\t\tif (std::regex_search(line, res, regex) == true)\n"
+						"\t\t\t\t\t\t\t{{\n"
+						"\t\t\t\t\t\t\tm_multiline_string_key = res[1].str();\n"
+						"\t\t\t\t\t\t\tm_multiline_string_value = \"\\n\"; \n"
+						"\t\t\t\t\t\t\t}}\n"
 						"\t\t\t\t\t\t}}\n"
 						"\t\t\t\t\tbreak;\n"
 						"\t\t\t\t}}\n"
