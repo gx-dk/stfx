@@ -69,7 +69,7 @@ bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 
 // ---- and functions called from parser --- 
 
-bool info_items_C::process_enum(std::string name, bool is_class_enum)
+bool info_items_C::process_enum(std::string name, bool is_class_enum, std::string doc_comment)
 	{
 	// fmt::print("process_enum( {}, {} )\n", name, is_class_enum);
 	bool rv{ false };
@@ -82,6 +82,7 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum)
 		enum_S e;
 		e.name = name;
 		e.is_class_enum = is_class_enum;
+		e.doc_comment = doc_comment;
 		m_enums[name] = e;
 		m_current_enum = &m_enums.at(name);
 		m_current_struct = nullptr;			// just "in case" !!!
@@ -90,7 +91,7 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum)
 	return rv;
 	}
 
-bool info_items_C::process_enum_line(std::string name, bool initialize_value, std::string value)
+bool info_items_C::process_enum_line(std::string name, bool initialize_value, std::string value, std::string doc_comment)
 	{
 	// fmt::print("process_enum_line( {}, {}, {} )\n", name, initialize_value, value);
 	bool rv{ false };
@@ -100,13 +101,14 @@ bool info_items_C::process_enum_line(std::string name, bool initialize_value, st
 		el.name = name;
 		el.initialize_value = initialize_value;
 		el.value = value;
+		el.doc_comment = doc_comment;
 		m_current_enum->enums.push_back(el);
 		rv = true;
 		}
 	return rv;
 	}
 
-bool info_items_C::process_struct(std::string name)
+bool info_items_C::process_struct(std::string name, std::string doc_comment)
 	{
 	// fmt::print("process_struct_reader( {} )\n", name);
 	bool rv{ false };
@@ -118,6 +120,7 @@ bool info_items_C::process_struct(std::string name)
 		{
 		struct_S s;
 		s.name = name;
+		s.doc_comment = doc_comment;
 		m_structs[name] = s;
 		m_current_struct = &m_structs.at(name);
 		m_current_enum = nullptr;			// just "in case" !!!
@@ -126,7 +129,7 @@ bool info_items_C::process_struct(std::string name)
 	return rv;
 	}
 
-bool info_items_C::process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value)
+bool info_items_C::process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value, std::string doc_comment)
 	{
 	// fmt::print("process_struct_line_simple( {}, {}, {} )\n", (int)line_type, name, default_value);
 	bool rv{ false };
@@ -136,13 +139,14 @@ bool info_items_C::process_struct_line_simple(simple_item_type_E line_type, std:
 		s.line_type = line_type;
 		s.name = name;
 		s.default_value = default_value;
+		s.doc_comment = doc_comment;
 		m_current_struct->simple.push_back(s);
 		rv = true;
 		}
 	return rv;
 	}
 
-bool info_items_C::process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name)
+bool info_items_C::process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name, std::string doc_comment)
 	{
 	// fmt::print("process_struct_line_complex( {}, {}, {} )\n", (int)line_type, type_name, name);
 	bool rv{ false };
@@ -152,6 +156,7 @@ bool info_items_C::process_struct_line_complex(complex_item_type_E line_type, st
 		s.line_type = line_type;
 		s.type_name = type_name;
 		s.name = name;
+		s.doc_comment = doc_comment;
 		m_current_struct->complex.push_back(s);
 		rv = true;
 		}

@@ -12,11 +12,13 @@ struct enum_line_S
 	std::string name;
 	bool initialize_value;
 	std::string value;
+	std::string doc_comment;
 	};
 
 struct enum_S
 	{
 	std::string name;
+	std::string doc_comment;
 	bool is_class_enum;
 	std::vector<enum_line_S> enums;
 	};
@@ -40,6 +42,7 @@ struct struct_line_simple_S
 	simple_item_type_E line_type;
 	std::string name;
 	std::string default_value;
+	std::string doc_comment;
 	};
 
 enum class complex_item_type_E
@@ -57,11 +60,13 @@ struct struct_line_complex_S
 	complex_item_type_E line_type;
 	std::string type_name;
 	std::string name;
+	std::string doc_comment;
 	};
 
 struct struct_S
 	{
 	std::string name;
+	std::string doc_comment;
 	std::vector<struct_line_simple_S> simple;
 	std::vector<struct_line_complex_S> complex;
 	int incoming_count{ 0 };
@@ -119,10 +124,30 @@ class info_items_C
 	protected:
 		friend yy::Parser;
 
-		bool process_enum(std::string name, bool is_class_enum);
-		bool process_enum_line(std::string name, bool initialize_value, std::string value);
-		bool process_struct(std::string name);
-		bool process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value);
-		bool process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name);
+		bool process_enum(std::string name, bool is_class_enum, std::string doc_comment);
+		bool process_enum(std::string name, bool is_class_enum)
+			{
+			return process_enum(name, is_class_enum, "");
+			};
+		bool process_enum_line(std::string name, bool initialize_value, std::string value, std::string doc_comment);
+		bool process_enum_line(std::string name, bool initialize_value, std::string value)
+			{
+			return process_enum_line(name, initialize_value, value, "");
+			};
+		bool process_struct(std::string name, std::string doc_comment);
+		bool process_struct(std::string name)
+			{
+			return process_struct(name, "");
+			};
+		bool process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value, std::string doc_comment);
+		bool process_struct_line_simple(simple_item_type_E line_type, std::string name, std::string default_value)
+			{
+			return process_struct_line_simple(line_type, name, default_value, "");
+			}
+		bool process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name, std::string doc_comment);
+		bool process_struct_line_complex(complex_item_type_E line_type, std::string type_name, std::string name)
+			{
+			return process_struct_line_complex(line_type, type_name, name, "");
+			}
 	};
 
