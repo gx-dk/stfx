@@ -53,6 +53,7 @@
 %token <std::string> FVALUE
 %token <std::string> STRING_CONSTANT
 %token <std::string> CHAR_CONSTANT
+%token <std::string> DOC_COMMENT
 
 %nterm <std::string> name
 %nterm <enum class simple_item_type_E> simple_type
@@ -91,7 +92,7 @@ parts : part
 
 part : enum_part
 	| struct_part
-
+	| DOC_COMMENT
 
 block_start: BLOCK_START
 
@@ -143,7 +144,9 @@ name: NAME														{ $$ = $1; }
 enum_part :  enum_start enum_block
 
 enum_start : enum NAME                                          { info_items->process_enum($2, false); }
+			| enum NAME DOC_COMMENT                             { info_items->process_enum($2, false, $3); }
 			| enum class name                                   { info_items->process_enum($3, true); }
+			| enum class name DOC_COMMENT                       { info_items->process_enum($3, true, $4); }
 
 enum_block : block_start enum_block_ents block_end semicolon
 
@@ -160,15 +163,21 @@ enum_ent : name 							                    { info_items->process_enum_line($1, f
 struct_part : struct_start block_start struct_block_ents block_end semicolon
 
 struct_start : struct name                                      { info_items->process_struct($2); }
+struct_start : struct name DOC_COMMENT                          { info_items->process_struct($2); }
 
 struct_block_ents : struct_block_ent
 			| struct_block_ent struct_block_ents
 
 struct_block_ent : simple_type name semicolon                   { info_items->process_struct_line_simple($1, $2, "-");}
+			| simple_type name semicolon DOC_COMMENT            { info_items->process_struct_line_simple($1, $2, "-", $4);}
 			| simple_type name simple_default_value semicolon   { info_items->process_struct_line_simple($1, $2, $3);}
+			| simple_type name simple_default_value semicolon DOC_COMMENT  { info_items->process_struct_line_simple($1, $2, $3, $5);}
 			| name name semicolon                               { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, $1, $2); }
+			| name name semicolon DOC_COMMENT                   { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, $1, $2, $4); }		
 			| name name simple_default_value semicolon          { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, $1, $2); }
+			| name name simple_default_value semicolon DOC_COMMENT { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, $1, $2, $5); }			
 			| struct_block_vector name semicolon                { info_items->process_struct_line_complex(complex_item_type_E::vector_E, $1, $2); }
+			| struct_block_vector name semicolon DOC_COMMENT    { info_items->process_struct_line_complex(complex_item_type_E::vector_E, $1, $2, $4); }
 
 simple_type : bool												{ $$ = simple_item_type_E::bool_E; }
 			| int												{ $$ = simple_item_type_E::int_E; }
