@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -129,11 +130,23 @@ class info_items_C
 			{
 			return process_enum(name, is_class_enum, "");
 			};
+		std::shared_ptr<enum_line_S> make_enum_line(std::string name, bool initialize_value, std::string value)
+			{
+			std::shared_ptr<enum_line_S> e = std::make_shared<enum_line_S>();
+			e->name = name;
+			e->initialize_value = initialize_value;
+			e->value = value;
+			e->doc_comment = "";
+			return e;
+			};
+#ifdef NOT_NOW
 		bool process_enum_line(std::string name, bool initialize_value, std::string value, std::string doc_comment);
 		bool process_enum_line(std::string name, bool initialize_value, std::string value)
 			{
 			return process_enum_line(name, initialize_value, value, "");
 			};
+#endif
+		bool process_enum_line(std::shared_ptr<enum_line_S> e);
 		bool process_struct(std::string name, std::string doc_comment);
 		bool process_struct(std::string name)
 			{

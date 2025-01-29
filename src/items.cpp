@@ -91,6 +91,7 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum, std::strin
 	return rv;
 	}
 
+#ifdef NOT_NOW
 bool info_items_C::process_enum_line(std::string name, bool initialize_value, std::string value, std::string doc_comment)
 	{
 	// fmt::print("process_enum_line( {}, {}, {} )\n", name, initialize_value, value);
@@ -106,6 +107,13 @@ bool info_items_C::process_enum_line(std::string name, bool initialize_value, st
 		rv = true;
 		}
 	return rv;
+	}
+#endif
+
+bool info_items_C::process_enum_line(std::shared_ptr<enum_line_S> e)
+	{
+	m_current_enum->enums.push_back(*e.get());
+	return true;
 	}
 
 bool info_items_C::process_struct(std::string name, std::string doc_comment)
