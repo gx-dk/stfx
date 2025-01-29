@@ -1,4 +1,4 @@
 //version.h
 
-#define VER_FILE_VERSION_STR "24.12"
+#define VER_FILE_VERSION_STR "25.01"
 
