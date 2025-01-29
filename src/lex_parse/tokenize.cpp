@@ -763,7 +763,7 @@ YY_RULE_SETUP
 #line 50 "struct_lex.l"
 {
 				/* ... should match special c++ style comments "//:" */
-				value->emplace<std::string>(std::string{ YYText() + 3, YYText() + YYLeng() - 3 });		// we want to ignore the "//:"
+				value->emplace<std::string>(std::string{ YYText() + 3, YYText() + YYLeng()});		// we want to ignore the "//:"
 				loc->begin = loc->end; loc->columns(YYLeng());
 				// printf("processing doc comment : %s\n", yytext);
 				return yy::Parser::token::DOC_COMMENT;

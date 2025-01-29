@@ -59,6 +59,7 @@
 %nterm <enum class simple_item_type_E> simple_type
 %nterm <std::string> simple_default_value value
 %nterm <std::string> struct_block_vector
+%type <std::shared_ptr<enum_line_S>> enum_ent
 
 
 %code requires {
@@ -150,15 +151,17 @@ enum_start : enum NAME                                          { info_items->pr
 
 enum_block : block_start enum_block_ents block_end semicolon
 
-enum_block_ents : 	enum_ent
-			| enum_ent comma enum_block_ents
-			| enum_ent comma
+enum_block_ents : 	enum_ent									{ info_items->process_enum_line($1); }
+			| enum_ent DOC_COMMENT								{ $1->doc_comment = $2; info_items->process_enum_line($1); }
+			| enum_ent comma enum_block_ents					{ info_items->process_enum_line($1); }
+			| enum_ent comma DOC_COMMENT enum_block_ents		{ $1->doc_comment = $3; info_items->process_enum_line($1); }
+			| enum_ent comma									{ info_items->process_enum_line($1); }
+			| enum_ent comma DOC_COMMENT						{ $1->doc_comment = $3; info_items->process_enum_line($1); }
 
-
-enum_ent : name 							                    { info_items->process_enum_line($1, false, "-");}
-			|  name equals VALUE                                { info_items->process_enum_line($1, true, $3);}
-			|  name equals HEXVALUE                             { info_items->process_enum_line($1, true, $3);}
-			|  name equals CHAR_CONSTANT                        { info_items->process_enum_line($1, true, $3);}
+enum_ent : name 							                    { $$ = info_items->make_enum_line($1, false, "-");}
+			|  name equals VALUE                                { $$ = info_items->make_enum_line($1, true, $3);}
+			|  name equals HEXVALUE                             { $$ = info_items->make_enum_line($1, true, $3);}
+			|  name equals CHAR_CONSTANT                        { $$ = info_items->make_enum_line($1, true, $3);}
 
 struct_part : struct_start block_start struct_block_ents block_end semicolon
 

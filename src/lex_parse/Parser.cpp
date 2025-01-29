@@ -54,7 +54,7 @@
 
 
 // Unqualified %code blocks.
-#line 70 "struct_yacc.y"
+#line 71 "struct_yacc.y"
 
 		#include <FlexLexer.h>
 		#include "token_if.h"
@@ -199,6 +199,10 @@ namespace yy {
         value.copy< enum class simple_item_type_E > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.copy< std::shared_ptr<enum_line_S> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -245,6 +249,10 @@ namespace yy {
     {
       case symbol_kind::S_simple_type: // simple_type
         value.move< enum class simple_item_type_E > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.move< std::shared_ptr<enum_line_S> > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_NAME: // NAME
@@ -363,6 +371,10 @@ namespace yy {
         value.YY_MOVE_OR_COPY< enum class simple_item_type_E > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.YY_MOVE_OR_COPY< std::shared_ptr<enum_line_S> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -395,6 +407,10 @@ namespace yy {
     {
       case symbol_kind::S_simple_type: // simple_type
         value.move< enum class simple_item_type_E > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.move< std::shared_ptr<enum_line_S> > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_NAME: // NAME
@@ -431,6 +447,10 @@ namespace yy {
         value.copy< enum class simple_item_type_E > (that.value);
         break;
 
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.copy< std::shared_ptr<enum_line_S> > (that.value);
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -462,6 +482,10 @@ namespace yy {
     {
       case symbol_kind::S_simple_type: // simple_type
         value.move< enum class simple_item_type_E > (that.value);
+        break;
+
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.move< std::shared_ptr<enum_line_S> > (that.value);
         break;
 
       case symbol_kind::S_NAME: // NAME
@@ -741,6 +765,10 @@ namespace yy {
         yylhs.value.emplace< enum class simple_item_type_E > ();
         break;
 
+      case symbol_kind::S_enum_ent: // enum_ent
+        yylhs.value.emplace< std::shared_ptr<enum_line_S> > ();
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -777,253 +805,289 @@ namespace yy {
           switch (yyn)
             {
   case 29: // name: NAME
-#line 142 "struct_yacc.y"
+#line 143 "struct_yacc.y"
                                                                                                                         { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 783 "Parser.cpp"
+#line 811 "Parser.cpp"
     break;
 
   case 31: // enum_start: enum NAME
-#line 146 "struct_yacc.y"
+#line 147 "struct_yacc.y"
                                                                 { info_items->process_enum(yystack_[0].value.as < std::string > (), false); }
-#line 789 "Parser.cpp"
+#line 817 "Parser.cpp"
     break;
 
   case 32: // enum_start: enum NAME DOC_COMMENT
-#line 147 "struct_yacc.y"
+#line 148 "struct_yacc.y"
                                                                             { info_items->process_enum(yystack_[1].value.as < std::string > (), false, yystack_[0].value.as < std::string > ()); }
-#line 795 "Parser.cpp"
+#line 823 "Parser.cpp"
     break;
 
   case 33: // enum_start: enum class name
-#line 148 "struct_yacc.y"
+#line 149 "struct_yacc.y"
                                                                             { info_items->process_enum(yystack_[0].value.as < std::string > (), true); }
-#line 801 "Parser.cpp"
+#line 829 "Parser.cpp"
     break;
 
   case 34: // enum_start: enum class name DOC_COMMENT
-#line 149 "struct_yacc.y"
+#line 150 "struct_yacc.y"
                                                                             { info_items->process_enum(yystack_[1].value.as < std::string > (), true, yystack_[0].value.as < std::string > ()); }
-#line 807 "Parser.cpp"
+#line 835 "Parser.cpp"
     break;
 
-  case 39: // enum_ent: name
+  case 36: // enum_block_ents: enum_ent
+#line 154 "struct_yacc.y"
+                                                                                                        { info_items->process_enum_line(yystack_[0].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 841 "Parser.cpp"
+    break;
+
+  case 37: // enum_block_ents: enum_ent DOC_COMMENT
+#line 155 "struct_yacc.y"
+                                                                                                        { yystack_[1].value.as < std::shared_ptr<enum_line_S> > ()->doc_comment = yystack_[0].value.as < std::string > (); info_items->process_enum_line(yystack_[1].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 847 "Parser.cpp"
+    break;
+
+  case 38: // enum_block_ents: enum_ent comma enum_block_ents
+#line 156 "struct_yacc.y"
+                                                                                                { info_items->process_enum_line(yystack_[2].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 853 "Parser.cpp"
+    break;
+
+  case 39: // enum_block_ents: enum_ent comma DOC_COMMENT enum_block_ents
+#line 157 "struct_yacc.y"
+                                                                                { yystack_[3].value.as < std::shared_ptr<enum_line_S> > ()->doc_comment = yystack_[1].value.as < std::string > (); info_items->process_enum_line(yystack_[3].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 859 "Parser.cpp"
+    break;
+
+  case 40: // enum_block_ents: enum_ent comma
 #line 158 "struct_yacc.y"
-                                                                                            { info_items->process_enum_line(yystack_[0].value.as < std::string > (), false, "-");}
-#line 813 "Parser.cpp"
+                                                                                                                { info_items->process_enum_line(yystack_[1].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 865 "Parser.cpp"
     break;
 
-  case 40: // enum_ent: name equals VALUE
+  case 41: // enum_block_ents: enum_ent comma DOC_COMMENT
 #line 159 "struct_yacc.y"
-                                                                            { info_items->process_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
-#line 819 "Parser.cpp"
+                                                                                                { yystack_[2].value.as < std::shared_ptr<enum_line_S> > ()->doc_comment = yystack_[0].value.as < std::string > (); info_items->process_enum_line(yystack_[2].value.as < std::shared_ptr<enum_line_S> > ()); }
+#line 871 "Parser.cpp"
     break;
 
-  case 41: // enum_ent: name equals HEXVALUE
-#line 160 "struct_yacc.y"
-                                                                            { info_items->process_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
-#line 825 "Parser.cpp"
-    break;
-
-  case 42: // enum_ent: name equals CHAR_CONSTANT
+  case 42: // enum_ent: name
 #line 161 "struct_yacc.y"
-                                                                            { info_items->process_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
-#line 831 "Parser.cpp"
+                                                                                            { yylhs.value.as < std::shared_ptr<enum_line_S> > () = info_items->make_enum_line(yystack_[0].value.as < std::string > (), false, "-");}
+#line 877 "Parser.cpp"
     break;
 
-  case 44: // struct_start: struct name
-#line 165 "struct_yacc.y"
+  case 43: // enum_ent: name equals VALUE
+#line 162 "struct_yacc.y"
+                                                                            { yylhs.value.as < std::shared_ptr<enum_line_S> > () = info_items->make_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
+#line 883 "Parser.cpp"
+    break;
+
+  case 44: // enum_ent: name equals HEXVALUE
+#line 163 "struct_yacc.y"
+                                                                            { yylhs.value.as < std::shared_ptr<enum_line_S> > () = info_items->make_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
+#line 889 "Parser.cpp"
+    break;
+
+  case 45: // enum_ent: name equals CHAR_CONSTANT
+#line 164 "struct_yacc.y"
+                                                                            { yylhs.value.as < std::shared_ptr<enum_line_S> > () = info_items->make_enum_line(yystack_[2].value.as < std::string > (), true, yystack_[0].value.as < std::string > ());}
+#line 895 "Parser.cpp"
+    break;
+
+  case 47: // struct_start: struct name
+#line 168 "struct_yacc.y"
                                                                 { info_items->process_struct(yystack_[0].value.as < std::string > ()); }
-#line 837 "Parser.cpp"
+#line 901 "Parser.cpp"
     break;
 
-  case 45: // struct_start: struct name DOC_COMMENT
-#line 166 "struct_yacc.y"
+  case 48: // struct_start: struct name DOC_COMMENT
+#line 169 "struct_yacc.y"
                                                                 { info_items->process_struct(yystack_[1].value.as < std::string > ()); }
-#line 843 "Parser.cpp"
+#line 907 "Parser.cpp"
     break;
 
-  case 48: // struct_block_ent: simple_type name semicolon
-#line 171 "struct_yacc.y"
-                                                                { info_items->process_struct_line_simple(yystack_[2].value.as < enum class simple_item_type_E > (), yystack_[1].value.as < std::string > (), "-");}
-#line 849 "Parser.cpp"
-    break;
-
-  case 49: // struct_block_ent: simple_type name semicolon DOC_COMMENT
-#line 172 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_simple(yystack_[3].value.as < enum class simple_item_type_E > (), yystack_[2].value.as < std::string > (), "-", yystack_[0].value.as < std::string > ());}
-#line 855 "Parser.cpp"
-    break;
-
-  case 50: // struct_block_ent: simple_type name simple_default_value semicolon
-#line 173 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_simple(yystack_[3].value.as < enum class simple_item_type_E > (), yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ());}
-#line 861 "Parser.cpp"
-    break;
-
-  case 51: // struct_block_ent: simple_type name simple_default_value semicolon DOC_COMMENT
+  case 51: // struct_block_ent: simple_type name semicolon
 #line 174 "struct_yacc.y"
-                                                                                       { info_items->process_struct_line_simple(yystack_[4].value.as < enum class simple_item_type_E > (), yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ());}
-#line 867 "Parser.cpp"
+                                                                { info_items->process_struct_line_simple(yystack_[2].value.as < enum class simple_item_type_E > (), yystack_[1].value.as < std::string > (), "-");}
+#line 913 "Parser.cpp"
     break;
 
-  case 52: // struct_block_ent: name name semicolon
+  case 52: // struct_block_ent: simple_type name semicolon DOC_COMMENT
 #line 175 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ()); }
-#line 873 "Parser.cpp"
+                                                                            { info_items->process_struct_line_simple(yystack_[3].value.as < enum class simple_item_type_E > (), yystack_[2].value.as < std::string > (), "-", yystack_[0].value.as < std::string > ());}
+#line 919 "Parser.cpp"
     break;
 
-  case 53: // struct_block_ent: name name semicolon DOC_COMMENT
+  case 53: // struct_block_ent: simple_type name simple_default_value semicolon
 #line 176 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
-#line 879 "Parser.cpp"
+                                                                            { info_items->process_struct_line_simple(yystack_[3].value.as < enum class simple_item_type_E > (), yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ());}
+#line 925 "Parser.cpp"
     break;
 
-  case 54: // struct_block_ent: name name simple_default_value semicolon
+  case 54: // struct_block_ent: simple_type name simple_default_value semicolon DOC_COMMENT
 #line 177 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > ()); }
-#line 885 "Parser.cpp"
+                                                                                       { info_items->process_struct_line_simple(yystack_[4].value.as < enum class simple_item_type_E > (), yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ());}
+#line 931 "Parser.cpp"
     break;
 
-  case 55: // struct_block_ent: name name simple_default_value semicolon DOC_COMMENT
+  case 55: // struct_block_ent: name name semicolon
 #line 178 "struct_yacc.y"
-                                                                               { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[4].value.as < std::string > (), yystack_[3].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
-#line 891 "Parser.cpp"
+                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ()); }
+#line 937 "Parser.cpp"
     break;
 
-  case 56: // struct_block_ent: struct_block_vector name semicolon
+  case 56: // struct_block_ent: name name semicolon DOC_COMMENT
 #line 179 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_complex(complex_item_type_E::vector_E, yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ()); }
-#line 897 "Parser.cpp"
+                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
+#line 943 "Parser.cpp"
     break;
 
-  case 57: // struct_block_ent: struct_block_vector name semicolon DOC_COMMENT
+  case 57: // struct_block_ent: name name simple_default_value semicolon
 #line 180 "struct_yacc.y"
-                                                                            { info_items->process_struct_line_complex(complex_item_type_E::vector_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
-#line 903 "Parser.cpp"
+                                                                            { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > ()); }
+#line 949 "Parser.cpp"
     break;
 
-  case 58: // simple_type: bool
+  case 58: // struct_block_ent: name name simple_default_value semicolon DOC_COMMENT
+#line 181 "struct_yacc.y"
+                                                                               { info_items->process_struct_line_complex(complex_item_type_E::enum_or_struct_E, yystack_[4].value.as < std::string > (), yystack_[3].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
+#line 955 "Parser.cpp"
+    break;
+
+  case 59: // struct_block_ent: struct_block_vector name semicolon
 #line 182 "struct_yacc.y"
-                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::bool_E; }
-#line 909 "Parser.cpp"
+                                                                            { info_items->process_struct_line_complex(complex_item_type_E::vector_E, yystack_[2].value.as < std::string > (), yystack_[1].value.as < std::string > ()); }
+#line 961 "Parser.cpp"
     break;
 
-  case 59: // simple_type: int
+  case 60: // struct_block_ent: struct_block_vector name semicolon DOC_COMMENT
 #line 183 "struct_yacc.y"
-                                                                                                                        { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::int_E; }
-#line 915 "Parser.cpp"
+                                                                            { info_items->process_struct_line_complex(complex_item_type_E::vector_E, yystack_[3].value.as < std::string > (), yystack_[2].value.as < std::string > (), yystack_[0].value.as < std::string > ()); }
+#line 967 "Parser.cpp"
     break;
 
-  case 60: // simple_type: short
-#line 184 "struct_yacc.y"
-                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::short_E; }
-#line 921 "Parser.cpp"
-    break;
-
-  case 61: // simple_type: long
+  case 61: // simple_type: bool
 #line 185 "struct_yacc.y"
-                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::long_E; }
-#line 927 "Parser.cpp"
+                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::bool_E; }
+#line 973 "Parser.cpp"
     break;
 
-  case 62: // simple_type: unsigned int
+  case 62: // simple_type: int
 #line 186 "struct_yacc.y"
-                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_int_E; }
-#line 933 "Parser.cpp"
+                                                                                                                        { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::int_E; }
+#line 979 "Parser.cpp"
     break;
 
-  case 63: // simple_type: unsigned short
+  case 63: // simple_type: short
 #line 187 "struct_yacc.y"
-                                                                                                            { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_short_E; }
-#line 939 "Parser.cpp"
+                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::short_E; }
+#line 985 "Parser.cpp"
     break;
 
-  case 64: // simple_type: unsigned long
+  case 64: // simple_type: long
 #line 188 "struct_yacc.y"
-                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_long_E; }
-#line 945 "Parser.cpp"
+                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::long_E; }
+#line 991 "Parser.cpp"
     break;
 
-  case 65: // simple_type: float
+  case 65: // simple_type: unsigned int
 #line 189 "struct_yacc.y"
-                                                                                                                        { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::float_E; }
-#line 951 "Parser.cpp"
+                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_int_E; }
+#line 997 "Parser.cpp"
     break;
 
-  case 66: // simple_type: double
+  case 66: // simple_type: unsigned short
 #line 190 "struct_yacc.y"
-                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::double_E; }
-#line 957 "Parser.cpp"
+                                                                                                            { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_short_E; }
+#line 1003 "Parser.cpp"
     break;
 
-  case 67: // simple_type: std_string
+  case 67: // simple_type: unsigned long
 #line 191 "struct_yacc.y"
-                                                                                                            { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::std_string_E; }
-#line 963 "Parser.cpp"
+                                                                                                                { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::unsigned_long_E; }
+#line 1009 "Parser.cpp"
     break;
 
-  case 68: // simple_default_value: block_start block_end
+  case 68: // simple_type: float
+#line 192 "struct_yacc.y"
+                                                                                                                        { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::float_E; }
+#line 1015 "Parser.cpp"
+    break;
+
+  case 69: // simple_type: double
 #line 193 "struct_yacc.y"
-                                                                { yylhs.value.as < std::string > () = "{}"; }
-#line 969 "Parser.cpp"
+                                                                                                                    { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::double_E; }
+#line 1021 "Parser.cpp"
     break;
 
-  case 69: // simple_default_value: block_start value block_end
+  case 70: // simple_type: std_string
 #line 194 "struct_yacc.y"
-                                                                            { yylhs.value.as < std::string > () = "{" + yystack_[1].value.as < std::string > () + "}"; }
-#line 975 "Parser.cpp"
+                                                                                                            { yylhs.value.as < enum class simple_item_type_E > () = simple_item_type_E::std_string_E; }
+#line 1027 "Parser.cpp"
     break;
 
-  case 70: // value: VALUE
+  case 71: // simple_default_value: block_start block_end
 #line 196 "struct_yacc.y"
-                                                                { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 981 "Parser.cpp"
+                                                                { yylhs.value.as < std::string > () = "{}"; }
+#line 1033 "Parser.cpp"
     break;
 
-  case 71: // value: FVALUE
+  case 72: // simple_default_value: block_start value block_end
 #line 197 "struct_yacc.y"
-                                                                    { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 987 "Parser.cpp"
+                                                                            { yylhs.value.as < std::string > () = "{" + yystack_[1].value.as < std::string > () + "}"; }
+#line 1039 "Parser.cpp"
     break;
 
-  case 72: // value: true
-#line 198 "struct_yacc.y"
-                                                                    { yylhs.value.as < std::string > () = "true"; }
-#line 993 "Parser.cpp"
-    break;
-
-  case 73: // value: false
+  case 73: // value: VALUE
 #line 199 "struct_yacc.y"
-                                                                    { yylhs.value.as < std::string > () = "false"; }
-#line 999 "Parser.cpp"
+                                                                { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
+#line 1045 "Parser.cpp"
     break;
 
-  case 74: // value: ENUM_VALUE
+  case 74: // value: FVALUE
 #line 200 "struct_yacc.y"
                                                                     { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 1005 "Parser.cpp"
+#line 1051 "Parser.cpp"
     break;
 
-  case 75: // value: STRING_CONSTANT
+  case 75: // value: true
 #line 201 "struct_yacc.y"
-                                                                    { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 1011 "Parser.cpp"
+                                                                    { yylhs.value.as < std::string > () = "true"; }
+#line 1057 "Parser.cpp"
     break;
 
-  case 76: // value: CHAR_CONSTANT
+  case 76: // value: false
 #line 202 "struct_yacc.y"
+                                                                    { yylhs.value.as < std::string > () = "false"; }
+#line 1063 "Parser.cpp"
+    break;
+
+  case 77: // value: ENUM_VALUE
+#line 203 "struct_yacc.y"
                                                                     { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-#line 1017 "Parser.cpp"
+#line 1069 "Parser.cpp"
     break;
 
-  case 77: // struct_block_vector: std_vector lessthan name greaterthan
+  case 78: // value: STRING_CONSTANT
 #line 204 "struct_yacc.y"
+                                                                    { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
+#line 1075 "Parser.cpp"
+    break;
+
+  case 79: // value: CHAR_CONSTANT
+#line 205 "struct_yacc.y"
+                                                                    { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
+#line 1081 "Parser.cpp"
+    break;
+
+  case 80: // struct_block_vector: std_vector lessthan name greaterthan
+#line 207 "struct_yacc.y"
                                                                 { yylhs.value.as < std::string > () = yystack_[1].value.as < std::string > (); }
-#line 1023 "Parser.cpp"
+#line 1087 "Parser.cpp"
     break;
 
 
-#line 1027 "Parser.cpp"
+#line 1091 "Parser.cpp"
 
             default:
               break;
@@ -1354,77 +1418,77 @@ namespace yy {
   const signed char
    Parser ::yypact_[] =
   {
-      -6,   -49,   -49,   -49,    13,   -49,    -6,    -4,    -3,   -49,
-      14,   -49,    14,   -49,   -49,   -49,   -15,    -3,   -49,    -9,
-     -49,    -3,   -49,    44,   -49,    -1,   -49,    26,    30,    35,
-     -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,    24,
-     -49,   -49,   -49,   -49,    37,   -49,   -49,   -49,    -3,    30,
-      44,    -3,    -3,   -49,   -49,   -16,   -49,    40,   -49,    -3,
-     -49,   -49,   -49,   -49,    -3,     5,    40,   -49,     5,    40,
-     -49,   -49,   -49,   -49,   -49,   -49,    41,    -2,    20,    40,
-     -49,    21,    40,    22,   -49,   -49,   -49,   -49,   -49,   -49,
-     -49,   -49,   -49,   -49,   -49,   -49,    30,   -49,    23,   -49,
-      33,   -49,   -49,   -49,   -49
+      -6,   -49,   -49,   -49,    17,   -49,    -6,    -4,   -13,   -49,
+      18,   -49,    18,   -49,   -49,   -49,    -9,   -13,   -49,     3,
+     -49,   -13,   -49,    45,   -49,     8,   -49,    40,    42,    -1,
+     -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,    39,
+     -49,   -49,   -49,   -49,    41,   -49,   -49,   -49,   -13,    42,
+      45,   -13,   -13,   -49,   -49,    11,   -49,    48,   -49,   -49,
+     -21,   -49,   -49,   -49,   -49,   -13,     5,    48,   -49,     5,
+      48,   -49,   -49,   -49,   -49,   -49,   -13,   -49,    47,    -2,
+      34,    48,   -49,    35,    48,    43,   -49,   -49,   -49,   -49,
+     -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,   -49,    42,
+     -49,    44,   -49,    46,   -49,   -49,   -49,   -49
   };
 
   const signed char
    Parser ::yydefact_[] =
   {
        0,    23,    25,     7,     0,     2,     3,     0,     0,     5,
-       0,     6,     0,     1,     4,    24,    31,     0,    29,    44,
-       8,     0,    30,     0,    32,    33,    45,    39,     0,    36,
+       0,     6,     0,     1,     4,    24,    31,     0,    29,    47,
+       8,     0,    30,     0,    32,    33,    48,    42,     0,    36,
       18,    19,    20,    17,    26,    27,    28,    21,    22,     0,
-      59,    60,    61,    67,     0,    65,    66,    58,     0,     0,
-      46,     0,     0,    34,    12,     0,     9,     0,    10,    38,
-      62,    63,    64,    13,     0,     0,     0,    47,     0,     0,
-      40,    41,    42,    11,    35,    37,     0,     0,    52,     0,
-      43,    48,     0,    56,    14,    77,    15,    16,    74,    70,
-      71,    75,    76,    68,    72,    73,     0,    53,    54,    49,
-      50,    57,    69,    55,    51
+      62,    63,    64,    70,     0,    68,    69,    61,     0,     0,
+      49,     0,     0,    34,    12,     0,     9,     0,    10,    37,
+      40,    65,    66,    67,    13,     0,     0,     0,    50,     0,
+       0,    43,    44,    45,    11,    35,    41,    38,     0,     0,
+      55,     0,    46,    51,     0,    59,    39,    14,    80,    15,
+      16,    77,    73,    74,    78,    79,    71,    75,    76,     0,
+      56,    57,    52,    53,    60,    72,    58,    54
   };
 
   const signed char
    Parser ::yypgoto_[] =
   {
-     -49,   -49,    49,   -49,    -7,   -48,   -49,   -33,   -49,   -49,
-     -49,   -49,   -49,   -49,    31,    32,    34,   -49,   -49,   -49,
-     -49,   -49,   -49,   -49,   -49,    -8,   -49,   -49,   -49,     6,
-     -49,   -49,   -49,    19,   -49,   -49,     4,   -49,   -49
+     -49,   -49,    64,   -49,     4,   -48,   -49,   -34,   -49,   -49,
+     -49,   -49,   -49,   -49,     9,    32,    33,   -49,   -49,   -49,
+     -49,   -49,   -49,   -49,   -49,    -8,   -49,   -49,   -49,   -47,
+     -49,   -49,   -49,    23,   -49,   -49,     7,   -49,   -49
   };
 
   const signed char
    Parser ::yydefgoto_[] =
   {
-      -1,     4,     5,     6,    77,    57,    59,    74,    55,    64,
-      85,    94,    95,    39,    40,    41,    42,    43,    44,     7,
+      -1,     4,     5,     6,    79,    57,    60,    75,    55,    65,
+      88,    97,    98,    39,    40,    41,    42,    43,    44,     7,
       17,     8,    45,    46,    47,    27,     9,    10,    22,    28,
-      29,    11,    12,    49,    50,    51,    79,    96,    52
+      29,    11,    12,    49,    50,    51,    81,    99,    52
   };
 
   const signed char
    Parser ::yytable_[] =
   {
-      19,    66,    56,    21,     1,    23,     2,    15,    20,    25,
-      70,    71,    73,    13,    72,    48,    24,    20,    86,    87,
-      16,    18,    26,    88,    89,     3,    90,    91,    92,    93,
-      53,    54,    78,    80,    56,    81,    83,    30,    31,    32,
-      65,    58,    48,    68,    69,    63,    98,    73,   102,   100,
-      84,    97,    99,   101,   103,    14,    76,    30,    31,    32,
-      33,    34,    35,    36,   104,    75,    37,    38,    18,    67,
-      60,    61,    82,    62
+      19,    67,    56,    18,     1,    58,     2,    15,    20,    25,
+      76,    18,    74,    77,    21,    48,    23,    13,    89,    90,
+      16,    20,    24,    91,    92,     3,    93,    94,    95,    86,
+      59,    96,    80,    82,    26,    83,    85,    71,    72,    53,
+      66,    73,    48,    69,    70,    54,    56,   101,    61,    64,
+     103,   105,    30,    31,    32,    74,    87,    78,    30,    31,
+      32,    33,    34,    35,    36,   100,   102,    37,    38,    18,
+      14,    62,    63,    68,   104,   106,    84,   107
   };
 
   const signed char
    Parser ::yycheck_[] =
   {
-       8,    49,     4,    10,    10,    12,    12,    11,     3,    17,
-      26,    27,     7,     0,    30,    23,    31,     3,    20,    21,
-      24,    24,    31,    25,    26,    31,    28,    29,    30,    77,
-      31,     5,    65,    66,     4,    68,    69,    13,    14,    15,
-      48,     6,    50,    51,    52,     8,    79,     7,    96,    82,
-       9,    31,    31,    31,    31,     6,    64,    13,    14,    15,
-      16,    17,    18,    19,    31,    59,    22,    23,    24,    50,
-      39,    39,    68,    39
+       8,    49,     4,    24,    10,     6,    12,    11,     3,    17,
+      31,    24,     7,    60,    10,    23,    12,     0,    20,    21,
+      24,     3,    31,    25,    26,    31,    28,    29,    30,    76,
+      31,    79,    66,    67,    31,    69,    70,    26,    27,    31,
+      48,    30,    50,    51,    52,     5,     4,    81,    39,     8,
+      84,    99,    13,    14,    15,     7,     9,    65,    13,    14,
+      15,    16,    17,    18,    19,    31,    31,    22,    23,    24,
+       6,    39,    39,    50,    31,    31,    69,    31
   };
 
   const signed char
@@ -1435,12 +1499,12 @@ namespace yy {
        3,    36,    60,    36,    31,    57,    31,    57,    61,    62,
       13,    14,    15,    16,    17,    18,    19,    22,    23,    45,
       46,    47,    48,    49,    50,    54,    55,    56,    57,    65,
-      66,    67,    70,    31,     5,    40,     4,    37,     6,    38,
-      46,    47,    48,     8,    41,    57,    37,    65,    57,    57,
-      26,    27,    30,     7,    39,    61,    57,    36,    39,    68,
-      39,    39,    68,    39,     9,    42,    20,    21,    25,    26,
-      28,    29,    30,    37,    43,    44,    69,    31,    39,    31,
-      39,    31,    37,    31,    31
+      66,    67,    70,    31,     5,    40,     4,    37,     6,    31,
+      38,    46,    47,    48,     8,    41,    57,    37,    65,    57,
+      57,    26,    27,    30,     7,    39,    31,    61,    57,    36,
+      39,    68,    39,    39,    68,    39,    61,     9,    42,    20,
+      21,    25,    26,    28,    29,    30,    37,    43,    44,    69,
+      31,    39,    31,    39,    31,    37,    31,    31
   };
 
   const signed char
@@ -1449,11 +1513,12 @@ namespace yy {
        0,    32,    33,    34,    34,    35,    35,    35,    36,    37,
       38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
       48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    59,    59,    59,    60,    61,    61,    61,    62,
-      62,    62,    62,    63,    64,    64,    65,    65,    66,    66,
-      66,    66,    66,    66,    66,    66,    66,    66,    67,    67,
-      67,    67,    67,    67,    67,    67,    67,    67,    68,    68,
-      69,    69,    69,    69,    69,    69,    69,    70
+      58,    59,    59,    59,    59,    60,    61,    61,    61,    61,
+      61,    61,    62,    62,    62,    62,    63,    64,    64,    65,
+      65,    66,    66,    66,    66,    66,    66,    66,    66,    66,
+      66,    67,    67,    67,    67,    67,    67,    67,    67,    67,
+      67,    68,    68,    69,    69,    69,    69,    69,    69,    69,
+      70
   };
 
   const signed char
@@ -1462,11 +1527,12 @@ namespace yy {
        0,     2,     1,     1,     2,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       2,     2,     3,     3,     4,     4,     1,     3,     2,     1,
-       3,     3,     3,     5,     2,     3,     1,     2,     3,     4,
-       4,     5,     3,     4,     4,     5,     3,     4,     1,     1,
-       1,     1,     2,     2,     2,     1,     1,     1,     2,     3,
-       1,     1,     1,     1,     1,     1,     1,     4
+       2,     2,     3,     3,     4,     4,     1,     2,     3,     4,
+       2,     3,     1,     3,     3,     3,     5,     2,     3,     1,
+       2,     3,     4,     4,     5,     3,     4,     4,     5,     3,
+       4,     1,     1,     1,     1,     2,     2,     2,     1,     1,
+       1,     2,     3,     1,     1,     1,     1,     1,     1,     1,
+       4
   };
 
 
@@ -1476,14 +1542,15 @@ namespace yy {
   const unsigned char
    Parser ::yyrline_[] =
   {
-       0,    88,    88,    90,    91,    93,    94,    95,    97,    99,
-     101,   103,   105,   107,   109,   111,   113,   115,   117,   119,
-     121,   124,   126,   128,   130,   132,   134,   136,   138,   142,
-     144,   146,   147,   148,   149,   151,   153,   154,   155,   158,
-     159,   160,   161,   163,   165,   166,   168,   169,   171,   172,
-     173,   174,   175,   176,   177,   178,   179,   180,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   193,   194,
-     196,   197,   198,   199,   200,   201,   202,   204
+       0,    89,    89,    91,    92,    94,    95,    96,    98,   100,
+     102,   104,   106,   108,   110,   112,   114,   116,   118,   120,
+     122,   125,   127,   129,   131,   133,   135,   137,   139,   143,
+     145,   147,   148,   149,   150,   152,   154,   155,   156,   157,
+     158,   159,   161,   162,   163,   164,   166,   168,   169,   171,
+     172,   174,   175,   176,   177,   178,   179,   180,   181,   182,
+     183,   185,   186,   187,   188,   189,   190,   191,   192,   193,
+     194,   196,   197,   199,   200,   201,   202,   203,   204,   205,
+     207
   };
 
   void
@@ -1520,9 +1587,9 @@ namespace yy {
   }
 
 } // yy
-#line 1524 "Parser.cpp"
+#line 1591 "Parser.cpp"
 
-#line 206 "struct_yacc.y"
+#line 209 "struct_yacc.y"
 
 
 void yy::Parser::error(const location_type& loc, const std::string &e) {

@@ -45,7 +45,7 @@
 #ifndef YY_YY_PARSER_HPP_INCLUDED
 # define YY_YY_PARSER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 64 "struct_yacc.y"
+#line 65 "struct_yacc.y"
 
 		namespace yy {
 				class Lexer;
@@ -374,6 +374,9 @@ namespace yy {
       // simple_type
       char dummy1[sizeof (enum class simple_item_type_E)];
 
+      // enum_ent
+      char dummy2[sizeof (std::shared_ptr<enum_line_S>)];
+
       // NAME
       // ENUM_VALUE
       // VALUE
@@ -386,7 +389,7 @@ namespace yy {
       // simple_default_value
       // value
       // struct_block_vector
-      char dummy2[sizeof (std::string)];
+      char dummy3[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -593,6 +596,10 @@ namespace yy {
         value.move< enum class simple_item_type_E > (std::move (that.value));
         break;
 
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.move< std::shared_ptr<enum_line_S> > (std::move (that.value));
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -646,6 +653,20 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::shared_ptr<enum_line_S>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::shared_ptr<enum_line_S>& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, std::string&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
@@ -683,6 +704,10 @@ switch (yykind)
     {
       case symbol_kind::S_simple_type: // simple_type
         value.template destroy< enum class simple_item_type_E > ();
+        break;
+
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.template destroy< std::shared_ptr<enum_line_S> > ();
         break;
 
       case symbol_kind::S_NAME: // NAME
@@ -1655,7 +1680,7 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 73,     ///< Last index in yytable_.
+      yylast_ = 77,     ///< Last index in yytable_.
       yynnts_ = 39,  ///< Number of nonterminal symbols.
       yyfinal_ = 13 ///< Termination state number.
     };
@@ -1670,7 +1695,7 @@ switch (yykind)
 
 
 } // yy
-#line 1674 "Parser.hpp"
+#line 1699 "Parser.hpp"
 
 
 
