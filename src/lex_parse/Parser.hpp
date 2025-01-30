@@ -374,6 +374,7 @@ namespace yy {
       // simple_type
       char dummy1[sizeof (enum class simple_item_type_E)];
 
+      // enum_line
       // enum_ent
       char dummy2[sizeof (std::shared_ptr<enum_line_S>)];
 
@@ -547,15 +548,16 @@ namespace yy {
         S_enum_start = 59,                       // enum_start
         S_enum_block = 60,                       // enum_block
         S_enum_block_ents = 61,                  // enum_block_ents
-        S_enum_ent = 62,                         // enum_ent
-        S_struct_part = 63,                      // struct_part
-        S_struct_start = 64,                     // struct_start
-        S_struct_block_ents = 65,                // struct_block_ents
-        S_struct_block_ent = 66,                 // struct_block_ent
-        S_simple_type = 67,                      // simple_type
-        S_simple_default_value = 68,             // simple_default_value
-        S_value = 69,                            // value
-        S_struct_block_vector = 70               // struct_block_vector
+        S_enum_line = 62,                        // enum_line
+        S_enum_ent = 63,                         // enum_ent
+        S_struct_part = 64,                      // struct_part
+        S_struct_start = 65,                     // struct_start
+        S_struct_block_ents = 66,                // struct_block_ents
+        S_struct_block_ent = 67,                 // struct_block_ent
+        S_simple_type = 68,                      // simple_type
+        S_simple_default_value = 69,             // simple_default_value
+        S_value = 70,                            // value
+        S_struct_block_vector = 71               // struct_block_vector
       };
     };
 
@@ -596,6 +598,7 @@ namespace yy {
         value.move< enum class simple_item_type_E > (std::move (that.value));
         break;
 
+      case symbol_kind::S_enum_line: // enum_line
       case symbol_kind::S_enum_ent: // enum_ent
         value.move< std::shared_ptr<enum_line_S> > (std::move (that.value));
         break;
@@ -706,6 +709,7 @@ switch (yykind)
         value.template destroy< enum class simple_item_type_E > ();
         break;
 
+      case symbol_kind::S_enum_line: // enum_line
       case symbol_kind::S_enum_ent: // enum_ent
         value.template destroy< std::shared_ptr<enum_line_S> > ();
         break;
@@ -1681,7 +1685,7 @@ switch (yykind)
     enum
     {
       yylast_ = 77,     ///< Last index in yytable_.
-      yynnts_ = 39,  ///< Number of nonterminal symbols.
+      yynnts_ = 40,  ///< Number of nonterminal symbols.
       yyfinal_ = 13 ///< Termination state number.
     };
 
@@ -1695,7 +1699,7 @@ switch (yykind)
 
 
 } // yy
-#line 1699 "Parser.hpp"
+#line 1703 "Parser.hpp"
 
 
 
