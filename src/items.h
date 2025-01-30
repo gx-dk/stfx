@@ -87,6 +87,18 @@ struct name_table_struct_items_S
 	struct_S struct_data;
 	};
 
+enum class content_type_E
+	{
+	enum_item,
+	struct_item,
+	comment
+	};
+
+struct content_line_S
+	{
+	content_type_E line_type;
+	std::string item;		// name or comment string
+	};
 
 namespace yy
 {
@@ -98,6 +110,7 @@ class info_items_C
 	private:
 		std::map< std::string, struct_S > m_structs;
 		std::map< std::string, enum_S > m_enums;
+		std::vector< content_line_S> m_content;
 		struct_S *m_current_struct{ nullptr };
 		enum_S *m_current_enum{ nullptr };
 		int m_parse_rv{};
@@ -162,5 +175,6 @@ class info_items_C
 			{
 			return process_struct_line_complex(line_type, type_name, name, "");
 			}
+		bool process_top_level_comment(std::string comment);
 	};
 

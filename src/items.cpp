@@ -86,6 +86,10 @@ bool info_items_C::process_enum(std::string name, bool is_class_enum, std::strin
 		m_enums[name] = e;
 		m_current_enum = &m_enums.at(name);
 		m_current_struct = nullptr;			// just "in case" !!!
+		content_line_S content_line;
+		content_line.line_type = content_type_E::enum_item;
+		content_line.item = name;
+		m_content.push_back(content_line);
 		rv = true;
 		}
 	return rv;
@@ -132,6 +136,10 @@ bool info_items_C::process_struct(std::string name, std::string doc_comment)
 		m_structs[name] = s;
 		m_current_struct = &m_structs.at(name);
 		m_current_enum = nullptr;			// just "in case" !!!
+		content_line_S content_line;
+		content_line.line_type = content_type_E::struct_item;
+		content_line.item = name;
+		m_content.push_back(content_line);
 		rv = true;
 		}
 	return rv;
@@ -169,4 +177,13 @@ bool info_items_C::process_struct_line_complex(complex_item_type_E line_type, st
 		rv = true;
 		}
 	return rv;
+	}
+
+bool info_items_C::process_top_level_comment(std::string comment)
+	{
+	content_line_S content_item;
+	content_item.line_type = content_type_E::comment;
+	content_item.item = comment;
+	m_content.push_back(content_item);
+	return true;
 	}
