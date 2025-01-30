@@ -93,7 +93,7 @@ parts : part
 
 part : enum_part
 	| struct_part
-	| DOC_COMMENT
+	| DOC_COMMENT						{ info_items->process_top_level_comment($1); }
 
 block_start: BLOCK_START
 
@@ -167,7 +167,7 @@ enum_ent : name 							                    { $$ = info_items->make_enum_line($1,
 struct_part : struct_start block_start struct_block_ents block_end semicolon
 
 struct_start : struct name                                      { info_items->process_struct($2); }
-struct_start : struct name DOC_COMMENT                          { info_items->process_struct($2); }
+struct_start : struct name DOC_COMMENT                          { info_items->process_struct($2, $3); }
 
 struct_block_ents : struct_block_ent
 			| struct_block_ent struct_block_ents
