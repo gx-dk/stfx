@@ -45,11 +45,11 @@
 #ifndef YY_YY_PARSER_HPP_INCLUDED
 # define YY_YY_PARSER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 63 "struct_yacc.y"
+#line 65 "struct_yacc.y"
 
-        namespace yy {
-                class Lexer;
-        }
+		namespace yy {
+				class Lexer;
+		}
 
 #line 55 "Parser.hpp"
 
@@ -374,6 +374,10 @@ namespace yy {
       // simple_type
       char dummy1[sizeof (enum class simple_item_type_E)];
 
+      // enum_line
+      // enum_ent
+      char dummy2[sizeof (std::shared_ptr<enum_line_S>)];
+
       // NAME
       // ENUM_VALUE
       // VALUE
@@ -381,11 +385,12 @@ namespace yy {
       // FVALUE
       // STRING_CONSTANT
       // CHAR_CONSTANT
+      // DOC_COMMENT
       // name
       // simple_default_value
       // value
       // struct_block_vector
-      char dummy2[sizeof (std::string)];
+      char dummy3[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -461,7 +466,8 @@ namespace yy {
     HEXVALUE = 27,                 // HEXVALUE
     FVALUE = 28,                   // FVALUE
     STRING_CONSTANT = 29,          // STRING_CONSTANT
-    CHAR_CONSTANT = 30             // CHAR_CONSTANT
+    CHAR_CONSTANT = 30,            // CHAR_CONSTANT
+    DOC_COMMENT = 31               // DOC_COMMENT
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -478,7 +484,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 31, ///< Number of tokens.
+        YYNTOKENS = 32, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -511,45 +517,47 @@ namespace yy {
         S_FVALUE = 28,                           // FVALUE
         S_STRING_CONSTANT = 29,                  // STRING_CONSTANT
         S_CHAR_CONSTANT = 30,                    // CHAR_CONSTANT
-        S_YYACCEPT = 31,                         // $accept
-        S_file_content = 32,                     // file_content
-        S_parts = 33,                            // parts
-        S_part = 34,                             // part
-        S_block_start = 35,                      // block_start
-        S_block_end = 36,                        // block_end
-        S_comma = 37,                            // comma
-        S_semicolon = 38,                        // semicolon
-        S_equals = 39,                           // equals
-        S_lessthan = 40,                         // lessthan
-        S_greaterthan = 41,                      // greaterthan
-        S_true = 42,                             // true
-        S_false = 43,                            // false
-        S_unsigned = 44,                         // unsigned
-        S_int = 45,                              // int
-        S_short = 46,                            // short
-        S_long = 47,                             // long
-        S_std_string = 48,                       // std_string
-        S_std_vector = 49,                       // std_vector
-        S_enum = 50,                             // enum
-        S_class = 51,                            // class
-        S_struct = 52,                           // struct
-        S_float = 53,                            // float
-        S_double = 54,                           // double
-        S_bool = 55,                             // bool
-        S_name = 56,                             // name
-        S_enum_part = 57,                        // enum_part
-        S_enum_start = 58,                       // enum_start
-        S_enum_block = 59,                       // enum_block
-        S_enum_block_ents = 60,                  // enum_block_ents
-        S_enum_ent = 61,                         // enum_ent
-        S_struct_part = 62,                      // struct_part
-        S_struct_start = 63,                     // struct_start
-        S_struct_block_ents = 64,                // struct_block_ents
-        S_struct_block_ent = 65,                 // struct_block_ent
-        S_simple_type = 66,                      // simple_type
-        S_simple_default_value = 67,             // simple_default_value
-        S_value = 68,                            // value
-        S_struct_block_vector = 69               // struct_block_vector
+        S_DOC_COMMENT = 31,                      // DOC_COMMENT
+        S_YYACCEPT = 32,                         // $accept
+        S_file_content = 33,                     // file_content
+        S_parts = 34,                            // parts
+        S_part = 35,                             // part
+        S_block_start = 36,                      // block_start
+        S_block_end = 37,                        // block_end
+        S_comma = 38,                            // comma
+        S_semicolon = 39,                        // semicolon
+        S_equals = 40,                           // equals
+        S_lessthan = 41,                         // lessthan
+        S_greaterthan = 42,                      // greaterthan
+        S_true = 43,                             // true
+        S_false = 44,                            // false
+        S_unsigned = 45,                         // unsigned
+        S_int = 46,                              // int
+        S_short = 47,                            // short
+        S_long = 48,                             // long
+        S_std_string = 49,                       // std_string
+        S_std_vector = 50,                       // std_vector
+        S_enum = 51,                             // enum
+        S_class = 52,                            // class
+        S_struct = 53,                           // struct
+        S_float = 54,                            // float
+        S_double = 55,                           // double
+        S_bool = 56,                             // bool
+        S_name = 57,                             // name
+        S_enum_part = 58,                        // enum_part
+        S_enum_start = 59,                       // enum_start
+        S_enum_block = 60,                       // enum_block
+        S_enum_block_ents = 61,                  // enum_block_ents
+        S_enum_line = 62,                        // enum_line
+        S_enum_ent = 63,                         // enum_ent
+        S_struct_part = 64,                      // struct_part
+        S_struct_start = 65,                     // struct_start
+        S_struct_block_ents = 66,                // struct_block_ents
+        S_struct_block_ent = 67,                 // struct_block_ent
+        S_simple_type = 68,                      // simple_type
+        S_simple_default_value = 69,             // simple_default_value
+        S_value = 70,                            // value
+        S_struct_block_vector = 71               // struct_block_vector
       };
     };
 
@@ -590,6 +598,11 @@ namespace yy {
         value.move< enum class simple_item_type_E > (std::move (that.value));
         break;
 
+      case symbol_kind::S_enum_line: // enum_line
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.move< std::shared_ptr<enum_line_S> > (std::move (that.value));
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -597,6 +610,7 @@ namespace yy {
       case symbol_kind::S_FVALUE: // FVALUE
       case symbol_kind::S_STRING_CONSTANT: // STRING_CONSTANT
       case symbol_kind::S_CHAR_CONSTANT: // CHAR_CONSTANT
+      case symbol_kind::S_DOC_COMMENT: // DOC_COMMENT
       case symbol_kind::S_name: // name
       case symbol_kind::S_simple_default_value: // simple_default_value
       case symbol_kind::S_value: // value
@@ -635,6 +649,20 @@ namespace yy {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const enum class simple_item_type_E& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::shared_ptr<enum_line_S>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::shared_ptr<enum_line_S>& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -681,6 +709,11 @@ switch (yykind)
         value.template destroy< enum class simple_item_type_E > ();
         break;
 
+      case symbol_kind::S_enum_line: // enum_line
+      case symbol_kind::S_enum_ent: // enum_ent
+        value.template destroy< std::shared_ptr<enum_line_S> > ();
+        break;
+
       case symbol_kind::S_NAME: // NAME
       case symbol_kind::S_ENUM_VALUE: // ENUM_VALUE
       case symbol_kind::S_VALUE: // VALUE
@@ -688,6 +721,7 @@ switch (yykind)
       case symbol_kind::S_FVALUE: // FVALUE
       case symbol_kind::S_STRING_CONSTANT: // STRING_CONSTANT
       case symbol_kind::S_CHAR_CONSTANT: // CHAR_CONSTANT
+      case symbol_kind::S_DOC_COMMENT: // DOC_COMMENT
       case symbol_kind::S_name: // name
       case symbol_kind::S_simple_default_value: // simple_default_value
       case symbol_kind::S_value: // value
@@ -1310,6 +1344,21 @@ switch (yykind)
         return symbol_type (token::CHAR_CONSTANT, v, l);
       }
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DOC_COMMENT (std::string v, location_type l)
+      {
+        return symbol_type (token::DOC_COMMENT, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_DOC_COMMENT (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::DOC_COMMENT, v, l);
+      }
+#endif
 
 
     class context
@@ -1635,9 +1684,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 65,     ///< Last index in yytable_.
-      yynnts_ = 39,  ///< Number of nonterminal symbols.
-      yyfinal_ = 12 ///< Termination state number.
+      yylast_ = 77,     ///< Last index in yytable_.
+      yynnts_ = 40,  ///< Number of nonterminal symbols.
+      yyfinal_ = 13 ///< Termination state number.
     };
 
 
@@ -1650,7 +1699,7 @@ switch (yykind)
 
 
 } // yy
-#line 1654 "Parser.hpp"
+#line 1703 "Parser.hpp"
 
 
 

@@ -23,6 +23,7 @@ SEP_CHAR  [ \t]
 C_COMMENT_START [/][*]
 C_COMMENT_END   [*][/]
 CPP_COMMENT_START [/][/]
+CPP_COMMENT_DOC_START [/][/]:
 QUOTE   ["]
 SINGLE_QUOTE  [']
 
@@ -43,6 +44,14 @@ SINGLE_QUOTE  [']
 <C_COMMENT>"*/" {
 				/* when reached end of C style comment, switch to normal processing state */
 				BEGIN(INITIAL);
+				}
+
+{CPP_COMMENT_DOC_START}.*$			{
+				/* ... should match special c++ style comments "//:" */
+				value->emplace<std::string>(std::string{ YYText() + 3, YYText() + YYLeng()});		// we want to ignore the "//:"
+				loc->begin = loc->end; loc->columns(YYLeng());
+				// printf("processing doc comment : %s\n", yytext);
+				return yy::Parser::token::DOC_COMMENT;
 				}
 
 {CPP_COMMENT_START}.*$			{
