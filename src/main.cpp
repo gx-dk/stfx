@@ -172,7 +172,7 @@ int process_stfx_file(std::filesystem::path in_file)
 			break;
 		case serialization_type_E::json:
 		default:
-			fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
+			fmt::println("ERROR : output type '{}' not currently supported", common_output_files.file_type);
 			break;
 		}
 
@@ -230,7 +230,7 @@ int process_stfx_file(std::filesystem::path in_file)
 				break;
 			case serialization_type_E::json:
 			default:
-				fmt::println("ERROR : output type {} not currently supported", common_output_files.file_type);
+				fmt::println("ERROR : output type '{}' not currently supported", plus_output_files.file_type);
 				break;
 			}
 		}

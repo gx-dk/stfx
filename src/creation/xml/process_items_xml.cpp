@@ -35,6 +35,17 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 	std::string writer_class_name = output.structs_writer_class;
 	auto &structs = items.get_structs();
 
+	if (reader_class_name.empty() == true)
+		{
+		fmt::println("ERROR : structs_reader_class is not configured, while trying to create {}", out_pathfilename_cpp);
+		return false;
+		}
+	if (output.only_read_code == false && writer_class_name.empty() == true)
+		{
+		fmt::println("ERROR : structs_writer_class is not configured, while trying to create {}", out_pathfilename_cpp);
+		return false;
+		}
+
 	std::FILE *f_cpp;
 	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
