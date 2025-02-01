@@ -9,6 +9,7 @@
 
 enum class serialization_type_E		//: how is data serialized away from the program
 	{
+	none,			//: default no serialization
 	xml_attrib,		//: xml file, with values saved as named attributes
 	xml,			//: xml file, with xml values saved as leaf nodes
 	ini,			//: ini file (not yet implemented)
@@ -22,9 +23,9 @@ struct output_spec
 	std::string relative_directory {};		//: path relative to input file
 	std::string enum_file {};				//: file root name of enums files (.cpp and .h)
 	std::string structs_file {};			//: file root name of structs files (.cpp and .h)
-	std::string structs_reader_class{"xml_reader_C"};	//: within the generated structs module
-	std::string structs_writer_class{"xml_writer_C"};	//: within the generated structs module
-	serialization_type_E file_type{ serialization_type_E::xml_attrib };	//: file format of serialization file
+	std::string structs_reader_class{""};	//: within the generated structs module
+	std::string structs_writer_class{""};	//: within the generated structs module
+	serialization_type_E file_type{ serialization_type_E::none };	//: file format of serialization file
 	bool only_read_code{ false };			//: if true, ONLY generate READ class (not writer class)
 	bool no_special_delta{ false };			//: if true, do NOT include code that tests for default values when writing
 };

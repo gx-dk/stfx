@@ -83,6 +83,9 @@ int process_single_header(std::filesystem::path in_path)
 		input.push_back(in_path.filename().string());		// filename only ... path to file is in base_dir_path.. 
 		output.enum_file = "enums";
 		output.structs_file = "structs";
+		output.structs_reader_class = "xml_reader_C";
+		output.structs_writer_class = "xml_writer_C";
+		output.file_type = serialization_type_E::xml_attrib;
 		process_items_xml_attrib_C process_items(base_dir_path);
 		ok = process_items.process_items(info_items, input, output);
 		fmt::println("Processing items done. Success = {}", ok);

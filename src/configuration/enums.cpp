@@ -5,7 +5,7 @@
 //
 // License : MIT License
 //
-// stfx built at : Feb  1 2025 04:31:50, Software Version : 25.01
+// stfx built at : Feb  1 2025 05:29:12, Software Version : 25.01
 
 #include "enums.h"
 
@@ -18,6 +18,7 @@ const std::string stfx::s_from_e(serialization_type_E e)
 	{
 	std::map < serialization_type_E, std::string > serialization_type_E_to_string =
 		{
+			{ serialization_type_E::none, "none" },
 			{ serialization_type_E::xml_attrib, "xml_attrib" },
 			{ serialization_type_E::xml, "xml" },
 			{ serialization_type_E::ini, "ini" },
@@ -35,6 +36,7 @@ bool stfx::s_to_e(std::string s, serialization_type_E &e)
 
 	std::map < std::string, serialization_type_E > string_to_serialization_type_E =
 		{
+			{ "none", serialization_type_E::none },
 			{ "xml_attrib", serialization_type_E::xml_attrib },
 			{ "xml", serialization_type_E::xml },
 			{ "ini", serialization_type_E::ini },
