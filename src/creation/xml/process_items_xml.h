@@ -6,12 +6,12 @@
 #include "config_data.h"
 #include "process_items.h"
 
-class process_items_xml_C : public process_items_C
+class process_items_xml_C : public process_items_struct_C
 	{
 	protected:
 
 	public:
-		process_items_xml_C(std::filesystem::path base_dir_path) : process_items_C(base_dir_path)
+		process_items_xml_C(std::filesystem::path base_dir_path) : process_items_struct_C(base_dir_path)
 			{
 			};
 

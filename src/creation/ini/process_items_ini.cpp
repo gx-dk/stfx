@@ -17,39 +17,28 @@
 bool process_items_ini_C::process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)
 	{
 	bool rv{ false };
-	std::filesystem::path outpath{ m_base_dir_path };
-	if (output.relative_directory.empty() == false)
+	rv = setup_file_names(output);
+	if (rv == false)
 		{
-		outpath = outpath /= output.relative_directory;
-		std::filesystem::create_directories(outpath);
-		outpath = std::filesystem::canonical(outpath);
+		return rv;
 		}
-	std::filesystem::path out_filepath_cpp = outpath /= output.structs_file + ".cpp";
-	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
-	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
-	std::string out_pathfilename_h{ out_filepath_h.string() };
-	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
-	std::string out_filename_h{ out_filepath_h.filename().string() };
-	std::string enums_filename_h{ output.enum_file + ".h" };
-	std::string reader_class_name = output.structs_reader_class;
-	std::string writer_class_name = output.structs_writer_class;
-	auto &structs = items.get_structs();
 
+	auto &structs = items.get_structs();
 	std::FILE *f_cpp;
-	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
+	f_cpp = std::fopen(m_out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
-		fmt::println("Opened ini struct .cpp file :\t{}", out_pathfilename_cpp);
+		fmt::println("Opened ini struct .cpp file :\t{}", m_out_pathfilename_cpp);
 		std::FILE *f_h;
-		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
+		f_h = std::fopen(m_out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
-			fmt::println("Opened ini struct .h file :\t{}", out_pathfilename_h);
+			fmt::println("Opened ini struct .h file :\t{}", m_out_pathfilename_h);
 			rv = true;
 
-			fmt::println(f_cpp, "// {}", out_filename_cpp);
+			fmt::println(f_cpp, "// {}", m_out_filename_cpp);
 			fmt::println(f_cpp, "{}", m_stfx_info);
-			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
+			fmt::println(f_cpp, "#include \"{}\"\n", m_out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n"
 				"#include <map>\n"
 				"#include <regex>\n"
@@ -66,14 +55,14 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				}
 			else
 				{
-				fmt::println(f_cpp, "#include \"{}\"", enums_filename_h);
+				fmt::println(f_cpp, "#include \"{}\"", m_enums_filename_h);
 				}
 			for (const auto &in_filename : input_files)
 				{
 				fmt::println(f_cpp, "#include \"{}\"", in_filename);
 				}
 
-			fmt::println(f_h, "// {}\n", out_filename_h);
+			fmt::println(f_h, "// {}\n", m_out_filename_h);
 			fmt::println(f_h, "{}", m_stfx_info);
 
 			fmt::println(f_h,
@@ -102,13 +91,13 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				"\t\tstd::string m_multiline_string_key;\n"
 				"\t\tstd::string m_multiline_string_value;\n"
 				"\tpublic:\n"
-				"\t\t{0}();", reader_class_name);
+				"\t\t{0}();", m_reader_class_name);
 
 			fmt::println(f_cpp,
 				"\n"
 				"{0}::{0}()\n"
 				"\t{{\n"
-				"\t}}\n", reader_class_name);
+				"\t}}\n", m_reader_class_name);
 
 			for (auto &pair : structs)
 				{
@@ -191,7 +180,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 						"\t\trv = do_rd_{1}(\"\", struct_to_fill);\n"
 						"\t\t}}\n"
 						"\treturn rv;\n"
-						"\t}}\n", reader_class_name, s.name);
+						"\t}}\n", m_reader_class_name, s.name);
 					}
 				}
 
@@ -200,7 +189,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			for (auto &pair : structs)
 				{
 				const struct_S &s = pair.second;
-				rv &= process_struct_reader(s, reader_class_name, f_cpp, f_h);
+				rv &= process_struct_reader(s, m_reader_class_name, f_cpp, f_h);
 				}
 
 			fmt::println(f_h,
@@ -219,7 +208,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 					"\t\tstd::FILE *m_file {{nullptr}};\n"
 					"\tpublic:\n"
 					"\t\t{0}(bool delta_only = true);",
-					writer_class_name, reader_class_name);
+					m_writer_class_name, m_reader_class_name);
 
 				fmt::println(f_cpp,
 					"\n"
@@ -227,7 +216,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 					"{{\n"
 					"\tm_delta_only = delta_only;\n"
 					"}}\n",
-					writer_class_name, reader_class_name);
+					m_writer_class_name, m_reader_class_name);
 
 				for (auto &pair : structs)
 					{
@@ -247,7 +236,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 							"\t\tstd::fclose(m_file);\n"
 							"\t\t}}\n"
 							"\treturn rv;\n"
-							"\t}}\n", writer_class_name, s.name);
+							"\t}}\n", m_writer_class_name, s.name);
 						}
 					}
 
@@ -256,7 +245,7 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 				for (auto &pair : structs)
 					{
 					const struct_S &s = pair.second;
-					rv &= process_struct_writer(s, writer_class_name, f_cpp, f_h, output.no_special_delta);
+					rv &= process_struct_writer(s, m_writer_class_name, f_cpp, f_h, output.no_special_delta);
 					}
 
 				fmt::println(f_h,
@@ -269,13 +258,13 @@ bool process_items_ini_C::process_all_structs(info_items_C &items, const std::ve
 			}
 		else
 			{
-			fmt::println("\nERROR : Failed to open output file {}", out_filename_h);
+			fmt::println("\nERROR : Failed to open output file {}", m_out_filename_h);
 			}
 		std::fclose(f_cpp);
 		}
 	else
 		{
-		fmt::println("\nERROR : Failed to open output file {}", out_filename_cpp);
+		fmt::println("\nERROR : Failed to open output file {}", m_out_filename_cpp);
 		}
 
 	return rv;
