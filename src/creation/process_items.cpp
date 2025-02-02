@@ -300,6 +300,8 @@ bool process_items_struct_C::setup_file_names(const output_spec &output)
 		{
 		m_writer_class_name = fmt::format("{}_{}_writer_C", output.structs_file, output.file_type);
 		}
+	fmt::println("Reader class name : {}", m_reader_class_name);
+	fmt::println("writer class name : {}", m_writer_class_name);
 
 	return true;
 	}
