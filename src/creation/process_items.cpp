@@ -10,6 +10,7 @@
 #include <fmt/format.h>
 #include <fmt/chrono.h>
 
+#include "enums.h"
 #include "items.h"
 #include "config_data.h"
 #include "timestamp.h"
@@ -291,16 +292,14 @@ bool process_items_struct_C::setup_file_names(const output_spec &output)
 	m_enums_filename_h = output.enum_file + ".h";
 	m_reader_class_name = output.structs_reader_class;
 	m_writer_class_name = output.structs_writer_class;
-
 	if (m_reader_class_name.empty() == true)
 		{
-		fmt::println("ERROR : structs_reader_class is not configured, while trying to create {}", m_out_pathfilename_cpp);
-		return false;
+		m_reader_class_name = fmt::format("{}_{}_reader_C", output.structs_file, output.file_type);
 		}
-	if (output.only_read_code == false && m_writer_class_name.empty() == true)
+	if (m_writer_class_name.empty() == true)
 		{
-		fmt::println("ERROR : structs_writer_class is not configured, while trying to create {}", m_out_pathfilename_cpp);
-		return false;
+		m_writer_class_name = fmt::format("{}_{}_writer_C", output.structs_file, output.file_type);
 		}
+
 	return true;
 	}
