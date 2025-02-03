@@ -10,6 +10,7 @@
 #include <fmt/format.h>
 #include <fmt/chrono.h>
 
+#include "enums.h"
 #include "items.h"
 #include "config_data.h"
 #include "timestamp.h"
@@ -65,28 +66,28 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 		}
 	std::filesystem::path out_filepath_cpp = outpath /= output.enum_file + ".cpp";
 	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
-	std::string out_pathfilename_cpp{ out_filepath_cpp.string() };
-	std::string out_pathfilename_h{ out_filepath_h.string() };
-	std::string out_filename_cpp{ out_filepath_cpp.filename().string() };
-	std::string out_filename_h{ out_filepath_h.filename().string() };
+	std::string m_out_pathfilename_cpp{ out_filepath_cpp.string() };
+	std::string m_out_pathfilename_h{ out_filepath_h.string() };
+	std::string m_out_filename_cpp{ out_filepath_cpp.filename().string() };
+	std::string m_out_filename_h{ out_filepath_h.filename().string() };
 
 	auto &enums = items.get_enums();
 
 	std::FILE *f_cpp;
-	f_cpp = std::fopen(out_pathfilename_cpp.c_str(), "w");
+	f_cpp = std::fopen(m_out_pathfilename_cpp.c_str(), "w");
 	if (f_cpp != nullptr)
 		{
-		fmt::println("Opened enum .cpp file :\t\t{}", out_pathfilename_cpp);
+		fmt::println("Opened enum .cpp file :\t\t{}", m_out_pathfilename_cpp);
 		std::FILE *f_h;
-		f_h = std::fopen(out_pathfilename_h.c_str(), "w");
+		f_h = std::fopen(m_out_pathfilename_h.c_str(), "w");
 		if (f_h != nullptr)
 			{
-			fmt::println("Opened enum .h file :\t\t{}", out_pathfilename_h);
+			fmt::println("Opened enum .h file :\t\t{}", m_out_pathfilename_h);
 			rv = true;		// files are open
 
-			fmt::println(f_cpp, "// {}", out_filename_cpp);
+			fmt::println(f_cpp, "// {}", m_out_filename_cpp);
 			fmt::println(f_cpp, "{}", m_stfx_info);
-			fmt::println(f_cpp, "#include \"{}\"\n", out_filename_h);
+			fmt::println(f_cpp, "#include \"{}\"\n", m_out_filename_h);
 			fmt::println(f_cpp, "#include <string>\n#include <map>\n");
 			for (const auto &in_filename : input_files)
 				{
@@ -94,7 +95,7 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 				}
 			fmt::println(f_cpp, "");
 
-			fmt::println(f_h, "// {}", out_filename_h);
+			fmt::println(f_h, "// {}", m_out_filename_h);
 			fmt::println(f_h, "{}", m_stfx_info);
 			fmt::println(f_h, "#pragma once\n");
 			fmt::println(f_h, "#include <string>");
@@ -126,13 +127,13 @@ bool process_items_C::process_all_enums(info_items_C &items, const std::vector<s
 			}
 		else
 			{
-			fmt::println("\nERROR : Failed to open output file {}", out_filename_h);
+			fmt::println("\nERROR : Failed to open output file {}", m_out_filename_h);
 			}
 		std::fclose(f_cpp);
 		}
 	else
 		{
-		fmt::println("\nERROR : Failed to open output file {}", out_filename_cpp);
+		fmt::println("\nERROR : Failed to open output file {}", m_out_filename_cpp);
 		}
 	return rv;
 	}
@@ -271,4 +272,41 @@ bool process_items_C::find_top_struct(info_items_C &items)
 			}
 		}
 	return rv;
+	}
+
+bool process_items_struct_C::setup_file_names(const output_spec &output)
+	{
+	std::filesystem::path outpath = m_base_dir_path;
+	if (output.relative_directory.empty() == false)
+		{
+		outpath = outpath /= output.relative_directory;
+		std::filesystem::create_directories(outpath);
+		outpath = std::filesystem::canonical(outpath);
+		}
+	if (output.structs_file.empty() == true)
+		{
+		fmt::println("ERROR : structs_file name not given");
+		return false;
+		}
+	std::filesystem::path out_filepath_cpp = outpath /= output.structs_file + ".cpp";
+	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
+	m_out_pathfilename_cpp = out_filepath_cpp.string();
+	m_out_pathfilename_h = out_filepath_h.string();
+	m_out_filename_cpp = out_filepath_cpp.filename().string();
+	m_out_filename_h = out_filepath_h.filename().string();
+	m_enums_filename_h = output.enum_file + ".h";
+	m_reader_class_name = output.structs_reader_class;
+	m_writer_class_name = output.structs_writer_class;
+	if (m_reader_class_name.empty() == true)
+		{
+		m_reader_class_name = fmt::format("{}_{}_reader_C", output.structs_file, output.file_type);
+		}
+	if (m_writer_class_name.empty() == true)
+		{
+		m_writer_class_name = fmt::format("{}_{}_writer_C", output.structs_file, output.file_type);
+		}
+	fmt::println("Reader class name : {}", m_reader_class_name);
+	fmt::println("writer class name : {}", m_writer_class_name);
+
+	return true;
 	}
