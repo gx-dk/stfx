@@ -283,6 +283,11 @@ bool process_items_struct_C::setup_file_names(const output_spec &output)
 		std::filesystem::create_directories(outpath);
 		outpath = std::filesystem::canonical(outpath);
 		}
+	if (output.structs_file.empty() == true)
+		{
+		fmt::println("ERROR : structs_file name not given");
+		return false;
+		}
 	std::filesystem::path out_filepath_cpp = outpath /= output.structs_file + ".cpp";
 	std::filesystem::path out_filepath_h = outpath.replace_extension(".h");
 	m_out_pathfilename_cpp = out_filepath_cpp.string();
