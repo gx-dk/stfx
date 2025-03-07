@@ -67,6 +67,17 @@ bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 	return rv;
 }
 
+
+bool info_items_C::mark_all_structs_in_common()
+	{
+	bool rv { true };
+	for (auto &pair : m_structs)
+		{
+		pair.second.in_common = true;
+		}
+	return rv;
+	}
+
 // ---- and functions called from parser --- 
 
 bool info_items_C::process_enum(std::string name, bool is_class_enum, std::string doc_comment)

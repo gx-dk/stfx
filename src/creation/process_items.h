@@ -29,7 +29,7 @@ class process_items_C
 		bool fixup_types_of_names(info_items_C &items);
 		bool find_top_struct(info_items_C &items);
 
-		// the following functions should be overriden in derived classes... 
+		// the following functions should be overridden in derived classes... 
 
 		virtual bool process_all_structs(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output) = 0;
 		virtual bool process_struct_reader(struct_S const &s, std::string const class_name, std::FILE *out_file_cpp, std::FILE *out_file_h) = 0;

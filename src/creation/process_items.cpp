@@ -310,3 +310,4 @@ bool process_items_struct_C::setup_file_names(const output_spec &output)
 
 	return true;
 	}
+

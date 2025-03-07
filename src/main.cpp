@@ -176,6 +176,8 @@ int process_stfx_file(std::filesystem::path in_file)
 			break;
 		}
 
+	common_items.mark_all_structs_in_common();
+
 	// now process the "uncommon" files ... which are common plus local part 
 	for (const auto &uncom : conf.non_common)
 		{

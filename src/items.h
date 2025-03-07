@@ -70,7 +70,8 @@ struct struct_S
 	std::string doc_comment;
 	std::vector<struct_line_simple_S> simple;
 	std::vector<struct_line_complex_S> complex;
-	int incoming_count{ 0 };
+	int incoming_count {0};
+	bool in_common {false};
 	};
 
 struct name_table_enum_items_S
@@ -134,6 +135,8 @@ class info_items_C
 		{
 			return m_structs;
 		};
+
+		bool mark_all_structs_in_common();
 
 	protected:
 		friend yy::Parser;

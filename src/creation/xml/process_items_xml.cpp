@@ -88,7 +88,7 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 			for (auto &pair : structs)
 				{
 				const struct_S &s = pair.second;
-				if (s.incoming_count == 0)
+				if (s.incoming_count == 0 && s.in_common == false)
 					{
 					fmt::println(f_h, "\t\tvirtual bool read_from_file(std::string const &filename, {} &struct_to_fill);", s.name);
 
@@ -115,6 +115,8 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 			for (auto &pair : structs)
 				{
 				const struct_S &s = pair.second;
+				if (s.in_common == true && s.incoming_count == 0)
+					continue;
 				rv &= process_struct_reader(s, m_reader_class_name, f_cpp, f_h);
 				}
 
@@ -146,7 +148,7 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 				for (auto &pair : structs)
 					{
 					const struct_S &s = pair.second;
-					if (s.incoming_count == 0)
+					if (s.incoming_count == 0 && s.in_common == false)
 						{
 						fmt::println(f_h, "\t\tvirtual bool write_to_file(std::string const &filename, {} &struct_to_read);", s.name);
 
@@ -172,6 +174,8 @@ bool process_items_xml_C::process_all_structs(info_items_C &items, const std::ve
 				for (auto &pair : structs)
 					{
 					const struct_S &s = pair.second;
+					if (s.in_common == true && s.incoming_count == 0)
+						continue;
 					rv &= process_struct_writer(s, m_writer_class_name, f_cpp, f_h, output.no_special_delta);
 					}
 
