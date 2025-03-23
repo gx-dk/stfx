@@ -70,8 +70,8 @@ struct struct_S
 	std::string doc_comment;
 	std::vector<struct_line_simple_S> simple;
 	std::vector<struct_line_complex_S> complex;
-	int incoming_count {0};
-	bool in_common {false};
+	int incoming_count{ 0 };
+	bool in_common{ false };
 	};
 
 struct name_table_enum_items_S
@@ -102,9 +102,9 @@ struct content_line_S
 	};
 
 namespace yy
-{
+	{
 	class Parser;
-}
+	}
 
 class info_items_C
 	{
@@ -118,23 +118,23 @@ class info_items_C
 
 	public:
 
-		bool process_input_file(const std::filesystem::path& in_path);
+		bool process_input_file(const std::filesystem::path &in_path);
 		int get_parse_rv()
-		{
+			{
 			return m_parse_rv;
-		}
+			}
 
 		complex_item_type_E get_item_type(const std::string name);
 
-		const std::map< std::string, enum_S >& get_enums()
-		{
+		const std::map< std::string, enum_S > &get_enums()
+			{
 			return m_enums;
-		};
+			};
 
-		std::map< std::string, struct_S >& get_structs()
-		{
+		std::map< std::string, struct_S > &get_structs()
+			{
 			return m_structs;
-		};
+			};
 
 		bool mark_all_structs_in_common();
 

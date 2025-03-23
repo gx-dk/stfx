@@ -17,13 +17,13 @@
 
 process_items_C::process_items_C(std::filesystem::path base_dir_path) : m_base_dir_path(base_dir_path)
 	{
-	m_stfx_info += fmt::format(	"//\n"
-								"// Automatically generated using stfx\n"
-								"// Do not directly edit this file, use stfx to re-create this file.\n"
-								"//\n"
-								"// License : MIT License\n"
-								"//\n"
-								"// {}\n", app_timestamp);
+	m_stfx_info += fmt::format("//\n"
+		"// Automatically generated using stfx\n"
+		"// Do not directly edit this file, use stfx to re-create this file.\n"
+		"//\n"
+		"// License : MIT License\n"
+		"//\n"
+		"// {}\n", app_timestamp);
 	}
 
 bool process_items_C::process_items(info_items_C &items, const std::vector<std::string> &input_files, const output_spec &output)

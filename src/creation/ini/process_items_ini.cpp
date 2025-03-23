@@ -471,7 +471,7 @@ bool process_items_n_ini_C::process_struct_writer(struct_S const &s, std::string
 		switch (sim.line_type)
 			{
 			case simple_item_type_E::bool_E:
-				if(no_special_delta == true)
+				if (no_special_delta == true)
 					{
 					fmt::println(out_file_cpp,
 						"\tfmt::println(m_file, \"{0} {{}}\", (int)data->{0});"

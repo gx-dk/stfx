@@ -352,7 +352,7 @@ bool process_items_xml_C::process_struct_reader(struct_S const &s, std::string c
 				break;
 			case complex_item_type_E::struct_E:
 				fmt::println(out_file_cpp,
-//					"\tch_el = find_element(el, \"{0}\");\n"
+					//					"\tch_el = find_element(el, \"{0}\");\n"
 					"\tch_el = el->FirstChildElement(\"{0}\");\n"
 					"\tif (ch_el != nullptr)\n"
 					"\t\t{{\n"
@@ -425,7 +425,7 @@ bool process_items_xml_C::process_struct_writer(struct_S const &s, std::string c
 			case simple_item_type_E::long_E:
 			case simple_item_type_E::short_E:
 			case simple_item_type_E::unsigned_short_E:
-				if(no_special_delta == true)
+				if (no_special_delta == true)
 					{
 					fmt::println(out_file_cpp,
 						"\tch_el = el->InsertNewChildElement(\"{0}\");\n"

@@ -45,17 +45,17 @@ complex_item_type_E info_items_C::get_item_type(const std::string name)
 
 // ===========================================================================
 
-bool info_items_C::process_input_file(const std::filesystem::path& in_path)
-{
+bool info_items_C::process_input_file(const std::filesystem::path &in_path)
+	{
 	bool rv{};
 
-	std::istream* infile{ nullptr };
+	std::istream *infile{ nullptr };
 	infile = new std::ifstream{ in_path };
 	if (infile == nullptr || infile->fail() == true)
-	{
+		{
 		fmt::println("ERROR: could not open file for reading: {}\n", in_path.string());
 		return false;
-	}
+		}
 	fmt::println("\nFile opened for input:\t\t{}", in_path.string());
 	std::cin.rdbuf(infile->rdbuf());
 
@@ -65,12 +65,12 @@ bool info_items_C::process_input_file(const std::filesystem::path& in_path)
 	m_parse_rv = parser.parse();
 	rv = (m_parse_rv == 0);
 	return rv;
-}
+	}
 
 
 bool info_items_C::mark_all_structs_in_common()
 	{
-	bool rv { true };
+	bool rv{ true };
 	for (auto &pair : m_structs)
 		{
 		pair.second.in_common = true;
