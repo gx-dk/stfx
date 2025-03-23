@@ -142,6 +142,16 @@ int process_stfx_file(std::filesystem::path in_file)
 	output_spec common_output_files = conf.common_out_files;
 	switch (common_output_files.file_type)
 		{
+		case serialization_type_E::none:
+			if (common_output_files.enum_file.empty() && common_output_files.structs_file.empty())
+				{
+				fmt::println("INFO : file_type is none and NO outputs specified for common_output");
+				}
+			else
+				{
+				fmt::println("WARNING : file_type is none, but outputs specified for common_output enum_file : {}, structs_file {} ", common_output_files.enum_file, common_output_files.structs_file);
+				}
+			break;
 		case serialization_type_E::xml:
 			if (true)
 				{
@@ -202,6 +212,16 @@ int process_stfx_file(std::filesystem::path in_file)
 		output_spec plus_output_files = uncom.out;
 		switch (plus_output_files.file_type)
 			{
+			case serialization_type_E::none:
+				if (plus_output_files.enum_file.empty() && plus_output_files.structs_file.empty())
+					{
+					fmt::println("INFO : file_type is none and NO outputs specified for non_common out");
+					}
+				else
+					{
+					fmt::println("WARNING : file_type is none, but output filess specified. enum_file : {}, structs_file {} ", plus_output_files.enum_file, plus_output_files.structs_file);
+					}
+				break;
 			case serialization_type_E::xml:
 				if (true)
 					{
